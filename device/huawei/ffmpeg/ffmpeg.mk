@@ -2,8 +2,8 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/generic.mk)
 PRODUCT_BRAND :=Huawei
 PRODUCT_DEVICE :=MediaPadM2
 PRODUCT_NAME :=MediaPadM2
-PRODUCT_AAPT_CONFIG :=ldpi mdpi hdpi xhdpi
-PRODUCT_AAPT_PREF_CONFIG := - (ldpi mdpi hdpi xhdpi)
+PRODUCT_AAPT_CONFIG := normal xhdpi
+PRODUCT_AAPT_PREF_CONFIG := hdpi
 PRODUCT_CHARACTERISTICS :=tablet
 PRODUCT_COPY_FILES += \
 	vendor/huawei/ffmpeg/lib/libbt-vendor.so:/system/lib/libbt-vendor.so \

@@ -1,1 +1,1 @@
-add_lunch_combo имяустройста-eng
+add_lunch_combo ffmpeg-eng
