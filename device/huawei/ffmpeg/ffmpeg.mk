@@ -3,7 +3,7 @@ PRODUCT_BRAND :=Huawei
 PRODUCT_DEVICE :=MediaPadM2
 PRODUCT_NAME :=MediaPadM2
 PRODUCT_AAPT_CONFIG := normal xhdpi
-PRODUCT_AAPT_PREF_CONFIG := 1920 x 1200     xhdpi //КАК БЛЯТЬ ЗАДАТЬ НОРМАЛЬНО РАЗМЕР СУКА
+PRODUCT_AAPT_PREF_CONFIG := xhdpi 
 PRODUCT_CHARACTERISTICS :=tablet
 PRODUCT_COPY_FILES += \
 	vendor/huawei/ffmpeg/lib/libbt-vendor.so:/system/lib/libbt-vendor.so \
