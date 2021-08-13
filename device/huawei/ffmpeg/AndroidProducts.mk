@@ -1,2 +1,2 @@
 PRODUCT_MAKEFILES := \
-	$(LOCAL_DIR)/ffmpeg.mk
+	$(LOCAL_DIR)/ffmpeg.mk //ПОЧЕМУ БЛЯТЬ В ИСХОДНИКАХ ХУАВЕЙ ОН ffmpeg
