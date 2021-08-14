@@ -1,7 +1,0 @@
-#
-# TSIF subsystem configuration
-#
-
-config HUAWEI_TSIF
-        bool "huawei tsif"
-        default n

@@ -1,5 +1,0 @@
-config DTS_EAGLE
-	tristate "DTS Eagle driver"
-	default n
-	help
-	  DTS Eagle module.

@@ -1,9 +1,0 @@
-TARGET_ARCH := arm
-TARGET_ARCH_VARIANT := aarch64
-TARGET_NO_KERNEL := false 
-TARGET_KERNEL_SOURCE := kernel/hisi/ffmpeg/
-TARGET_KERNEL_CONFIG := merge_hi3635_defconfig
-TARGET_CPU_VARIANT= cortex-a53
-TARGET_CPU_ABI := armeabi-v8a
-TARGET_CPU_ABI2 := armeabi
-BOARD_EGL_CFG := device/hisi/ffmpeg/egl.cfg
