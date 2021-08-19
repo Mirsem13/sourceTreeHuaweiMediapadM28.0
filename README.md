@@ -4,5 +4,5 @@ I hope I can do it.
 I'm new to this business, so there will be a LOT OF ERRORS :)
 Yes, there is a vendor and
 kernel. But it doesn't really matter right now 
-¯\_(ツ)_/¯
+¯ \ _ (ツ) _ / ¯
 
