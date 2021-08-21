@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DTS2015020200081 g00204739/20150212 created -->
+<toolbox>
+    <!-- DTS2015012401743 maowang mwx239832/20150313 begin -->
+    <item>com.android.systemui.statusbar.toolbox.control.WifiTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.BluetoothTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.AutoRotateTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.SettingsTracker</item>
+    <!-- DTS2015032405563 maowang mwx239832/20150324 begin -->
+    <!-- DTS2015032405563 maowang mwx239832/20150324 end -->
+    <item>com.android.systemui.statusbar.toolbox.control.ScreenshotTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.SilentTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.DataSwitchTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.FlashlightTracker</item>
+
+    <item>com.android.systemui.statusbar.toolbox.control.GPSTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.WifiHotspotTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.SuperPowerModeTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.AirSharingTracker</item>
+
+    <item>com.android.systemui.statusbar.toolbox.control.AirplaneModeTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.SyncTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.BusyModeTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.LTETracker</item>
+
+    <item>com.android.systemui.statusbar.toolbox.control.SuspendTasksTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.ScreenrecorderTracker</item>
+    <!--<item>com.android.systemui.statusbar.toolbox.control.FlashlightTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.GPSTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.WifiHotspotTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.NFCTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.SuperPowerModeTracker</item>-->
+    <!-- DTS2015032405563 maowang mwx239832/20150324 begin -->
+    <!--<item>com.android.systemui.statusbar.toolbox.control.AirSharingTracker</item>-->
+    <!-- DTS2015032405563 maowang mwx239832/20150324 end -->
+    <!--<item>com.android.systemui.statusbar.toolbox.control.AirplaneModeTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.SyncTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.BusyModeTracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.LTETracker</item>
+    <item>com.android.systemui.statusbar.toolbox.control.SuspendTasksTracker</item>-->
+    <!-- DTS2015012401743 maowang mwx239832/20150313 end -->
+    <!-- MW Integration : DTS2014111003658 : d00248762 20150320 start -->
+    <!--<item>com.android.systemui.statusbar.toolbox.control.MWTracker</item>-->
+    <!-- MW Integration : DTS2014111003658 : d00248762 20150320 end -->
+</toolbox>

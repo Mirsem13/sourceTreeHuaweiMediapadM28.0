@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This xml file is used for BHB(Block Heart Beat) to config black list and white list;
+Packages in "black_list" which alarms will be moved to block alarm list when network is unavailable, so these alarms will disabled untill network connection is available;
+Packages in "white_list" will not active in BHB, because UHB may store some packages which may result in issues in BHB.
+-->
+<list>
+
+    <array type="black_list" version="1.0">
+        <item>com.android.mediacenter</item>
+        <item>com.android.gallery3d</item>
+        <item>com.huawei.appmarket</item>
+        <item>com.huawei.gamebox</item>
+        <item>com.vmall.client</item>
+        <item>com.huawei.android.hwouc</item>
+        <item>com.huawei.phoneservice</item>
+        <item>com.huawei.remoteassistant</item>
+        <item>com.huawei.android.ds</item>
+        <item>com.huawei.svn.hiwork</item>
+        <item>com.huawei.KoBackup</item>
+        <item>com.example.android.notepad</item>
+        <item>com.huawei.android.thememanager</item>
+        <item>com.huawei.fans</item>
+        <item>com.huawei.android.hwpay</item>
+        <item>com.huawei.wallet</item>
+        <item>com.huawei.motionservice</item>
+        <item>com.huawei.systemmanager</item>
+        <item>com.huawei.vassistant</item>
+        <item>com.huawei.phonediagnose</item>
+        <item>com.huawei.android.airsharing</item>
+        <item>com.huawei.espacev2</item>
+        <item>huawei.w3</item>
+        <item>com.huawei.hidisk</item>
+        <item>com.hicloud.android.clone</item>
+        <item>com.huawei.bone</item>
+        <item>com.huawei.multiscreen</item>
+        <item>com.huawei.rumate</item>
+        <item>com.hotalk</item>
+        <item>com.huawei.dbank.v7</item>
+        <item>com.huawei.mw</item>
+    </array>
+
+    <array type="white_list" version="1.0">
+
+    </array>
+
+    <array type="bastet_list" version="1.0">
+        <item>com.huawei.android.pushagent</item>
+    </array>
+
+</list>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+PowerGenie config file
+This xml file is used for ASH protecting foreign apps by name
+-->
+<list>
+    <array type="protect_apps" version="1.0">
+    <!-- AR0004P0M7 AR0004P0M8 AR0004P0M9 AR0004P0MA xiekaiming wx278091 20161031 begin -->
+        <item>com.xdja.emm.framework</item>
+        <item>com.xdja.emm</item>
+        <item>com.xdja.jxpush</item>
+        <item>com.xdja.safeclient</item>
+    <!-- AR0004P0M7 AR0004P0M8 AR0004P0M9 AR0004P0MA xiekaiming wx278091 20161031  end  -->
+    </array>
+</list>
+
+

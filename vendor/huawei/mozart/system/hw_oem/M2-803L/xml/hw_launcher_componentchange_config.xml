@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<change version="1" system="703L">
+    <components start = "001" end = "203">
+    <component old = "com.autonavi.minimap/.Splashy" new = "com.autonavi.minimap/com.autonavi.map.activity.SplashActivity"/>
+    <component old = "com.android.browser/.BrowserActivity" new = "com.android.browser/com.UCMobile.main.UCMobile"/>
+    <component old = "com.huawei.hwvplayer/.framework.MainActivity" new = "com.huawei.hwvplayer.youku/com.huawei.hwvplayer.framework.MainActivity"/>
+    <component old = "com.android.contacts/com.android.mms.ui.ConversationList" new = "com.android.mms/.ui.ConversationList"/>
+    </components>
+</change>

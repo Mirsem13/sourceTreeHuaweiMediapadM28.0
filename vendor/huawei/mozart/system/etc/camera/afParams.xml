@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="GB2312"?>
+<HW_AF_PARAM>
+    <otp vcmStart="0" vcmEnd="0" />
+	<step vcmStep1="32" boudary1="0" vcmStep2="0" boudary2="0" vcmStep3="0" />
+	<expansion deltaExpandStart="64" deltaExpandEnd="64" />
+	<poseDiffer sensorName1="MOZART_ov8858" direction1="2" delta1="56" sensorName2="MOZART_imx219" direction2="1" delta2="56" />
+</HW_AF_PARAM>

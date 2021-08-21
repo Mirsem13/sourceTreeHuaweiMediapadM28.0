@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--MW Integration : added for phase2 requirement :start -->
+<!--Add all the component name in the following format
+e.g-com.example.package/com.example.package.componentName-->
+<multiwindow_whitelist>
+    <!-- DTS2014121007861 dayananda/D00248762 20141217 begin -->
+    <mw_xml_version version="20160711" />
+    <!-- DTS2014121007861 dayananda/D00248762 20141217 end -->
+    <mw_app package_name="com.android.gallery3d" default_visibility="1"/>
+    <mw_app package_name="com.android.browser" default_visibility="1"/>
+    <mw_app package_name="com.example.android.notepad" default_visibility="1"/>
+    <mw_app package_name="com.huawei.hidisk" default_visibility="1"/>
+    <!-- DTS2016070606892 yanglong/wx316908 20160804 begin -->
+    <mw_app package_name="com.android.email" default_visibility="1" not_allow_orientation="true"/>
+    <!-- DTS2016070606892 yanglong/wx316908 20160804 end -->
+    <mw_app package_name="com.android.calendar" default_visibility="1"/>
+    <mw_app package_name="com.android.calculator2" default_visibility="1"/>
+    <!-- added for APP Center: start -->
+    <mw_app package_name="com.huawei.appmarket" default_visibility="1"/>
+    <mw_app package_name="com.huawei.gamebox" default_visibility="1"/>
+
+<mw_nonsystem_app package_name="com.autonavi.minimap" default_visibility="1"/>
+<mw_nonsystem_app package_name="com.sina.weibo" default_visibility="1"/>
+<mw_nonsystem_app package_name="com.tencent.mm" default_visibility="1"  not_allow_orientation="true"/>
+<mw_nonsystem_app package_name="com.tencent.mobileqq" default_visibility="1"  not_allow_orientation="true"/>
+<mw_nonsystem_app package_name="air.fyzb3" />
+<!--<mw_nonsystem_app package_name="air.tv.douyu.android" />-->
+<mw_nonsystem_app package_name="android.zhibo8" />
+<mw_nonsystem_app package_name="bubei.tingshu" />
+<mw_nonsystem_app package_name="cn.amazon.mShop.android" />
+<mw_nonsystem_app package_name="cn.com.fetion" />
+<mw_nonsystem_app package_name="cn.com.pconline.android.browser" />
+<mw_nonsystem_app package_name="cn.com.sina.sports" />
+<mw_nonsystem_app package_name="cn.ibuka.manga.ui" />
+<mw_nonsystem_app package_name="cn.kuwo.player" />
+<mw_nonsystem_app package_name="com.achievo.vipshop" not_allow_orientation="true"/>
+<mw_nonsystem_app package_name="com.alensw.PicFolder" />
+<mw_nonsystem_app package_name="com.autonavi.xmgd.navigator" />
+<mw_nonsystem_app package_name="com.baidu.BaiduMap" />
+<mw_nonsystem_app package_name="com.baidu.baidutranslate" />
+<mw_nonsystem_app package_name="com.baidu.browser.apps" />
+<mw_nonsystem_app package_name="com.baidu.netdisk" />
+<mw_nonsystem_app package_name="com.baidu.news" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="com.baidu.searchbox" />
+<mw_nonsystem_app package_name="com.baidu.tieba" />
+<mw_nonsystem_app package_name="com.baozoumanhua.android" />
+<mw_nonsystem_app package_name="com.chaozh.iReaderFree" />
+<mw_nonsystem_app package_name="com.chaozh.iReaderFree15" />
+<mw_nonsystem_app package_name="com.corp21cn.mail189" />
+<mw_nonsystem_app package_name="com.cubic.autohome" />
+<mw_nonsystem_app package_name="com.dewmobile.kuaiya" />
+<mw_nonsystem_app package_name="com.dianping.v1" />
+<mw_nonsystem_app package_name="com.duokan.reader" />
+<mw_nonsystem_app package_name="com.duowan.mobile" />
+<mw_nonsystem_app package_name="com.eg.android.AlipayGphone" />
+<mw_nonsystem_app package_name="com.esbook.reader" />
+<mw_nonsystem_app package_name="com.estrongs.android.pop" />
+<mw_nonsystem_app package_name="com.ganji.android" />
+<!--  DTS2015123005288   wujiaxing/wWX231735 20160111 begin -->
+<!--<mw_nonsystem_app package_name="com.huawei.fans" />-->
+<!-- DTS2015123005288 wujiaxing/wWX231735 20160111 end -->
+<mw_nonsystem_app package_name="com.iBookStar.activity" />
+<mw_nonsystem_app package_name="com.ifeng.news2" />
+<mw_nonsystem_app package_name="com.ijinshan.browser_fast" />
+<mw_nonsystem_app package_name="com.immomo.momo" />
+<mw_nonsystem_app package_name="com.jingdong.app.mall" />
+<mw_nonsystem_app package_name="com.kingreader.framework" />
+<mw_nonsystem_app package_name="com.kugou.android" />
+<!--<mw_nonsystem_app package_name="com.letv.android.client" />-->
+<mw_nonsystem_app package_name="com.mapbar.android.trybuynavi" />
+<mw_nonsystem_app package_name="com.MobileTicket" />
+<mw_nonsystem_app package_name="com.mt.mtxx.mtxx" />
+<mw_nonsystem_app package_name="com.mtime" />
+<mw_nonsystem_app package_name="com.mxtech.videoplayer.ad" />
+<mw_nonsystem_app package_name="com.mymoney" />
+<mw_nonsystem_app package_name="com.myzaker.ZAKER_Phone" />
+<mw_nonsystem_app package_name="com.netease.cloudmusic" />
+<mw_nonsystem_app package_name="com.netease.mobimail" />
+<mw_nonsystem_app package_name="com.netease.newsreader.activity" not_allow_orientation="true"/>
+<mw_nonsystem_app package_name="com.nuomi" />
+<mw_nonsystem_app package_name="com.pplive.androidphone" />
+<mw_nonsystem_app package_name="com.qihoo.appstore" />
+<mw_nonsystem_app package_name="com.qihoo.browser" />
+<mw_nonsystem_app package_name="com.qiyi.video" />
+<mw_nonsystem_app package_name="com.qq.qcloud" />
+<mw_nonsystem_app package_name="com.qq.reader" />
+<mw_nonsystem_app package_name="com.Qunar" />
+<mw_nonsystem_app package_name="com.qzone" />
+<mw_nonsystem_app package_name="com.ruanmei.ithome" />
+<mw_nonsystem_app package_name="com.sankuai.meituan" />
+<mw_nonsystem_app package_name="com.sankuai.meituan.takeoutnew" />
+<mw_nonsystem_app package_name="com.sds.android.ttpod" />
+<mw_nonsystem_app package_name="com.smzdm.client.android" />
+<mw_nonsystem_app package_name="com.snda.wifilocating" />
+<mw_nonsystem_app package_name="com.sogou.map.android.maps" />
+<mw_nonsystem_app package_name="com.sohu.newsclient" />
+<mw_nonsystem_app package_name="com.sohu.sohuvideo" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="com.speedsoftware.rootexplorer" />
+<mw_nonsystem_app package_name="com.ss.android.article.news" />
+<mw_nonsystem_app package_name="com.taobao.fleamarket" />
+<mw_nonsystem_app package_name="com.taobao.taobao" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="com.tencent.androidqqmail" />
+<mw_nonsystem_app package_name="com.tencent.map" />
+<mw_nonsystem_app package_name="com.tencent.mobileqqi" />
+<mw_nonsystem_app package_name="com.tencent.mtt" />
+<mw_nonsystem_app package_name="com.tencent.news" />
+<mw_nonsystem_app package_name="com.tencent.qqlite" />
+<mw_nonsystem_app package_name="com.tencent.qqlive" />
+<mw_nonsystem_app package_name="com.tencent.qqmusic" />
+<mw_nonsystem_app package_name="com.tencent.WBlog" />
+<mw_nonsystem_app package_name="com.ting.mp3.android" />
+<mw_nonsystem_app package_name="com.tmall.wireless" />
+<mw_nonsystem_app package_name="com.tudou.android" />
+<mw_nonsystem_app package_name="com.UCMobile" />
+<mw_nonsystem_app package_name="com.wacai365" />
+<mw_nonsystem_app package_name="com.wochacha" />
+<mw_nonsystem_app package_name="com.wuba" />
+<mw_nonsystem_app package_name="com.ximalaya.ting.android" />
+<mw_nonsystem_app package_name="com.xtuone.android.syllabus" />
+<mw_nonsystem_app package_name="com.xunlei.downloadprovider" />
+<mw_nonsystem_app package_name="com.yipiao" />
+<mw_nonsystem_app package_name="com.youdao.dict" />
+<mw_nonsystem_app package_name="com.youdao.note" />
+<mw_nonsystem_app package_name="com.youku.phone" />
+<mw_nonsystem_app package_name="com.zhihu.daily.android" />
+<mw_nonsystem_app package_name="com.zol.android" />
+<mw_nonsystem_app package_name="ctrip.android.view" />
+<mw_nonsystem_app package_name="fm.jihua.kecheng" />
+<mw_nonsystem_app package_name="fm.xiami.main" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="me.ele" />
+<mw_nonsystem_app package_name="qsbk.app" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="tv.pps.mobile" />
+<mw_nonsystem_app package_name="com.sdu.didi.psnger" />
+<mw_nonsystem_app package_name="com.sdu.didi.gui" />
+<mw_nonsystem_app package_name="com.funcity.taxi.passenger" />
+<mw_nonsystem_app package_name="com.funcity.taxi.driver" />
+<mw_nonsystem_app package_name="com.android.dazhihui" />
+<!-- DTS2015062302354 y00179556 20150627 for Top 300 application begin -->
+<mw_nonsystem_app package_name="cn.emoney.level2" />
+<mw_nonsystem_app package_name="com.eastmoney.android.fund" />
+<mw_nonsystem_app package_name="com.tencent.portfolio" />
+<mw_nonsystem_app package_name="wind.android" />
+<mw_nonsystem_app package_name="lthj.exchangestock" />
+<mw_nonsystem_app package_name="com.niuguwang.stock" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="com.icaikee.xrzgp" />
+<mw_nonsystem_app package_name="com.xueqiu.android" />
+<mw_nonsystem_app package_name="com.hexun.mobile" />
+<mw_nonsystem_app package_name="com.app.haotougu" />
+<mw_nonsystem_app package_name="com.winner.simulatetrade" />
+<mw_nonsystem_app package_name="com.jhss.youguu" />
+<mw_nonsystem_app package_name="com.forecastshare.a1" />
+<mw_nonsystem_app package_name="com.lphtsccft" />
+<mw_nonsystem_app package_name="com.qihoo360.contacts" />
+<mw_nonsystem_app package_name="com.huawei.dbank.v7" />
+<mw_nonsystem_app package_name="com.evernote" />
+<mw_nonsystem_app package_name="com.ylmf.androidclient" />
+<mw_nonsystem_app package_name="com.baidu.iknow" />
+<mw_nonsystem_app package_name="com.guosen.android" />
+<mw_nonsystem_app package_name="com.netease.pris" />
+<mw_nonsystem_app package_name="com.xunlei.kankan" />
+<mw_nonsystem_app package_name="com.sina.news" />
+<mw_nonsystem_app package_name="com.thestore.main" />
+<mw_nonsystem_app package_name="com.oupeng.browser" />
+<!--<mw_nonsystem_app package_name="com.tencent.portfolio" />-->
+<mw_nonsystem_app package_name="com.mygolbs.mybus" />
+<mw_nonsystem_app package_name="com.hy.minifetion" />
+<!--<mw_nonsystem_app package_name="com.iBookStar.activity" />-->
+<mw_nonsystem_app package_name="com.job.android" />
+<mw_nonsystem_app package_name="com.zhaopin.social" />
+<mw_nonsystem_app package_name="com.tongcheng.android" />
+<mw_nonsystem_app package_name="com.hiapk.marketpho" />
+<mw_nonsystem_app package_name="com.baidu.wenku" />
+<mw_nonsystem_app package_name="com.xiaoenai.app" />
+<mw_nonsystem_app package_name="com.alibaba.wireless" />
+<mw_nonsystem_app package_name="com.sankuai.movie" />
+<mw_nonsystem_app package_name="com.intsig.BizCardReader" />
+<mw_nonsystem_app package_name="com.taobao.caipiao" />
+<mw_nonsystem_app package_name="com.tenpay.android" />
+<mw_nonsystem_app package_name="com.gome.eshopnew" />
+<mw_nonsystem_app package_name="com.coomix.app.bus" />
+<mw_nonsystem_app package_name="com.yiche.price" />
+<mw_nonsystem_app package_name="com.qihoo.lottery" />
+<mw_nonsystem_app package_name="com.bmcc.ms.ui" />
+<mw_nonsystem_app package_name="cn.tianya.light" />
+<mw_nonsystem_app package_name="gf.king.app" />
+<mw_nonsystem_app package_name="cld.navi.mainframe" />
+<mw_nonsystem_app package_name="com.intsig.camscanner" />
+<mw_nonsystem_app package_name="com.yinyuetai.ui" />
+<mw_nonsystem_app package_name="sogou.mobile.explorer" />
+<mw_nonsystem_app package_name="com.tencent.loverzone" />
+<mw_nonsystem_app package_name="com.hunantv.imgo.activity" />
+<mw_nonsystem_app package_name="com.alibaba.android.babylon" />
+<mw_nonsystem_app package_name="com.tencent.qqphonebook" />
+<mw_nonsystem_app package_name="com.soufun.app" />
+<mw_nonsystem_app package_name="com.when.coco" />
+<mw_nonsystem_app package_name="com.taobao.mobile.dipei" />
+<mw_nonsystem_app package_name="com.renren.rrquiz" />
+<mw_nonsystem_app package_name="com.iflytek.speechcloud" />
+<mw_nonsystem_app package_name="com.codoon.gps" />
+<mw_nonsystem_app package_name="com.koudai.weishop" />
+<mw_nonsystem_app package_name="com.mymoney.sms" />
+<mw_nonsystem_app package_name="longbin.helloworld" />
+<mw_nonsystem_app package_name="com.taobao.trip" />
+<mw_nonsystem_app package_name="com.dazhihui.ydzq" />
+<!-- DTS2014121007861 DTS2015062302354 20150627 for Top 300 application end -->
+<!-- DTS2015073106070 20150731 for abroad applications end -->
+<mw_nonsystem_app package_name="com.adobe.reader" />
+<mw_nonsystem_app package_name="com.android.chrome" />
+<mw_nonsystem_app package_name="com.antivirus" />
+<mw_nonsystem_app package_name="com.badoo.mobile" />
+<mw_nonsystem_app package_name="com.bbm" />
+<mw_nonsystem_app package_name="com.devexpert.weather" />
+<mw_nonsystem_app package_name="com.eset.ems2.gp" />
+<mw_nonsystem_app package_name="com.facebook.katana" />
+<mw_nonsystem_app package_name="com.google.android.apps.docs" />
+<mw_nonsystem_app package_name="com.google.android.apps.magazines" />
+<mw_nonsystem_app package_name="com.google.android.apps.maps" />
+<mw_nonsystem_app package_name="com.google.android.apps.messaging" />
+<mw_nonsystem_app package_name="com.google.android.apps.plus" />
+<mw_nonsystem_app package_name="com.google.android.gm" />
+<mw_nonsystem_app package_name="com.google.android.googlequicksearchbox" />
+<mw_nonsystem_app package_name="com.google.android.talk" />
+<mw_nonsystem_app package_name="com.google.android.videos" />
+<mw_nonsystem_app package_name="com.google.android.youtube" />
+<mw_nonsystem_app package_name="com.google.earth" />
+<mw_nonsystem_app package_name="com.instagram.android" />
+<mw_nonsystem_app package_name="com.jb.gosms" />
+<mw_nonsystem_app package_name="com.netflix.mediaclient" />
+<mw_nonsystem_app package_name="com.pandora.android" />
+<mw_nonsystem_app package_name="com.picsart.studio" />
+<mw_nonsystem_app package_name="com.sec.android.mimage.photoretouching" />
+<mw_nonsystem_app package_name="com.sgiggle.production" />
+<mw_nonsystem_app package_name="com.shazam.android" />
+<mw_nonsystem_app package_name="com.socialnmobile.dictapps.notepad.color.note" />
+<mw_nonsystem_app package_name="com.soundcloud.android" />
+<mw_nonsystem_app package_name="com.spotify.music" />
+<mw_nonsystem_app package_name="com.tinder" />
+<mw_nonsystem_app package_name="com.tumblr" />
+<mw_nonsystem_app package_name="com.twitter.android" />
+<mw_nonsystem_app package_name="com.UCMobile.intl" />
+<mw_nonsystem_app package_name="com.utorrent.client" />
+<mw_nonsystem_app package_name="com.viber.voip" />
+<mw_nonsystem_app package_name="com.vkontakte.android" />
+<mw_nonsystem_app package_name="com.waze" />
+<mw_nonsystem_app package_name="com.weather.Weather" />
+<mw_nonsystem_app package_name="com.yahoo.mobile.client.android.mail" />
+<mw_nonsystem_app package_name="kik.android" />
+<mw_nonsystem_app package_name="org.mozilla.firefox" />
+<mw_nonsystem_app package_name="org.telegram.messenger" />
+<mw_nonsystem_app package_name="wp.wattpad" />
+<!-- DTS2015073106070 20150731 for abroad applications end -->
+<!-- DTS2015073106070 20150804 for Top500 applications begin -->
+<mw_nonsystem_app package_name="com.drcom.Android.DrCOMWS" />
+<mw_nonsystem_app package_name="org.zhiboba.sports" />
+<mw_nonsystem_app package_name="cn.kuaipan.android" />
+<mw_nonsystem_app package_name="com.mx.browser" />
+<mw_nonsystem_app package_name="com.android.comicsisland.activity" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="com.baidu.tieba_mini" />
+<mw_nonsystem_app package_name="com.zuimeia.suite.lockscreen" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="com.leixun.taofen8" />
+<mw_nonsystem_app package_name="cn.cj.pe" />
+<mw_nonsystem_app package_name="com.baidu.hao123" />
+<mw_nonsystem_app package_name="com.funshion.video.mobile" />
+<mw_nonsystem_app package_name="com.lltskb.lltskb" />
+<mw_nonsystem_app package_name="com.aidian.flowhelper" />
+<mw_nonsystem_app package_name="com.xunlei.cloud" />
+<mw_nonsystem_app package_name="cn.kuwo.tingshu" />
+<mw_nonsystem_app package_name="com.xiaomi.router" />
+<mw_nonsystem_app package_name="com.welove520.welove" />
+<mw_nonsystem_app package_name="com.chinamobile.contacts.im" />
+<mw_nonsystem_app package_name="com.iflytek.cmcc" />
+<mw_nonsystem_app package_name="com.ophone.reader.ui" />
+<mw_nonsystem_app package_name="com.cyber.wallet" />
+<mw_nonsystem_app package_name="cn.emagsoftware.gamehall" />
+<mw_nonsystem_app package_name="com.umetrip.android.msky.app" />
+<mw_nonsystem_app package_name="com.calendar.UI" />
+<mw_nonsystem_app package_name="com.wenhua.bamboo" />
+<mw_nonsystem_app package_name="com.uc.browser.hd" />
+<mw_nonsystem_app package_name="com.meilishuo" />
+<mw_nonsystem_app package_name="com.flightmanager.view" />
+<mw_nonsystem_app package_name="com.gewara" />
+<mw_nonsystem_app package_name="com.sina.weibog3" />
+<mw_nonsystem_app package_name="cn.eclicks.wzsearch" />
+<mw_nonsystem_app package_name="cn.mucang.xiaomi.android.wz" />
+<mw_nonsystem_app package_name="com.weihua.superphone" />
+<mw_nonsystem_app package_name="com.hundsun.stockwinner.gdzq" />
+<mw_nonsystem_app package_name="com.mogujie" />
+<mw_nonsystem_app package_name="com.skype.rover" />
+<mw_nonsystem_app package_name="com.dp.android.elong" />
+<mw_nonsystem_app package_name="com.sskj.flashlight" />
+<mw_nonsystem_app package_name="com.google.android.inputmethod.latin" />
+<mw_nonsystem_app package_name="com.cutt.zhiyue.android.app236492" />
+<mw_nonsystem_app package_name="com.jm.android.jumei" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="net.iaround" />
+<mw_nonsystem_app package_name="com.hundsun.android" />
+<mw_nonsystem_app package_name="com.sg.sledog" />
+<mw_nonsystem_app package_name="com.ireadercity" />
+<mw_nonsystem_app package_name="cn.etouch.ecalendar" />
+<mw_nonsystem_app package_name="com.xiachufang" />
+<mw_nonsystem_app package_name="com.zhejiangdaily" />
+<mw_nonsystem_app package_name="com.mapbar.android.mapbarmap" />
+<mw_nonsystem_app package_name="huawei.w3" />
+<mw_nonsystem_app package_name="com.tencent.powermanager" />
+<mw_nonsystem_app package_name="com.hundsun.stockwinner.htzq" />
+<mw_nonsystem_app package_name="cn.banshenggua.aichang" />
+<mw_nonsystem_app package_name="com.cmschina" />
+<mw_nonsystem_app package_name="com.qianshouhunlian" />
+<mw_nonsystem_app package_name="com.snda.youni" />
+<mw_nonsystem_app package_name="com.baidu.navi" />
+<mw_nonsystem_app package_name="com.audiocn.karaoke.huawei.pad" />
+<!-- DTS2015073106070 20150804 for Top500 applications end -->
+<!--begin: DTS2015111808950 updated by y00179556 on 20160317 for test manager's requirement.-->
+<mw_nonsystem_app package_name="org.dayup.handwriting" />
+<mw_nonsystem_app package_name="com.greenpoint.android.mc10086.activity" />
+<mw_nonsystem_app package_name="cn.etouch.ecalendar" />
+<!--end: DTS2015111808950 updated by y00179556 on 20160317 for test manager's requirement.-->
+
+<!-- DTS2015122104299 20151221 dwx288502 for new applications begin-->
+<mw_nonsystem_app package_name="com.taobao.apad" />
+<mw_nonsystem_app package_name="com.niting.app" />
+<mw_nonsystem_app package_name="com.caimao.cp" />
+<mw_nonsystem_app package_name="com.fenbi.android.gaozhong" />
+<mw_nonsystem_app package_name="com.koudaitao" />
+<mw_nonsystem_app package_name="cn.am321.android.am321" />
+<mw_nonsystem_app package_name="com.wantu.activity" />
+<mw_nonsystem_app package_name="com.wifilizishenqi" />
+<mw_nonsystem_app package_name="com.tencent.minihd.qq" />
+<mw_nonsystem_app package_name="com.MoScreen" />
+<mw_nonsystem_app package_name="com.lovebizhi.wallpaper" />
+<mw_nonsystem_app package_name="com.sumavision.talktvgame" />
+<mw_nonsystem_app package_name="com.nice.main" />
+<mw_nonsystem_app package_name="com.Android56" />
+<mw_nonsystem_app package_name="com.qigame.lock" />
+<mw_nonsystem_app package_name="com.tplus" />
+<mw_nonsystem_app package_name="com.chinalao" />
+<mw_nonsystem_app package_name="com.zxterminal.activity.z6" />
+<mw_nonsystem_app package_name="com.zbx.ct.tvzhibo" />
+<mw_nonsystem_app package_name="com.blackbean.cnmeach" />
+<mw_nonsystem_app package_name="com.hyx.maizuo.main" />
+<mw_nonsystem_app package_name="cn.com.spdb.mobilebank.per" />
+<mw_nonsystem_app package_name="cn.j.guang" />
+<mw_nonsystem_app package_name="com.violationquery" />
+<mw_nonsystem_app package_name="com.taobao.etao" />
+<mw_nonsystem_app package_name="com.vodone.huawei" />
+<mw_nonsystem_app package_name="com.ts.zys" />
+<mw_nonsystem_app package_name="com.quanleimu.activity" />
+<mw_nonsystem_app package_name="com.sditapps.googleearth" />
+<mw_nonsystem_app package_name="com.ymall.presentshop" />
+<mw_nonsystem_app package_name="com.aibang.abbus.bus" />
+<mw_nonsystem_app package_name="cn.com.cmbc.mbank" />
+<mw_nonsystem_app package_name="com.duowan.kiwi" />
+<mw_nonsystem_app package_name="cn.eclicks.drivingtest" />
+<mw_nonsystem_app package_name="com.bjjpsk.jpskb" />
+<mw_nonsystem_app package_name="com.twoba.taoke" />
+<mw_nonsystem_app package_name="huawei.w3.smartcom.itravel" />
+<mw_nonsystem_app package_name="com.kunpeng.babyting" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="com.yixia.videoeditor" />
+<mw_nonsystem_app package_name="com.zxterminal.activity.f" />
+<mw_nonsystem_app package_name="com.yourdream.app.android" />
+<mw_nonsystem_app package_name="com.hangzhoucaimi.financial" />
+<mw_nonsystem_app package_name="com.cubic.choosecar" not_allow_orientation="true" />
+<mw_nonsystem_app package_name="com.babytree.apps.pregnancy" />
+<mw_nonsystem_app package_name="com.soukl.vodeoi" />
+<mw_nonsystem_app package_name="com.talkweb.nciyuan" />
+<mw_nonsystem_app package_name="cn.andson.cardmanager" />
+<mw_nonsystem_app package_name="com.sogou.novel" />
+<mw_nonsystem_app package_name="com.amazon.kindle" />
+<mw_nonsystem_app package_name="com.hotalk" />
+<mw_nonsystem_app package_name="com.uu.uunavi" />
+<mw_nonsystem_app package_name="com.qihoo360.mobilesafe.strongbox" />
+<mw_nonsystem_app package_name="com.cp2y.schema" />
+<mw_nonsystem_app package_name="com.eduu.bang" />
+<mw_nonsystem_app package_name="com.keenvim.cnCalendar" />
+<mw_nonsystem_app package_name="com.yiwang" />
+<mw_nonsystem_app package_name="com.google.android.apps.translate" />
+<mw_nonsystem_app package_name="com.snda.tt" />
+<mw_nonsystem_app package_name="com.jiecao.news.jiecaonews" />
+<mw_nonsystem_app package_name="com.aini25.netchat" />
+<mw_nonsystem_app package_name="com.sinacp.ggaicaiqqq" />
+<mw_nonsystem_app package_name="com.kangxun360.member" />
+<mw_nonsystem_app package_name="com.yek.lafaso" />
+<mw_nonsystem_app package_name="com.cmcc.wallet" />
+<mw_nonsystem_app package_name="cn.shuangshuangfei" />
+<mw_nonsystem_app package_name="com.yybackup" />
+<mw_nonsystem_app package_name="pinkdiary.xiaoxiaotu.com" />
+<mw_nonsystem_app package_name="com.ifreetalk.ftalk" />
+<mw_nonsystem_app package_name="com.cmbchina.ccd.pluto.cmbActivity" />
+<mw_nonsystem_app package_name="com.duitang.main" />
+<mw_nonsystem_app package_name="one.hh.oneclient" />
+<mw_nonsystem_app package_name="com.l99.bed" />
+<mw_nonsystem_app package_name="com.tiantian.mall" />
+<mw_nonsystem_app package_name="com.xiaomi.channel" />
+<mw_nonsystem_app package_name="com.autohome.usedcar" />
+<mw_nonsystem_app package_name="cn.buding.martin" />
+<mw_nonsystem_app package_name="com.nd.android.pandareader" />
+<mw_nonsystem_app package_name="com.mt.mttt" />
+<mw_nonsystem_app package_name="com.cwvs.jdd" />
+<mw_nonsystem_app package_name="com.sythealth.fitness" />
+<mw_nonsystem_app package_name="com.yunyaoinc.mocha" />
+<mw_nonsystem_app package_name="com.hj.nce" />
+<mw_nonsystem_app package_name="cn.wecook.app" />
+<mw_nonsystem_app package_name="com.cplatform.xhxw.ui" />
+<mw_nonsystem_app package_name="com.vanchu.apps.guimiquan" />
+<mw_nonsystem_app package_name="com.tiqiaa.icontrol" />
+<mw_nonsystem_app package_name="com.hjwordgames" />
+<mw_nonsystem_app package_name="cn.kuwo.sing" />
+<mw_nonsystem_app package_name="net.tongchengyuan" />
+<mw_nonsystem_app package_name="com.kingpoint.gmcchh" />
+<mw_nonsystem_app package_name="com.ringcrop.ku" />
+<mw_nonsystem_app package_name="com.dianxinos.optimizer.duplay" />
+<mw_nonsystem_app package_name="com.qingchifan" />
+<mw_nonsystem_app package_name="com.boohee.one" />
+<mw_nonsystem_app package_name="com.telecom.video.cctv3" />
+<mw_nonsystem_app package_name="com.com.yaya.mmbang" />
+<mw_nonsystem_app package_name="com.chinaideal.bkclient.tabmain" />
+<mw_nonsystem_app package_name="com.pingco.cup" />
+<mw_nonsystem_app package_name="com.dbw.travel.ui" />
+<mw_nonsystem_app package_name="umito.android.minipiano" />
+<mw_nonsystem_app package_name="com.sogou.wallpaper" />
+<mw_nonsystem_app package_name="com.netease.mkey" />
+<mw_nonsystem_app package_name="com.ddsc.dotbaby" />
+<mw_nonsystem_app package_name="cn.ikamobile.trainfinder" />
+<mw_nonsystem_app package_name="com.weiju" />
+<mw_nonsystem_app package_name="com.wacompany.mydol" />
+<mw_nonsystem_app package_name="com.h.chromemarks" />
+<mw_nonsystem_app package_name="com.u17.comic.phone" />
+<mw_nonsystem_app package_name="com.pingco.andNBA" />
+<mw_nonsystem_app package_name="com.yek.android.kfc.activitys" />
+<mw_nonsystem_app package_name="com.hotspot.android.lottery" />
+<mw_nonsystem_app package_name="com.android.cheyoohdrive" />
+<mw_nonsystem_app package_name="cn.edu.zjicm.wordsnet_d" />
+<mw_nonsystem_app package_name="cn.ledongli.ldl" />
+<mw_nonsystem_app package_name="com.liveyap.timehut" />
+<mw_nonsystem_app package_name="com.taomee.molevillage" />
+<mw_nonsystem_app package_name="com.zxterminal.activity.c" />
+<mw_nonsystem_app package_name="cn.com.open.mooc" />
+<mw_nonsystem_app package_name="com.youba.ringtones" />
+<mw_nonsystem_app package_name="com.tengchong.juhuiwan" />
+<mw_nonsystem_app package_name="com.sogou.activity.src" />
+<mw_nonsystem_app package_name="com.rytong.bankps"  not_allow_orientation="true" />
+<mw_nonsystem_app package_name="com.lingduo.acorn" />
+<mw_nonsystem_app package_name="com.soft.blued" />
+<mw_nonsystem_app package_name="com.dw.btime" />
+<mw_nonsystem_app package_name="flipboard.app" />
+<mw_nonsystem_app package_name="com.meet.right" />
+<mw_nonsystem_app package_name="com.edog" />
+<mw_nonsystem_app package_name="com.pingan.pabank.activity" />
+<mw_nonsystem_app package_name="com.kingroot.kinguser" />
+<mw_nonsystem_app package_name="com.ting.dushiqingganxinyu" />
+<mw_nonsystem_app package_name="InternetRadio.all" />
+<mw_nonsystem_app package_name="com.xingjiabi.shengsheng" />
+<mw_nonsystem_app package_name="com.huimao.bobo" />
+<mw_nonsystem_app package_name="com.manle.phone.android.yaodian" />
+<mw_nonsystem_app package_name="com.juhuicall.packet" />
+<mw_nonsystem_app package_name="com.kingsoft.wordback" />
+<mw_nonsystem_app package_name="wind.deposit" />
+<mw_nonsystem_app package_name="com.tencent.karaoke" />
+<mw_nonsystem_app package_name="com.ting.baobaotongyao" />
+<mw_nonsystem_app package_name="com.yongche.android" />
+<mw_nonsystem_app package_name="com.msc.sprite" />
+<mw_nonsystem_app package_name="com.etao.kaka" />
+<mw_nonsystem_app package_name="com.mfw.voiceguide" />
+<mw_nonsystem_app package_name="cn.com.wo" />
+<mw_nonsystem_app package_name="com.haokanhaokan.news" />
+<mw_nonsystem_app package_name="com.jiayuan" />
+<mw_nonsystem_app package_name="in.huohua.Yuki" />
+<mw_nonsystem_app package_name="com.wechat.voice" />
+<mw_nonsystem_app package_name="com.ithouge.spokencnkorean" />
+<mw_nonsystem_app package_name="com.htinns" />
+<mw_nonsystem_app package_name="com.fmmatch.tata" />
+<mw_nonsystem_app package_name="com.baidao.ytxmobile" />
+<mw_nonsystem_app package_name="com.yiche.autoeasy" />
+<mw_nonsystem_app package_name="com.yijia.fjiukuaijiu" />
+<mw_nonsystem_app package_name="com.lakala.android" />
+<mw_nonsystem_app package_name="com.mengbaby" />
+<mw_nonsystem_app package_name="com.glodon.drawingexplorer" />
+<mw_nonsystem_app package_name="com.happy.lock" />
+<mw_nonsystem_app package_name="com.shouji.ku" />
+<mw_nonsystem_app package_name="com.autohome.mycar" />
+<mw_nonsystem_app package_name="com.dou_pai.DouPai" />
+<mw_nonsystem_app package_name="com.mobisystems.office" />
+<mw_nonsystem_app package_name="com.dianxinos.dxhome" />
+<mw_nonsystem_app package_name="com.roidapp.photogrid" />
+<mw_nonsystem_app package_name="com.paic.zhifu.wallet.activity" />
+<mw_nonsystem_app package_name="com.koudai.weidian.buyer" />
+<mw_nonsystem_app package_name="com.baidu.travel" />
+<mw_nonsystem_app package_name="com.xisue.zhoumo" />
+<mw_nonsystem_app package_name="com.thunder.ktvdaren" />
+<mw_nonsystem_app package_name="com.zhizunapp.usecar" />
+<mw_nonsystem_app package_name="me.chunyu.CYElder" />
+<mw_nonsystem_app package_name="com.sohu.tv" />
+<mw_nonsystem_app package_name="com.qq.ac.android" />
+<mw_nonsystem_app package_name="com.xiaodao.jiemeng" />
+<mw_nonsystem_app package_name="com.hujiang.hjclass" />
+<!-- DTS2015122104299 20151221 dwx288502 for new applications end-->
+
+
+
+    <!-- DTS2014092002805 abhishek/a00263523 20140922 begin -->
+    <!-- Cloud login activity common for filemanager, gallery and video-->
+    <!-- DTS2015052005480 dayananda/D00248762 20150602 begin -->
+    <!-- Cloud log in page let open in full screen in new task from split-window -->
+    <!-- <mw_hidden_app package_name="com.huawei.hwid/com.huawei.hwid.ui.extend.setting.StartUpGuideLoginActivity"/>
+    <mw_hidden_app package_name="com.huawei.android.ds/com.huawei.android.hicloud.hisync.activity.PhotoStreamActivity" /> -->
+    <!-- DTS2015052005480 dayananda/D00248762 20150602 end -->
+    <!--MW Integration : Added for Hicare Defect : twx206827/Tapu Ranjan 20141121 start  -->
+    <mw_hidden_app package_name="com.huawei.remoteassistant/com.huawei.remoteassistant.firstguide.FirstPrivacyActivity" />
+    <!--MW Integration : Added for Hicare Defect : twx206827/Tapu Ranjan 20141121 end  -->
+    <!-- DTS2014092002805 abhishek/a00263523 20140922 end -->
+    <!-- DTS2014122409704 dayananda/D00248762 20141230 begin -->
+    <!-- Cloud login open from HiCare application -->
+    <mw_hidden_app package_name="com.huawei.remoteassistant/com.huawei.remoteassistant.MainActivity" />
+    <!-- DTS2014122409704 dayananda/D00248762 20141230 end -->
+</multiwindow_whitelist>

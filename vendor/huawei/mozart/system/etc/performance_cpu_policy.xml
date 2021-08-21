@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2014 Huawei Inc.
+ * Cpu Freq Config
+ *
+                TYPE                                            AVALIABLE_VALUE
+        cpu_maxprofile                    403200 604800 806400 1017600 1209600 1305600 1401600 1516800
+        cpu_minprofile                    403200 604800 806400 1017600 1209600 1305600 1401600 1516800
+		        
+		cpu_a15_maxprofile                1017600 1209600 1401600 1612800 1708800 1804800 2016000
+        cpu_a15_minprofile                1017600 1209600 1401600 1612800 1708800 1804800 2016000
+		
+		gpu_maxprofile                    120000000 180000000 240000000 288000000 360000000 480000000 600000000
+        gpu_minprofile                    120000000 180000000 240000000 288000000 360000000 480000000 600000000		
+        
+        ddr_maxprofile                    120000000 240000000 360000000 400000000 667000000 800000000
+        ddr_minprofile                    120000000 240000000 360000000 400000000 667000000 800000000
+		
+        cpu_number_max                    1,2,3,4
+        cpu_number_min                    1,2,3,4
+        cpu_a15_number_max                0,1,2,3,4
+        cpu_a15_number_min                0,1,2,3,4
+
+        note:
+        1. if policy item has not configured, it means close cpupolicy of previous scene.
+        2. policy type default value is 0, policy value default value is -1
+-->
+<!--
+    default scene , id must be lower than 10000
+-->
+<cpu_policy version="1">
+    <!--don't config any policy-->
+    <scenemode name="default_front" id="208">
+    </scenemode>
+
+    <!--don't config any policy-->
+    <scenemode name="screen_off" id="301">
+    </scenemode>
+
+    <scenemode name="start_rotation" id="238">
+        <cpu_minprofile>1516800</cpu_minprofile>
+        <cpu_a15_minprofile>2016000</cpu_a15_minprofile>
+        <gpu_minprofile>480000000</gpu_minprofile>
+        <ddr_minprofile>667000000</ddr_minprofile>
+        <threshold_up>300</threshold_up>
+        <threshold_down>150</threshold_down>
+    </scenemode>
+
+    <scenemode name="start_speedup" id="245">
+        <cpu_minprofile>1516800</cpu_minprofile>
+        <cpu_a15_minprofile>2016000</cpu_a15_minprofile>
+        <gpu_minprofile>480000000</gpu_minprofile>
+        <ddr_minprofile>667000000</ddr_minprofile>
+        <threshold_up>300</threshold_up>
+        <threshold_down>150</threshold_down>
+    </scenemode>
+
+    <!--
+     cust scene , id must be bigger than 10000
+    -->
+    <!--
+     Benckmark,    don't limit
+     ID:10000 for benchmark, don't change
+    -->
+    <scenemode name=".*?(hw.performance*?).*" id="10000">
+        <gpu_maxprofile>600000000</gpu_maxprofile>
+        <gpu_minprofile>600000000</gpu_minprofile>
+        <ddr_maxprofile>800000000</ddr_maxprofile>
+        <ddr_minprofile>800000000</ddr_minprofile>
+        <threshold_up>300</threshold_up>
+        <threshold_down>150</threshold_down>
+    </scenemode>
+
+    <scenemode name="thermal_cpu" id="251">
+        <cpu_maxprofile>-1</cpu_maxprofile>
+        <gpu_maxprofile>-1</gpu_maxprofile>
+    </scenemode>
+
+    <scenemode name="battery_low" id="319">
+	<cpu_maxprofile>1209600</cpu_maxprofile>
+	<cpu_a15_maxprofile>1017600</cpu_a15_maxprofile>
+	<gpu_maxprofile>360000000</gpu_maxprofile>
+    </scenemode>
+
+    <scenemode name="battery_okay" id="320">
+    </scenemode>
+
+    <scenemode name="battery_critical" id="333">
+    <cpu_maxprofile>1017600</cpu_maxprofile>
+    <cpu_a15_maxprofile>1017600</cpu_a15_maxprofile>
+    <gpu_maxprofile>288000000</gpu_maxprofile>
+    </scenemode>
+
+    <scenemode name="battery_critical_okay" id="334">
+    </scenemode>
+
+	<!--added cpu gpu ddr for test-->
+    <scenemode name="gallery_touch" id="234">
+    </scenemode>
+
+    <scenemode name="browser_front" id="203">
+    </scenemode>
+
+    <!--read eboot, like baidu ebook-->
+    <scenemode name="ebook_front" id="205">
+    </scenemode>
+
+    <scenemode name="gallery_front" id="206">
+    </scenemode>
+
+    <scenemode name="input_start" id="210">
+    </scenemode>
+
+    <scenemode name="camera_front" id="221">
+    </scenemode>
+
+    <scenemode name="game3d_front" id="204">
+    </scenemode>
+
+    <scenemode name="office_front" id="225">
+    </scenemode>
+
+    <scenemode name="video_front" id="228">
+    </scenemode>
+
+    <scenemode name="game2d_front" id="233">
+    </scenemode>
+
+    <scenemode name="launcher_front" id="230">
+    </scenemode>
+
+    <scenemode name="mms_front" id="235">
+    </scenemode>
+
+    <scenemode name="launcher_touch" id="236">
+    </scenemode>
+
+    <scenemode name="video_start" id="246">
+    </scenemode>
+
+    <scenemode name="cpu_draw_start" id="265">
+    </scenemode>
+
+    <scenemode name="cpu_draw_end" id="266">
+    </scenemode>
+    
+    <scenemode name="list_fling_start" id="267">
+        <cpu_minprofile>1209600</cpu_minprofile>
+    </scenemode>
+
+    <!-- for popular map-->
+    <scenemode name="com.baidu.BaiduMap|com.mapbar.android.mapbarmap|com.autonavi.minimap|com.google.android.apps.maps|cld.navi.mainframe|com.google.android.street|com.sogou.map.android.maps|com.google.earth|cn.com.tiros.android.navidog|com.tencent.map|cn.com.tiros.android.navidog4x|com.j.locationalarm|com.uu.uunavi|com.cjq.wxmap|com.pdager.navi|hw.Guider|com.telenav.app.android.cmcc|menion.android.locus.pro|com.PaPaGOShanghai" id="10001">
+    </scenemode>
+
+    <!-- for system browser, if not config, the system browser will use browser_front(id = 203)-->
+    <scenemode name="com.android.browser" id="10004">
+    </scenemode>
+
+    <!-- for popular game-->
+    <scenemode name="org.cocos2dx.FishingJoy2*|com.aemobile.games.aemotor3d|com.webprancer.google.GarfieldsDiner|com.clius.realparking3d|com.disney.chukong.WMW|com.miniclip.pictorial|com.westriversw.CatWar|com.lemon.play.linecolor|com.coop_ox.beanbeanbang|com.sg.android.fish|com.happyelements.happyfish|com.haypi.dragon|org.funship.findsomething.withRK|com.qqgame.hlddz|com.sidheinteractive.sif.DR|com.ea.games.nfs13_na|com.gameloft.android.GAND.GloftAsphalt5.asphalt5|com.westriversw.RWS|com.carrot.carrotfantasy|com.popcap.pvz|com.paradoxplaza.imagicka|com.ckck.turbofly|com.gameloft.android.GAND.GloftSXHP" id="10005">
+    </scenemode>
+
+    <!-- for qqmobile video-->
+    <scenemode name="com.tencent.mobileqq" id="10010">
+    </scenemode>
+    
+    <scenemode name="com.autonavi.minimap" id="10013">  
+    </scenemode>  
+   
+    <!--  for cld navigation-->
+    <scenemode name="cld.navi.mainframe" id="10014">
+    </scenemode>
+
+    <!-- crazy game, A15 binding-->
+    <scenemode name="com.disney.troz|com.glu.carszombies|com.joym.xiongdakuaipao|com.kunpo.babaqunaer2|com.chukong.watertwo_chukong|com.tencent.clover|com.tencent.feiji|com.tencent.pao|com.qzone|com.imangi.templerun2|com.gamedo.junglerunner.mm|com.centurysoft.fruityrobo|com.kiloo.subwaysurf|air.com.lingyu.zzxlmobile.anzhi" id="10015">
+	<cpu_minprofile>1017600</cpu_minprofile>
+	<cpu_a15_minprofile>1209600</cpu_a15_minprofile>
+	<ddr_minprofile>360000000</ddr_minprofile>
+    </scenemode>
+
+</cpu_policy>
