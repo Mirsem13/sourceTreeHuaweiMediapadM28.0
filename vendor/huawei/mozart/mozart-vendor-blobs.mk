@@ -184,31 +184,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/system/etc/camera/dcsr/dcsr.xml:system/etc/camera/dcsr/dcsr.xml \
     $(LOCAL_PATH)/system/etc/camera/dcsr/dcsr_kernel:system/etc/camera/dcsr/dcsr_kernel \
     $(LOCAL_PATH)/system/etc/camera/dcvalidation.xml:system/etc/camera/dcvalidation.xml \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_000.txt:system/etc/camera/dflash/calibration_000.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_001.txt:system/etc/camera/dflash/calibration_001.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_002.txt:system/etc/camera/dflash/calibration_002.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_003.txt:system/etc/camera/dflash/calibration_003.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_004.txt:system/etc/camera/dflash/calibration_004.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_005.txt:system/etc/camera/dflash/calibration_005.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_006.txt:system/etc/camera/dflash/calibration_006.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_007.txt:system/etc/camera/dflash/calibration_007.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_008.txt:system/etc/camera/dflash/calibration_008.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_009.txt:system/etc/camera/dflash/calibration_009.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_010.txt:system/etc/camera/dflash/calibration_010.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_011.txt:system/etc/camera/dflash/calibration_011.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_012.txt:system/etc/camera/dflash/calibration_012.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_013.txt:system/etc/camera/dflash/calibration_013.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_014.txt:system/etc/camera/dflash/calibration_014.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_015.txt:system/etc/camera/dflash/calibration_015.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_016.txt:system/etc/camera/dflash/calibration_016.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_017.txt:system/etc/camera/dflash/calibration_017.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_018.txt:system/etc/camera/dflash/calibration_018.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_019.txt:system/etc/camera/dflash/calibration_019.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calibration_020.txt:system/etc/camera/dflash/calibration_020.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/calPara4Selection.txt:system/etc/camera/dflash/calPara4Selection.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/flash_current.txt:system/etc/camera/dflash/flash_current.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/limitationgain.txt:system/etc/camera/dflash/limitationgain.txt \
-    $(LOCAL_PATH)/system/etc/camera/dflash/manual_flash_level.txt:system/etc/camera/dflash/manual_flash_level.txt \
+	$(LOCAL_PATH)/system/etc/camera/afParams.xml:system/etc/camera/afParams.xml \
     $(LOCAL_PATH)/system/etc/camera/filter/filter.xml:system/etc/camera/filter/filter.xml \
     $(LOCAL_PATH)/system/etc/camera/filter/mixIm.dat:system/etc/camera/filter/mixIm.dat \
     $(LOCAL_PATH)/system/etc/camera/hwaae/device.config:system/etc/camera/hwaae/device.config \
@@ -274,3 +250,163 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/system/etc/camera/ippalgoconfig.xml:system/etc/camera/ippalgoconfig.xml \
     $(LOCAL_PATH)/system/etc/camera/pdafvalidation.xml:system/etc/camera/pdafvalidation.xml \
     $(LOCAL_PATH)/system/etc/camera/ppconfig.xml:system/etc/camera/ppconfig.xml \
+	$(LOCAL_PATH)/system/etc/modemConfig/hids_ue_msg.cfg:system/etc/modemConfig/hids_ue_msg.cfg \
+    $(LOCAL_PATH)/system/etc/modemConfig/hua.cfg:system/etc/modemConfig/hua.cfg \
+    $(LOCAL_PATH)/system/etc/modemConfig/viacbp82d_log.bcfg:system/etc/modemConfig/viacbp82d_log.bcfg \
+    $(LOCAL_PATH)/system/etc/modemConfig/viacbp82d_shutdown_log.bcfg:system/etc/modemConfig/viacbp82d_shutdown_log.bcfg \
+    $(LOCAL_PATH)/system/etc/modemConfig/balong/basic_name:system/etc/modemConfig/balong/basic_name \
+    $(LOCAL_PATH)/system/etc/modemConfig/balong/FieldTest.cfg:system/etc/modemConfig/balong/FieldTest.cfg \
+	$(LOCAL_PATH)/system/etc/srs/models.txt:system/etc/srs/models.txt \
+    $(LOCAL_PATH)/system/etc/srs/srs_processing.cfg:system/etc/srs/srs_processing.cfg \
+    $(LOCAL_PATH)/system/etc/srs/srsmodels.lic:system/etc/srs/srsmodels.lic \
+	$(LOCAL_PATH)/system/etc/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
+    $(LOCAL_PATH)/system/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+    $(LOCAL_PATH)/system/etc/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
+	$(LOCAL_PATH)/system/etc/audio_effects.conf:system/etc/audio_effects.conf \
+    $(LOCAL_PATH)/system/etc/audio_policy.conf:system/etc/audio_policy.conf \
+	$(LOCAL_PATH)/system/etc/chargemonitor_config.xml:system/etc/chargemonitor_config.xml \
+	$(LOCAL_PATH)/system/etc/device_monitor_for_nff.conf:system/etc/device_monitor_for_nff.conf \
+	$(LOCAL_PATH)/system/etc/factory_modem.cfg:system/etc/factory_modem.cfg \
+	$(LOCAL_PATH)/system/etc/goldeneye_config.xml:system/etc/goldeneye_config.xml \
+    $(LOCAL_PATH)/system/etc/jankbdcfg.json:system/etc/jankbdcfg.json \
+    $(LOCAL_PATH)/system/etc/jankcfg.json:system/etc/jankcfg.json \
+    $(LOCAL_PATH)/system/etc/gps.conf:system/etc/gps.conf \
+	$(LOCAL_PATH)/system/etc/gps47531config.xml:system/etc/gps47531config.xml \
+	$(LOCAL_PATH)/system/etc/HwResourceManager.xml:system/etc/HwResourceManager.xml \
+	$(LOCAL_PATH)/system/etc/kerneldump.sh:system/etc/kerneldump.sh \
+	$(LOCAL_PATH)/system/etc/media_codecs.xml:system/etc/media_codecs.xml \
+    $(LOCAL_PATH)/system/etc/media_codecs_dts_audio.xml:system/etc/media_codecs_dts_audio.xml \
+    $(LOCAL_PATH)/system/etc/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
+    $(LOCAL_PATH)/system/etc/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
+    $(LOCAL_PATH)/system/etc/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml \
+    $(LOCAL_PATH)/system/etc/media_codecs_performance.xml:system/etc/media_codecs_performance.xml \
+    $(LOCAL_PATH)/system/etc/media_profiles.xml:system/etc/media_profiles.xml \
+	$(LOCAL_PATH)/system/etc/pwrlog.cfg:system/etc/pwrlog.cfg \
+    $(LOCAL_PATH)/system/etc/pwrprof.xml:system/etc/pwrprof.xml \
+	$(LOCAL_PATH)/system/etc/topazhp.cfg:system/etc/topazhp.cfg \
+    $(LOCAL_PATH)/system/etc/vdec_atlas.cfg:system/etc/vdec_atlas.cfg \
+    $(LOCAL_PATH)/system/etc/viacbp82d_log.bcfg:system/etc/viacbp82d_log.bcfg \
+    $(LOCAL_PATH)/system/etc/viacbp82d_shutdown_log.bcfg:system/etc/viacbp82d_shutdown_log.bcfg \
+	$(LOCAL_PATH)/system/isp/isp.bin:system/isp/isp.bin \
+	$(LOCAL_PATH)/system/global/apns-conf.xml:system/global/apns-conf.xml \
+	$(LOCAL_PATH)/system/global/apns-conf-nolte.xml:system/global/apns-conf-nolte.xml \
+	$(LOCAL_PATH)/system/global/globalAutoAdapt-conf.xml:system/global/globalAutoAdapt-conf.xml \
+    $(LOCAL_PATH)/system/global/globalMatchs-conf.xml:system/global/globalMatchs-conf.xml \
+    $(LOCAL_PATH)/system/global/version.txt:system/global/version.txt \
+    $(LOCAL_PATH)/system/global/virtualNets-conf.xml:system/global/virtualNets-conf.xml \
+    $(LOCAL_PATH)/system/global/voicemail-conf.xml:system/global/voicemail-conf.xml \
+    $(LOCAL_PATH)/system/global/ons/ons.bin:system/global/ons/ons.bin \
+    $(LOCAL_PATH)/system/global/xml/mccTable_V2.xml:system/global/xml/mccTable_V2.xml \
+	$(LOCAL_PATH)/system/lib/drm/libdrmhwomavoneplugin.so:system/lib/drm/libdrmhwomavoneplugin.so \
+	$(LOCAL_PATH)/system/lib/hw/audio.primary.hi3635.so:system/lib/hw/audio.primary.hi3635.so \
+    $(LOCAL_PATH)/system/lib/hw/camera.hi3635.so:system/lib/hw/camera.hi3635.so \
+    $(LOCAL_PATH)/system/lib/hw/copybit.hi3635.so:system/lib/hw/copybit.hi3635.so \
+    $(LOCAL_PATH)/system/lib/hw/displaycaps.default.so:system/lib/hw/displaycaps.default.so \
+    $(LOCAL_PATH)/system/lib/hw/fingerprint.hi3635.so:system/lib/hw/fingerprint.hi3635.so \
+    $(LOCAL_PATH)/system/lib/hw/fm.bcm.hi3635.so:system/lib/hw/fm.bcm.hi3635.so \
+    $(LOCAL_PATH)/system/lib/hw/gralloc.hi3635.so:system/lib/hw/gralloc.hi3635.so \
+    $(LOCAL_PATH)/system/lib/hw/gralloc.default.so:system/lib/hw/gralloc.default.so \
+    $(LOCAL_PATH)/system/lib/hw/hw_af_extend.default.so:system/lib/hw/hw_af_extend.default.so \
+	$(LOCAL_PATH)/system/lib/hw/keystore.hi3635.so:system/lib/hw/keystore.hi3635.so \
+    $(LOCAL_PATH)/system/lib/hw/lights.default.so:system/lib/hw/lights.default.so \
+    $(LOCAL_PATH)/system/lib/hw/memtrack.hi3635.so:system/lib/hw/memtrack.hi3635.so \
+    $(LOCAL_PATH)/system/lib/hw/power.hi3635.so:system/lib/hw/power.hi3635.so \
+    $(LOCAL_PATH)/system/lib/hw/power.default.so:system/lib/hw/power.default.so \
+    $(LOCAL_PATH)/system/lib/hw/sensorhub.default.so:system/lib/hw/sensorhub.default.so \
+    $(LOCAL_PATH)/system/lib/hw/sensorcaps.default.so:system/lib/hw/sensorcaps.default.so \
+    $(LOCAL_PATH)/system/lib/hw/vibrator.default.so:system/lib/hw/vibrator.default.so \
+	$(LOCAL_PATH)/system/lib/hwcam/hwcam.ddt.so:system/lib/hwcam/hwcam.ddt.so
+	$(LOCAL_PATH)/system/lib/hwcam/hwcam.hi3635.m.MOZART.so:system/lib/hwcam/hwcam.hi3635.m.MOZART.so
+	$(LOCAL_PATH)/system/lib/hwcam/hwcam.hi3635.MOZART.p.imx219.so:system/lib/hwcam/hwcam.hi3635.MOZART.p.imx219.so
+	$(LOCAL_PATH)/system/lib/hwcam/hwcam.hi3635.MOZART.p.mt9d015.so:
+	$(LOCAL_PATH)/system/lib/hwcam/hwcam.hi3635.MOZART.p.ov2680.so
+	$(LOCAL_PATH)/system/lib/hwcam/hwcam.hi3635.MOZART.p.ov8858.so
+	$(LOCAL_PATH)/system/lib/hwcam/hwcam.hi3635.MOZART.s.imx219.so
+	$(LOCAL_PATH)/system/lib/hwcam/hwcam.hi3635.MOZART.s.mt9d015.so
+	$(LOCAL_PATH)/system/lib/hwcam/hwcam.hi3635.MOZART.s.ov2680.so
+	$(LOCAL_PATH)/system/lib/hwcam/hwcam.hi3635.MOZART.s.ov8858.so
+	$(LOCAL_PATH)/system/lib/crtbegin_so.o:system/lib/crtbegin_so.o \
+	$(LOCAL_PATH)/system/lib/crtend_so.o:system/lib/crtend_so.o \
+	$(LOCAL_PATH)/system/lib/lib_k3_ffmpeg.so:system/lib/lib_k3_ffmpeg.so \
+	$(LOCAL_PATH)/system/lib/libaes.so:system/lib/libaes.so \
+	$(LOCAL_PATH)/system/lib/libaudio_custom.so:system/lib/libaudio_custom.so \
+	$(LOCAL_PATH)/system/lib/libaudioalgoservice_jni.so:system/lib/libaudioalgoservice_jni.so \
+	$(LOCAL_PATH)/system/lib/libaudioflinger.huawei.so:system/lib/libaudioflinger.huawei.so \
+	$(LOCAL_PATH)/system/lib/libaudiospdif.so:system/lib/libaudiospdif.so \
+    $(LOCAL_PATH)/system/lib/libbalong_audio_ril.so:system/lib/libbalong_audio_ril.so \
+    $(LOCAL_PATH)/system/lib/libbalong-ril.so:system/lib/libbalong-ril.so \
+    $(LOCAL_PATH)/system/lib/libbalong-ril-1.so:system/lib/libbalong-ril-1.so \
+    $(LOCAL_PATH)/system/lib/libBestShot.so:system/lib/libBestShot.so \
+    $(LOCAL_PATH)/system/lib/libbt_factory_test.so:system/lib/libbt_factory_test.so \
+    $(LOCAL_PATH)/system/lib/libbtaddrjni.so:system/lib/libbtaddrjni.so \
+    $(LOCAL_PATH)/system/lib/libcamera_ae.so:system/lib/libcamera_ae.so \
+    $(LOCAL_PATH)/system/lib/libcamera_af.so:system/lib/libcamera_af.so \
+    $(LOCAL_PATH)/system/lib/libcamera_algo.so:system/lib/libcamera_algo.so \
+    $(LOCAL_PATH)/system/lib/libcamera_flash.so:system/lib/libcamera_flash.so \
+    $(LOCAL_PATH)/system/lib/libcamera_client.so:system/lib/libcamera_client.so \
+    $(LOCAL_PATH)/system/lib/libCameraHwExtend.so:system/lib/libCameraHwExtend.so \
+    $(LOCAL_PATH)/system/lib/libcamera_metadata.so:system/lib/libcamera_metadata.so \
+    $(LOCAL_PATH)/system/lib/libcameraservice.so:system/lib/libcameraservice.so \
+    $(LOCAL_PATH)/system/lib/libffmpeg_neon.so:system/lib/libffmpeg_neon.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libfm_interface.so:system/lib/libfm_interface.so \
+    $(LOCAL_PATH)/system/lib/libfm_jni.so:system/lib/libfm_jni.so \
+    $(LOCAL_PATH)/system/lib/libfm_volume.so:system/lib/libfm_volume.so \
+    $(LOCAL_PATH)/system/lib/libgps_factory_test.so:system/lib/libgps_factory_test.so \
+    $(LOCAL_PATH)/system/lib/libgralloc_ext.default.so:system/lib/libgralloc_ext.default.so \
+    $(LOCAL_PATH)/system/lib/libgralloc_ext.so:system/lib/libgralloc_ext.so \
+    $(LOCAL_PATH)/system/lib/libhisi_efuse.so:system/lib/libhisi_efuse.so \
+    $(LOCAL_PATH)/system/lib/libhuaweiaudioalgoservice.so:system/lib/libhuaweiaudioalgoservice.so \
+    $(LOCAL_PATH)/system/lib/libhuaweiaudioeffectutil.so:system/lib/libhuaweiaudioeffectutil.so \
+    $(LOCAL_PATH)/system/lib/libhuaweiprocessing.so:system/lib/libhuaweiprocessing.so \
+    $(LOCAL_PATH)/system/lib/libhwaps.so:system/lib/libhwaps.so \
+    $(LOCAL_PATH)/system/lib/libhwgl.so:system/lib/libhwgl.so \
+    $(LOCAL_PATH)/system/lib/libhwuibp.so:system/lib/libhwuibp.so \
+    $(LOCAL_PATH)/system/lib/libHWCamCfgSvr.so:system/lib/libHWCamCfgSvr.so \
+    $(LOCAL_PATH)/system/lib/libHWCamCfgSvr_jni.so:system/lib/libHWCamCfgSvr_jni.so \
+    $(LOCAL_PATH)/system/lib/libjpu.so:system/lib/libjpu.so \
+    $(LOCAL_PATH)/system/lib/libmedialogservice.so:system/lib/libmedialogservice.so \
+    $(LOCAL_PATH)/system/lib/libpowerprofile.so:system/lib/libpowerprofile.so \
+    $(LOCAL_PATH)/system/lib/libril.so:system/lib/libril.so \
+    $(LOCAL_PATH)/system/lib/libreference-ril.so:system/lib/libreference-ril.so \
+    $(LOCAL_PATH)/system/lib/librilutils.so:system/lib/librilutils.so \
+    $(LOCAL_PATH)/system/lib/libsensorservice.so:system/lib/libsensorservice.so \
+    $(LOCAL_PATH)/system/lib/libservices.huawei.so:system/lib/libservices.huawei.so \
+    $(LOCAL_PATH)/system/lib/libteec.so:system/lib/libteec.so \
+    $(LOCAL_PATH)/system/lib/libvia-ril.so:system/lib/libvia-ril.so \
+    $(LOCAL_PATH)/system/lib/libvpp.so:system/lib/libvpp.so \
+    $(LOCAL_PATH)/system/lib/lib_atprotocolsw.so:system/lib/lib_atprotocolsw.so \
+    $(LOCAL_PATH)/system/lib/libatpswdck.so:system/lib/libatpswdck.so \
+    $(LOCAL_PATH)/system/lib/libaudioresampler.so:system/lib/libaudioresampler.so \
+    $(LOCAL_PATH)/system/lib/libaudioroute.so:system/lib/libaudioroute.so \
+    $(LOCAL_PATH)/system/lib/libcgroup.so:system/lib/libcgroup.so \
+    $(LOCAL_PATH)/system/lib/libcrypto2.so:system/lib/libcrypto2.so \
+    $(LOCAL_PATH)/system/lib/libdcamera_sr.so:system/lib/libdcamera_sr.so \
+    $(LOCAL_PATH)/system/lib/libdrmdecrypt.so:system/lib/libdrmdecrypt.so \
+    $(LOCAL_PATH)/system/lib/libffvplayer.so:system/lib/libffvplayer.so \
+    $(LOCAL_PATH)/system/lib/libhelixplayer.so:system/lib/libhelixplayer.so \
+    $(LOCAL_PATH)/system/lib/libhelixplayerwrapper.so:system/lib/libhelixplayerwrapper.so \
+    $(LOCAL_PATH)/system/lib/libHW_BShutter.so:system/lib/libHW_BShutter.so \
+    $(LOCAL_PATH)/system/lib/libhwdeviceinfo.so:system/lib/libhwdeviceinfo.so \
+    $(LOCAL_PATH)/system/lib/libhw_display_effect.so:system/lib/libhw_display_effect.so \
+    $(LOCAL_PATH)/system/lib/libhwdisplayprocess.so:system/lib/libhwdisplayprocess.so \
+    $(LOCAL_PATH)/system/lib/libhw_display_test.so:system/lib/libhw_display_test.so \
+    $(LOCAL_PATH)/system/lib/libhwextdevice.so:system/lib/libhwextdevice.so \
+    $(LOCAL_PATH)/system/lib/libHWExtDeviceService.so:system/lib/libHWExtDeviceService.so \
+    $(LOCAL_PATH)/system/lib/libHwExtendedExtractor.so:system/lib/libHwExtendedExtractor.so \
+    $(LOCAL_PATH)/system/lib/libHW_Pano_f.so:system/lib/libHW_Pano_f.so \
+    $(LOCAL_PATH)/system/lib/libhwsign.so:system/lib/libhwsign.so \
+    $(LOCAL_PATH)/system/lib/libhwtee_jni.so:system/lib/libhwtee_jni.so \
+    $(LOCAL_PATH)/system/lib/libHwTmr.so:system/lib/libHwTmr.so \
+    $(LOCAL_PATH)/system/lib/libjpegenchw.so:system/lib/libjpegenchw.so \
+    $(LOCAL_PATH)/system/lib/libmax98925.so:system/lib/libmax98925.so \
+    $(LOCAL_PATH)/system/lib/libnfc_ndef.so:system/lib/libnfc_ndef.so \
+    $(LOCAL_PATH)/system/lib/libnvme.so:system/lib/libnvme.so \
+    $(LOCAL_PATH)/system/lib/lib_nve_operation.so:system/lib/lib_nve_operation.so \
+    $(LOCAL_PATH)/system/lib/lib_oeminfo_interface.so:system/lib/lib_oeminfo_interface.so \
+    $(LOCAL_PATH)/system/lib/liboeminfo_jni.so:system/lib/liboeminfo_jni.so \
+    $(LOCAL_PATH)/system/lib/liboeminfo.so:system/lib/liboeminfo.so \
+    $(LOCAL_PATH)/system/lib/libion.so:system/lib/libion.so \
+    $(LOCAL_PATH)/system/lib/libSmartAE.so:system/lib/libSmartAE.so \
+    $(LOCAL_PATH)/system/lib/libSFBE.so:system/lib/libSFBE.so \
+    $(LOCAL_PATH)/system/lib/libTHImageOCR.so:system/lib/libTHImageOCR.so \
+    $(LOCAL_PATH)/system/lib/libpowergenie_native3.so:system/lib/libpowergenie_native3.so \
