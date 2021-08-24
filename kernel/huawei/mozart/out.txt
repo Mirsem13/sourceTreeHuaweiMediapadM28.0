@@ -1,0 +1,1172 @@
+  GEN     /home/timi/android/hwgra_kernel/out/Makefile
+scripts/kconfig/conf --silentoldconfig Kconfig
+warning: (CPU_FREQ_DEFAULT_GOV_OPTDEMAND) selects CPU_FREQ_GOV_OPTDEMAND which has unmet direct dependencies (CPU_FREQ && ARCH_HI6XXX)
+warning: (ARCH_HI3XXX) selects ARM_CCI which has unmet direct dependencies (ARM)
+warning: (CPU_FREQ_DEFAULT_GOV_OPTDEMAND) selects CPU_FREQ_GOV_OPTDEMAND which has unmet direct dependencies (CPU_FREQ && ARCH_HI6XXX)
+warning: (ARCH_HI3XXX) selects ARM_CCI which has unmet direct dependencies (ARM)
+#
+# configuration written to .config
+#
+  GEN     /home/timi/android/hwgra_kernel/out/Makefile
+  CHK     include/generated/uapi/linux/version.h
+  Using /home/timi/android/hwgra_kernel/android_kernel_hwgra as source for kernel
+  CHK     include/generated/utsrelease.h
+  UPD     include/generated/utsrelease.h
+  CC      scripts/mod/devicetable-offsets.s
+  GEN     scripts/mod/devicetable-offsets.h
+  HOSTCC  scripts/mod/file2alias.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/drivers/hisi/modem_hi3xxx/oam/gu/Kbuild:105: CFG_OS_ANDROID_AARCH64_suyi = YES
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/drivers/huawei_platform/connectivity/bcm/wifi/driver/bcmdhd/Makefile:187: CONFIG_BCM4334
+  HOSTLD  scripts/mod/modpost
+  CC      arch/arm64/kernel/asm-offsets.s
+  GEN     include/generated/asm-offsets.h
+  CALL    /home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  CC      arch/arm64/mm/dma-mapping.o
+  CC      init/do_mounts.o
+  CC      init/do_mounts_rd.o
+  CC      init/main.o
+  CC      arch/arm64/crypto/aes-glue-ce.o
+  CC      arch/arm64/kernel/swp_emulate.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/init/main.c:481:24: warning: 'srecorder_res' defined but not used [-Wunused-variable]
+ static struct resource srecorder_res =
+                        ^
+  AS      arch/arm64/kernel/head.o
+  CC      arch/arm64/mm/extable.o
+  CC      init/do_mounts_initrd.o
+  VDSOA   arch/arm64/kernel/vdso/gettimeofday.o
+  CC      arch/arm64/crypto/aes-ce-ccm-glue.o
+  CC      arch/arm64/crypto/aes-glue-neon.o
+  CC      kernel/fork.o
+  VDSOL   arch/arm64/kernel/vdso/vdso.so.dbg
+  CC      arch/arm64/mm/fault.o
+  CC      init/initramfs.o
+  OBJCOPY arch/arm64/kernel/vdso/vdso.so
+  VDSOSYM arch/arm64/kernel/vdso/vdso-offsets.h
+  CC      mm/filemap.o
+  AS      arch/arm64/kernel/vdso/vdso.o
+  CC      mm/mempool.o
+  CC      kernel/exec_domain.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/mm/fault.c: In function 'do_sp_pc_abort':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/mm/fault.c:490:3: warning: 'return' with a value, in function returning void [enabled by default]
+   return 0;
+   ^
+  LD      arch/arm64/kernel/vdso/built-in.o
+  CC      arch/arm64/kernel/debug-monitors.o
+  CC      arch/arm64/crypto/ghash-ce-glue.o
+  CC      arch/arm64/mm/init.o
+  CC      mm/oom_kill.o
+  CC      mm/fadvise.o
+  AS      arch/arm64/kernel/entry.o
+  CC      arch/arm64/crypto/sha1-ce-glue.o
+  CC      init/calibrate.o
+  CC      init/init_task.o
+  CC      arch/arm64/kernel/irq.o
+  AS      arch/arm64/mm/cache.o
+  CC      arch/arm64/crypto/sha2-ce-glue.o
+  CC      arch/arm64/mm/copypage.o
+  CC      init/version.o
+  CC      mm/maccess.o
+  CC      arch/arm64/kernel/fpsimd.o
+  CC      arch/arm64/mm/flush.o
+  CC      mm/page_alloc.o
+  LD      init/mounts.o
+  CC      mm/page-writeback.o
+  CC      kernel/panic.o
+  LD      init/built-in.o
+In file included from /home/timi/android/hwgra_kernel/android_kernel_hwgra/include/linux/compiler.h:54:0,
+                 from /home/timi/android/hwgra_kernel/android_kernel_hwgra/include/linux/ioport.h:12,
+                 from /home/timi/android/hwgra_kernel/android_kernel_hwgra/include/linux/device.h:16,
+                 from /home/timi/android/hwgra_kernel/android_kernel_hwgra/include/linux/node.h:17,
+                 from /home/timi/android/hwgra_kernel/android_kernel_hwgra/include/linux/cpu.h:17,
+                 from /home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/fpsimd.c:20:
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/fpsimd.c: In function 'fpsimd_cpu_hot_notifier':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/fpsimd.c:281:47: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  fpsimd_hot_regs = &per_cpu(fpsimd_hot_state, (unsigned int)hcpu);
+                                               ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/include/linux/compiler-gcc.h:38:29: note: in definition of macro 'RELOC_HIDE'
+     (typeof(ptr)) (__ptr + (off)); })
+                             ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/include/asm-generic/percpu.h:57:4: note: in expansion of macro 'SHIFT_PERCPU_PTR'
+  (*SHIFT_PERCPU_PTR(&(var), per_cpu_offset(cpu)))
+    ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/include/asm-generic/percpu.h:57:29: note: in expansion of macro 'per_cpu_offset'
+  (*SHIFT_PERCPU_PTR(&(var), per_cpu_offset(cpu)))
+                             ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/fpsimd.c:281:21: note: in expansion of macro 'per_cpu'
+  fpsimd_hot_regs = &per_cpu(fpsimd_hot_state, (unsigned int)hcpu);
+                     ^
+  CC      kernel/printk.o
+  CC      kernel/cpu.o
+  LD      arch/arm64/crypto/sha2-ce.o
+  CC      arch/arm64/kernel/process.o
+  LD      arch/arm64/crypto/ghash-ce.o
+  CC      arch/arm64/crypto/aes-ce-cipher.o
+In file included from /home/timi/android/hwgra_kernel/android_kernel_hwgra/include/linux/kernel.h:12:0,
+                 from /home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/printk.c:19:
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/printk.c: In function 'log_store':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/include/linux/typecheck.h:11:18: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+  (void)(&__dummy == &__dummy2); \
+                  ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/include/linux/jiffies.h:103:3: note: in expansion of macro 'typecheck'
+   typecheck(unsigned long, b) && \
+   ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/printk.c:494:6: note: in expansion of macro 'time_after'
+  if (time_after(jiffies, prev_jffy + 1 * HZ)) {
+      ^
+In file included from /home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/printk.c:19:0:
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/printk.c: In function 'get_console_name':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/include/linux/kernel.h:665:17: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+  (void) (&_min1 == &_min2);  \
+                 ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/printk.c:2455:57: note: in expansion of macro 'min'
+   strncpy(name, console_cmdline[selected_console].name, min(sizeof(console_cmdline[selected_console].name), name_buf_len));
+                                                         ^
+  CC      arch/arm64/mm/ioremap.o
+  LD      arch/arm64/crypto/aes-ce-ccm.o
+  CC      mm/readahead.o
+  LD      arch/arm64/crypto/aes-ce-blk.o
+  LD      arch/arm64/crypto/aes-neon-blk.o
+  CC      arch/arm64/kernel/ptrace.o
+  CC      arch/arm64/kernel/setup.o
+  CC      arch/arm64/mm/mmap.o
+  LD      arch/arm64/crypto/sha1-ce.o
+  LD      arch/arm64/crypto/built-in.o
+  CC      arch/arm64/mm/pgd.o
+  CC      arch/arm64/kernel/signal.o
+  CC      arch/arm64/kernel/sys.o
+  CC      arch/arm64/mm/mmu.o
+  CC      arch/arm64/kernel/stacktrace.o
+  CC      kernel/exit.o
+  CC      arch/arm64/mm/context.o
+  CC      arch/arm64/kernel/time.o
+  CC      ipc/compat.o
+  CC      arch/arm64/kernel/traps.o
+  AS      arch/arm64/mm/proc.o
+  CC      arch/arm64/mm/pageattr.o
+  CC      fs/open.o
+  CC      arch/arm64/mm/alignment.o
+  CC      fs/read_write.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/traps.c: In function 'die':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/traps.c:399:3: warning: passing argument 1 of 'p_exc_hook' makes integer from pointer without a cast [enabled by default]
+   p_exc_hook(current, arm_exc_type, regs);
+   ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/traps.c:399:3: note: expected 'long unsigned int' but argument is of type 'struct task_struct *'
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/traps.c:399:3: warning: passing argument 3 of 'p_exc_hook' makes integer from pointer without a cast [enabled by default]
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/traps.c:399:3: note: expected 'long unsigned int' but argument is of type 'struct pt_regs *'
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/traps.c: At top level:
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/kernel/traps.c:203:13: warning: 'dump_mem_for_rdr' defined but not used [-Wunused-function]
+ static void dump_mem_for_rdr(const char *lvl, const char *str, unsigned long bottom,
+             ^
+  CC      mm/swap.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/mm/alignment.c: In function 'safe_usermode':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/mm/alignment.c:100:2: warning: implicit declaration of function 'cpu_is_v6_unaligned' [-Wimplicit-function-declaration]
+  if (cpu_is_v6_unaligned() && !(new_usermode & (UM_FIXUP | UM_SIGNAL))) {
+  ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/mm/alignment.c: In function 'do_alignment_thumb_vldr':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/mm/alignment.c:757:3: warning: implicit declaration of function 'case_reg' [-Wimplicit-function-declaration]
+   case_reg(0, val); case_reg(1, val);
+   ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/mm/alignment.c:739:6: warning: unused variable 'tinstr' [-Wunused-variable]
+  u16 tinstr = 0;
+      ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/mm/alignment.c:738:15: warning: unused variable 'fs' [-Wunused-variable]
+  mm_segment_t fs;
+               ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/arch/arm64/mm/alignment.c:737:16: warning: unused variable 'instrptr' [-Wunused-variable]
+  unsigned long instrptr;
+                ^
+  CC      kernel/itimer.o
+  CC      ipc/util.o
+  CC      arch/arm64/kernel/io.o
+  CC      security/hwselinux/hwselinux_dsm.o
+  LD      arch/arm64/mm/built-in.o
+  CC      arch/arm64/kernel/vdso.o
+  CC      mm/truncate.o
+  CC      fs/file_table.o
+  LD      security/hwselinux/built-in.o
+  CC      arch/arm64/kernel/psci.o
+  CC      kernel/time.o
+  CC      security/keys/gc.o
+  CC      ipc/msgutil.o
+  CC      mm/vmscan.o
+  CC      security/selinux/avc.o
+  CC      fs/super.o
+  CC      security/keys/key.o
+  CC      arch/arm64/kernel/cpu_ops.o
+  CC      crypto/api.o
+  CC      kernel/softirq.o
+  CC      ipc/msg.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/security/selinux/avc.c: In function 'avc_audit_post_callback':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/security/selinux/avc.c:740:5: warning: implicit declaration of function 'selinux_dsm_upload' [-Wimplicit-function-declaration]
+     selinux_dsm_upload(ab, ad);
+     ^
+  CC      arch/arm64/kernel/insn.o
+  CC      security/keys/keyring.o
+  CC      fs/char_dev.o
+  CC      crypto/cipher.o
+  CC      arch/arm64/kernel/return_address.o
+  CC      kernel/resource.o
+  CC      ipc/sem.o
+  CC      security/selinux/hooks.o
+  CC      security/keys/keyctl.o
+  CC      fs/stat.o
+  CC      crypto/compress.o
+  CC      arch/arm64/kernel/opcodes.o
+  AS      arch/arm64/kernel/sys32.o
+  CC      kernel/sysctl.o
+  CC      arch/arm64/kernel/signal32.o
+  CC      crypto/memneq.o
+  CC      mm/shmem.o
+  CC      crypto/algapi.o
+  CC      fs/exec.o
+  CC      kernel/sysctl_binary.o
+  CC      security/keys/permission.o
+  CC      ipc/shm.o
+  CC      arch/arm64/kernel/sys_compat.o
+  CC      kernel/capability.o
+  CC      security/selinux/selinuxfs.o
+  CC      security/keys/process_keys.o
+  CC      crypto/scatterwalk.o
+  CC      arch/arm64/kernel/arm64ksyms.o
+  CC      ipc/ipcns_notifier.o
+  CC      kernel/ptrace.o
+  CC      crypto/proc.o
+  CC      arch/arm64/kernel/module.o
+  CC      security/keys/request_key.o
+  CC      fs/pipe.o
+  CC      ipc/ipc_sysctl.o
+  CC      mm/util.o
+  CC      arch/arm64/kernel/smp.o
+  CC      security/selinux/netlink.o
+  CC      kernel/timer.o
+  CC      crypto/ablkcipher.o
+  CC      security/keys/request_key_auth.o
+  CC      ipc/mqueue.o
+  CC      arch/arm64/kernel/smp_spin_table.o
+  CC      mm/mmzone.o
+  CC      security/selinux/nlmsgtab.o
+  CC      security/keys/user_defined.o
+  CC      crypto/blkcipher.o
+  CC      arch/arm64/kernel/topology.o
+  CC      fs/namei.o
+  CC      mm/vmstat.o
+  CC      security/keys/proc.o
+  CC      ipc/compat_mq.o
+  CC      security/selinux/netif.o
+  CC      kernel/user.o
+  CC      security/keys/sysctl.o
+  CC      arch/arm64/kernel/perf_regs.o
+  CC      ipc/mq_sysctl.o
+  CC      mm/backing-dev.o
+  CC      crypto/ahash.o
+  CC      kernel/signal.o
+  LD      security/keys/built-in.o
+  LD      ipc/built-in.o
+  CC      crypto/shash.o
+  CC      arch/arm64/kernel/perf_event.o
+  CC      fs/fcntl.o
+  CC      security/selinux/netnode.o
+  CC      mm/mm_init.o
+  CC      kernel/sys.o
+  CC      security/selinux/netport.o
+  CC      fs/ioctl.o
+  CC      mm/mmu_context.o
+  CC      security/selinux/exports.o
+  CC      crypto/algboss.o
+  CC      arch/arm64/kernel/hw_breakpoint.o
+  CC      mm/percpu.o
+  CC      arch/arm64/kernel/early_printk.o
+  CC      fs/readdir.o
+  CC      security/selinux/ss/ebitmap.o
+  CC      crypto/testmgr.o
+  CC      security/selinux/ss/hashtab.o
+  AS      arch/arm64/kernel/sleep.o
+  CC      crypto/crypto_wq.o
+  CC      kernel/kmod.o
+  CC      fs/select.o
+  CC      arch/arm64/kernel/suspend.o
+  CC      fs/dcache.o
+  CC      security/selinux/ss/sidtab.o
+  CC      security/selinux/ss/avtab.o
+  LD      crypto/crypto_algapi.o
+  CC      crypto/aead.o
+  CC      arch/arm64/kernel/timer-sp.o
+  CC      kernel/workqueue.o
+  CC      mm/slab_common.o
+  CC      arch/arm64/kernel/cpuidle.o
+  CC      fs/inode.o
+  CC      security/selinux/ss/policydb.o
+  CC      mm/compaction.o
+  LD      crypto/crypto_blkcipher.o
+  CC      crypto/chainiv.o
+  CC      security/selinux/ss/services.o
+  CC      arch/arm64/kernel/efi.o
+  CC      crypto/eseqiv.o
+  CC      block/elevator.o
+  CC      arch/arm64/kernel/efi-stub.o
+  CC      kernel/pid.o
+  CC      fs/attr.o
+  CC      mm/balloon_compaction.o
+  CC      crypto/seqiv.o
+  CC      block/blk-core.o
+  CC      kernel/task_work.o
+  CC      fs/bad_inode.o
+  CC      mm/interval_tree.o
+  LD      arch/arm64/kernel/built-in.o
+  CC      kernel/rcupdate.o
+  CC      block/blk-tag.o
+  LD      crypto/crypto_hash.o
+  CC      fs/file.o
+  CC      crypto/pcompress.o
+  CC      block/blk-sysfs.o
+  CC      security/selinux/ss/conditional.o
+  CC      kernel/extable.o
+  LD      crypto/cryptomgr.o
+  CC      crypto/hmac.o
+  CC      mm/fremap.o
+  CC      mm/highmem.o
+  CC      security/commoncap.o
+  CC      crypto/xcbc.o
+  CC      kernel/params.o
+  CC      fs/filesystems.o
+  CC      kernel/posix-timers.o
+  CC      security/selinux/ss/mls.o
+  CC      mm/madvise.o
+  CC      crypto/crypto_null.o
+  CC      crypto/md5.o
+  CC      fs/namespace.o
+  CC      crypto/sha1_generic.o
+  CC      crypto/sha256_generic.o
+  CC      mm/memory.o
+  CC      kernel/kthread.o
+  CC      security/selinux/ss/status.o
+  CC      block/blk-flush.o
+  CC      block/blk-settings.o
+  CC      security/min_addr.o
+  CC      crypto/sha512_generic.o
+  CC      kernel/wait.o
+  CC      crypto/gf128mul.o
+  LD      security/selinux/selinux.o
+  CC      crypto/ecb.o
+  LD      security/selinux/built-in.o
+  CC      block/blk-ioc.o
+  CC      security/security.o
+  CC      kernel/posix-cpu-timers.o
+  CC      crypto/cbc.o
+  CC      fs/seq_file.o
+  CC      crypto/cts.o
+  CC      block/blk-map.o
+  CC      mm/mincore.o
+  CC      crypto/xts.o
+  CC      drivers/amba/bus.o
+  CC      fs/xattr.o
+  CC      kernel/mutex.o
+  CC      block/blk-exec.o
+  CC      mm/mlock.o
+  CC      fs/libfs.o
+  CC      security/capability.o
+  CC      crypto/ctr.o
+  CC      kernel/hrtimer.o
+  LD      drivers/amba/built-in.o
+  CC      drivers/android/binder.o
+  CC      block/blk-merge.o
+  CC      crypto/gcm.o
+  CC      block/blk-softirq.o
+  CC      mm/mmap.o
+  CC      fs/fs-writeback.o
+  CC      security/lsm_audit.o
+  CC      block/blk-timeout.o
+  CC      block/blk-iopoll.o
+  CC      kernel/rwsem.o
+  CC      block/blk-lib.o
+  CC      block/ioctl.o
+  CC      crypto/ccm.o
+  LD      security/built-in.o
+  CC      kernel/nsproxy.o
+  CC      mm/mprotect.o
+  CC      mm/mremap.o
+  CC      sound/sound_core.o
+  CC      block/genhd.o
+  CC      kernel/srcu.o
+  CC      kernel/semaphore.o
+  CC      crypto/cryptd.o
+  CC      mm/msync.o
+  LD      sound/arm/built-in.o
+  LD      drivers/android/built-in.o
+  CC      drivers/atfdriver/atfdriver.o
+  LD      sound/atmel/built-in.o
+  CC      fs/pnode.o
+  LD      drivers/atfdriver/built-in.o
+  LD      drivers/auxdisplay/built-in.o
+  CC      mm/rmap.o
+  CC      kernel/notifier.o
+  CC      drivers/block/brd.o
+  CC      drivers/base/core.o
+  CC      sound/core/compress_offload.o
+  CC      block/scsi_ioctl.o
+  CC      fs/splice.o
+  CC      kernel/ksysfs.o
+  CC      crypto/des_generic.o
+  CC      drivers/block/loop.o
+  CC      kernel/cred.o
+  CC      mm/vmalloc.o
+  CC      block/partition-generic.o
+  CC      sound/core/memalloc.o
+  CC      drivers/base/bus.o
+  CC      fs/sync.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/mm/vmalloc.c:923:13: warning: 'purge_fragmented_blocks_thiscpu' defined but not used [-Wunused-function]
+ static void purge_fragmented_blocks_thiscpu(void)
+             ^
+  CC      kernel/async.o
+  CC      crypto/twofish_generic.o
+  CC      drivers/block/pktcdvd.o
+  CC      sound/core/pcm.o
+  CC      fs/utimes.o
+  CC      block/partitions/check.o
+  CC      kernel/groups.o
+  CC      crypto/twofish_common.o
+  CC      drivers/base/dd.o
+  CC      fs/stack.o
+  CC      mm/pagewalk.o
+  CC      drivers/base/syscore.o
+  CC      fs/fs_struct.o
+  CC      block/partitions/msdos.o
+  CC      kernel/lglock.o
+  CC      drivers/block/cryptoloop.o
+  CC      drivers/base/driver.o
+  CC      sound/core/pcm_native.o
+  CC      fs/statfs.o
+  CC      mm/pgtable-generic.o
+  CC      kernel/smpboot.o
+  CC      block/partitions/efi.o
+  CC      crypto/aes_generic.o
+  LD      drivers/block/built-in.o
+  CC      drivers/base/class.o
+  CC      mm/process_vm_access.o
+  CC      fs/buffer.o
+  CC      kernel/cpu/idle.o
+  CC      drivers/base/platform.o
+  LD      block/partitions/built-in.o
+  CC      block/bsg.o
+  LD      kernel/cpu/built-in.o
+  CC      mm/init-mm.o
+  CC      kernel/events/core.o
+  CC      drivers/base/cpu.o
+  MK_FW   firmware/hifi_6402/hifi_6402.bin.gen.S
+  IHEX    firmware/hifi_6402/hifi_6402.bin
+  MK_FW   firmware/ts/grace_synaptics_S3320_jdi.img.gen.S
+  IHEX    firmware/ts/grace_synaptics_S3320_jdi.img
+  MK_FW   firmware/ts/plk_synaptics_S3320_jdi.img.gen.S
+  CC      mm/nobootmem.o
+  IHEX    firmware/ts/plk_synaptics_S3320_jdi.img
+  MK_FW   firmware/ts/dav_synaptics_S3320_jdi.img.gen.S
+  IHEX    firmware/ts/dav_synaptics_S3320_jdi.img
+  CC      crypto/arc4.o
+  MK_FW   firmware/ts/Gemini_TMA568_default.bin.gen.S
+  IHEX    firmware/ts/Gemini_TMA568_default.bin
+  CC      drivers/base/firmware.o
+  MK_FW   firmware/ts/carrera_synaptics_S3718_samsung.img.gen.S
+  IHEX    firmware/ts/carrera_synaptics_S3718_samsung.img
+  MK_FW   firmware/ts/carrera_synaptics_S3718_samsung_1.img.gen.S
+  IHEX    firmware/ts/carrera_synaptics_S3718_samsung_1.img
+  CC      mm/memblock.o
+  CC      drivers/base/init.o
+  CC      sound/core/pcm_lib.o
+  MK_FW   firmware/ts/mozart_CS448_truly.bin.gen.S
+  CC      crypto/deflate.o
+  IHEX    firmware/ts/mozart_CS448_truly.bin
+  CC      block/noop-iosched.o
+  MK_FW   firmware/ts/mozart_CS448_ofilm.bin.gen.S
+  IHEX    firmware/ts/mozart_CS448_ofilm.bin
+  MK_FW   firmware/ts/mozart_CS448_default.bin.gen.S
+  CC      fs/bio.o
+  IHEX    firmware/ts/mozart_CS448_default.bin
+  MK_FW   firmware/ts/carrera_hideep_ist510e.bin.gen.S
+  IHEX    firmware/ts/carrera_hideep_ist510e.bin
+  MK_FW   firmware/ts/liszt_CS448_default.bin.gen.S
+  IHEX    firmware/ts/liszt_CS448_default.bin
+  AS      firmware/hifi_6402/hifi_6402.bin.gen.o
+  CC      crypto/crc32c.o
+  CC      drivers/base/map.o
+  AS      firmware/ts/grace_synaptics_S3320_jdi.img.gen.o
+  CC      mm/bounce.o
+  AS      firmware/ts/plk_synaptics_S3320_jdi.img.gen.o
+  CC      block/deadline-iosched.o
+  AS      firmware/ts/dav_synaptics_S3320_jdi.img.gen.o
+  CC      drivers/base/devres.o
+  CC      crypto/authenc.o
+  CC      sound/core/pcm_timer.o
+  AS      firmware/ts/Gemini_TMA568_default.bin.gen.o
+  CC      mm/page_io.o
+  AS      firmware/ts/carrera_synaptics_S3718_samsung.img.gen.o
+  CC      block/cfq-iosched.o
+  CC      fs/block_dev.o
+  CC      kernel/events/ring_buffer.o
+  AS      firmware/ts/carrera_synaptics_S3718_samsung_1.img.gen.o
+  CC      sound/core/pcm_misc.o
+  CC      mm/swap_state.o
+  AS      firmware/ts/mozart_CS448_truly.bin.gen.o
+  CC      drivers/base/attribute_container.o
+  AS      firmware/ts/mozart_CS448_ofilm.bin.gen.o
+  CC      crypto/authencesn.o
+  CC      kernel/events/callchain.o
+  AS      firmware/ts/mozart_CS448_default.bin.gen.o
+  CC      sound/core/pcm_memory.o
+  CC      drivers/base/transport_class.o
+  AS      firmware/ts/carrera_hideep_ist510e.bin.gen.o
+  CC      mm/swapfile.o
+  CC      kernel/events/hw_breakpoint.o
+  AS      firmware/ts/liszt_CS448_default.bin.gen.o
+  LD      firmware/built-in.o
+  CC      drivers/base/topology.o
+  CC      sound/core/rawmidi.o
+  CC      drivers/base/devtmpfs.o
+  LD      kernel/events/built-in.o
+  CC      crypto/rng.o
+  CC      kernel/irq/irqdesc.o
+  CC      block/compat_ioctl.o
+  CC      fs/direct-io.o
+  CC      block/hisi_freq_ctl.o
+  CC      crypto/krng.o
+  CC      drivers/base/power/sysfs.o
+  CC      kernel/irq/handle.o
+  CC      crypto/ansi_cprng.o
+  CC      crypto/ghash-generic.o
+  CC      sound/core/timer.o
+  LD      block/built-in.o
+  CC      kernel/irq/manage.o
+  CC      drivers/base/power/generic_ops.o
+  CC      mm/dmapool.o
+  CC      sound/core/sound.o
+  CC      crypto/af_alg.o
+  CC      crypto/algif_hash.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/irq/manage.c: In function 'free_irq':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/irq/manage.c:1369:39: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+   g_interrupts_list_hook(0, (u32)irq, (u32)desc->name);
+                                       ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/irq/manage.c: In function 'request_threaded_irq':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/irq/manage.c:1489:39: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+   g_interrupts_list_hook(1, (int)irq, (int)devname);
+                                       ^
+  CC      mm/sparse.o
+  CC      fs/mpage.o
+  CC      drivers/base/power/common.o
+  CC      drivers/base/power/qos.o
+  CC      mm/sparse-vmemmap.o
+  CC      drivers/base/regmap/regmap.o
+  CC      crypto/algif_skcipher.o
+  CC      mm/slub.o
+  CC      fs/ioprio.o
+  CC      kernel/irq/spurious.o
+  CC      sound/core/init.o
+  CC      mm/migrate.o
+  CC      drivers/base/power/main.o
+  CC      kernel/irq/resend.o
+  CC      fs/proc_namespace.o
+  CC      crypto/ablk_helper.o
+  CC      kernel/irq/chip.o
+  CC      sound/core/memory.o
+  CC      sound/core/info.o
+  CC      drivers/base/power/wakeup.o
+  CC [M]  crypto/tcrypt.o
+  CC      fs/configfs/inode.o
+  CC      fs/cramfs/inode.o
+  CC      kernel/irq/dummychip.o
+  CC      sound/core/control.o
+  CC      drivers/base/regmap/regcache.o
+  CC      drivers/base/power/runtime.o
+  CC      fs/configfs/file.o
+  CC      fs/cramfs/uncompress.o
+  CC      kernel/irq/devres.o
+  LD      fs/cramfs/cramfs.o
+  LD      fs/cramfs/built-in.o
+  LD      crypto/crypto.o
+  CC      kernel/irq/generic-chip.o
+  LD      crypto/built-in.o
+  CC      drivers/bluetooth/hci_ldisc.o
+  CC      fs/configfs/dir.o
+  CC      kernel/irq/autoprobe.o
+  CC      mm/page_isolation.o
+  CC      drivers/base/power/opp.o
+  CC      drivers/base/regmap/regcache-rbtree.o
+  CC      drivers/base/regmap/regcache-lzo.o
+  CC      kernel/irq/irqdomain.o
+  CC      sound/core/misc.o
+  CC      mm/early_ioremap.o
+  CC      drivers/base/power/clock_ops.o
+  CC      kernel/irq/proc.o
+  CC      drivers/base/regmap/regcache-flat.o
+  CC      sound/core/device.o
+  LD      drivers/bluetooth/hci_uart.o
+  LD      drivers/bluetooth/built-in.o
+  CC      fs/configfs/mount.o
+  CC      fs/configfs/symlink.o
+  CC      drivers/base/regmap/regmap-debugfs.o
+  LD      drivers/base/power/built-in.o
+  CC      drivers/base/regmap/regmap-i2c.o
+  CC      kernel/irq/pm.o
+  CC      fs/configfs/item.o
+  LD      mm/built-in.o
+  CC      sound/core/jack.o
+  CC      drivers/base/dma-mapping.o
+  CC      drivers/base/dma-coherent.o
+  CC      drivers/bus/arm-cci.o
+  LD      sound/core/snd.o
+  LD      fs/configfs/configfs.o
+  CC      drivers/base/regmap/regmap-spi.o
+  LD      sound/core/snd-pcm.o
+  LD      sound/core/snd-timer.o
+  LD      fs/configfs/built-in.o
+  LD      sound/core/snd-page-alloc.o
+  LD      sound/core/snd-rawmidi.o
+  LD      kernel/irq/built-in.o
+  LD      sound/core/snd-compress.o
+  LD      sound/core/built-in.o
+  CC      fs/debugfs/inode.o
+  CC      fs/debugfs/file.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/drivers/bus/arm-cci.c:120:22: warning: 'cci_pmu_base' defined but not used [-Wunused-variable]
+ static void __iomem *cci_pmu_base;
+                      ^
+  CC      kernel/power/qos.o
+  LD      sound/drivers/mpu401/built-in.o
+  LD      sound/drivers/opl3/built-in.o
+  LD      sound/drivers/opl4/built-in.o
+  CC      kernel/power/main.o
+  CC      kernel/sched/core.o
+  LD      drivers/bus/built-in.o
+  CC      kernel/power/process.o
+  LD      drivers/base/regmap/built-in.o
+  LD      sound/drivers/pcsp/built-in.o
+  CC      drivers/base/dma-buf.o
+  LD      sound/drivers/vx/built-in.o
+  LD      sound/drivers/built-in.o
+  CC      kernel/power/suspend.o
+  LD      sound/firewire/built-in.o
+  CC      kernel/power/hw_power_monitor.o
+  CC      kernel/power/autosleep.o
+  LD      fs/debugfs/debugfs.o
+  LD      fs/debugfs/built-in.o
+  CC      kernel/power/wakelock.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/power/hw_power_monitor.c: In function 'wakeup_irq_show':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/power/hw_power_monitor.c:627:22: warning: unused variable 'id' [-Wunused-variable]
+         unsigned int id = WAKEUP_IRQ;
+                      ^
+  LD      sound/i2c/other/built-in.o
+  CC      fs/devpts/inode.o
+  LD      sound/i2c/built-in.o
+  CC      drivers/base/firmware_class.o
+  CC      kernel/sched/clock.o
+  CC      kernel/power/poweroff.o
+  CC      kernel/time/timekeeping.o
+  CC      kernel/power/wakeup_reason.o
+  LD      sound/isa/ad1816a/built-in.o
+  LD      fs/devpts/devpts.o
+  LD      sound/isa/ad1848/built-in.o
+  LD      sound/isa/cs423x/built-in.o
+  LD      fs/devpts/built-in.o
+  LD      sound/mips/built-in.o
+  CC      kernel/time/ntp.o
+  LD      sound/isa/es1688/built-in.o
+  CC      drivers/cdrom/cdrom.o
+  LD      kernel/power/built-in.o
+  LD      sound/isa/galaxy/built-in.o
+  LD      sound/parisc/built-in.o
+  CC      drivers/base/module.o
+  LD      sound/isa/gus/built-in.o
+  CC      fs/exfat/exfat_core.o
+  CC      drivers/base/pinctrl.o
+  LD      sound/isa/msnd/built-in.o
+  CC      kernel/time/clocksource.o
+  CC      kernel/time/jiffies.o
+  LD      sound/isa/opti9xx/built-in.o
+  LD      sound/isa/wavefront/built-in.o
+  LD      sound/isa/sb/built-in.o
+  LD      drivers/base/built-in.o
+  CC      drivers/char/mem.o
+  LD      sound/isa/wss/built-in.o
+  CC      drivers/clk/clk-devres.o
+  CC      kernel/time/timer_list.o
+  LD      sound/isa/built-in.o
+  CC      kernel/time/timeconv.o
+  LD      sound/pci/ac97/built-in.o
+  LD      drivers/cdrom/built-in.o
+  CC      drivers/clk/clkdev.o
+  LD      sound/pci/ali5451/built-in.o
+  CC      drivers/char/random.o
+  CC      drivers/clocksource/clksrc-of.o
+  CC      drivers/char/misc.o
+  LD      sound/pci/asihpi/built-in.o
+  CC      kernel/time/posix-clock.o
+  LD      sound/pci/au88x0/built-in.o
+  LD      sound/pci/aw2/built-in.o
+  CC      drivers/clocksource/arm_arch_timer.o
+  LD      sound/pci/ca0106/built-in.o
+  CC      drivers/clk/clk.o
+  LD      sound/pci/cs46xx/built-in.o
+  CC      fs/exfat/exfat_api.o
+  CC      kernel/sched/cputime.o
+  LD      sound/pci/ctxfi/built-in.o
+  LD      sound/pci/cs5535audio/built-in.o
+  CC      kernel/time/alarmtimer.o
+  CC      kernel/time/clockevents.o
+  LD      sound/pci/echoaudio/built-in.o
+  LD      sound/pci/emu10k1/built-in.o
+  CC      drivers/char/pppoesta/pppoesta.o
+  LD      drivers/clocksource/built-in.o
+  LD      sound/pci/hda/built-in.o
+  CC      kernel/sched/idle_task.o
+  LD      fs/exofs/built-in.o
+  CC      fs/exfat/exfat_blkdev.o
+  LD      sound/pci/ice1712/built-in.o
+  LD      sound/pci/korg1212/built-in.o
+  CC      kernel/time/tick-common.o
+  LD      drivers/char/pppoesta/built-in.o
+  LD      sound/pci/lola/built-in.o
+  LD      drivers/char/built-in.o
+  LD      sound/pcmcia/pdaudiocf/built-in.o
+  CC      kernel/trace/trace_clock.o
+  LD      sound/pci/lx6464es/built-in.o
+  CC      kernel/sched/fair.o
+  LD      sound/pcmcia/vx/built-in.o
+  LD      sound/pci/mixart/built-in.o
+  LD      sound/pcmcia/built-in.o
+  LD      sound/ppc/built-in.o
+  LD      sound/pci/nm256/built-in.o
+  CC      fs/exfat/exfat_cache.o
+  CC      drivers/clk/clk-divider.o
+  CC      drivers/clk/clk-fixed-rate.o
+  CC      drivers/clk/clk-fixed-factor.o
+  CC      kernel/time/tick-broadcast.o
+  LD      sound/pci/oxygen/built-in.o
+  CC      kernel/trace/ring_buffer.o
+  LD      sound/pci/pcxhr/built-in.o
+  LD      sound/pci/riptide/built-in.o
+  CC      kernel/trace/trace.o
+  CC      drivers/clk/clk-gate.o
+  LD      sound/pci/rme9652/built-in.o
+  CC      fs/exfat/exfat_super.o
+  LD      sound/pci/trident/built-in.o
+  CC      fs/exfat/exfat_data.o
+  LD      sound/pci/vx222/built-in.o
+  CC      drivers/clk/clk-mux.o
+  LD      sound/pci/ymfpci/built-in.o
+  CC      kernel/time/tick-broadcast-hrtimer.o
+  LD      sound/pci/built-in.o
+  CC      drivers/clk/clk-composite.o
+  CC      kernel/time/tick-oneshot.o
+  CC      kernel/sched/rt.o
+  CC      drivers/clk/hisilicon/clk-hi3xxx.o
+  LD      sound/sh/built-in.o
+  CC      kernel/time/tick-sched.o
+  LD      sound/sparc/built-in.o
+  CC      drivers/cpufreq/cpufreq.o
+  CC      fs/exfat/exfat_global.o
+  CC      drivers/clk/hisilicon/hisi-clk-mailbox.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/drivers/cpufreq/cpufreq.c: In function 'cpufreq_add_dev':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/drivers/cpufreq/cpufreq.c:1039:21: error: 'CPUFREQ_DEFAULT_GOVERNOR' undeclared (first use in this function)
+  policy->governor = CPUFREQ_DEFAULT_GOVERNOR;
+                     ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/drivers/cpufreq/cpufreq.c:1039:21: note: each undeclared identifier is reported only once for each function it appears in
+  CC      sound/soc/soc-core.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:316: recipe for target 'drivers/cpufreq/cpufreq.o' failed
+make[3]: *** [drivers/cpufreq/cpufreq.o] Error 1
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:468: recipe for target 'drivers/cpufreq' failed
+make[2]: *** [drivers/cpufreq] Error 2
+make[2]: *** Waiting for unfinished jobs....
+  CC      fs/exfat/exfat_nls.o
+  LD      kernel/time/built-in.o
+  CC      kernel/trace/trace_output.o
+  LD      drivers/clk/hisilicon/built-in.o
+  CC      net/socket.o
+  LD      drivers/clk/built-in.o
+  LD      arch/arm64/lib/built-in.o
+  CC      kernel/sched/stop_task.o
+  AS      arch/arm64/lib/bitops.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/Makefile:905: recipe for target 'drivers' failed
+make[1]: *** [drivers] Error 2
+make[1]: *** Waiting for unfinished jobs....
+  CC      kernel/trace/trace_stat.o
+  CC      lib/bcd.o
+  AS      arch/arm64/lib/clear_page.o
+  CC      fs/exfat/exfat_oal.o
+  CC      lib/div64.o
+  AS      arch/arm64/lib/clear_user.o
+  CC      kernel/sched/cpupri.o
+  AS      arch/arm64/lib/copy_from_user.o
+  CC      lib/sort.o
+  AS      arch/arm64/lib/copy_in_user.o
+  CC      fs/exfat/exfat_upcase.o
+  CC      kernel/sched/stats.o
+  AS      arch/arm64/lib/copy_page.o
+  AS      arch/arm64/lib/copy_to_user.o
+  CC      kernel/trace/trace_printk.o
+  CC      lib/parser.o
+  CC      kernel/sched/cpuacct.o
+  CC      arch/arm64/lib/delay.o
+  LD      fs/exfat/exfat.o
+  LD      fs/exfat/built-in.o
+  LD      net/802/built-in.o
+  CC      net/bluetooth/af_bluetooth.o
+  AS      arch/arm64/lib/memchr.o
+  CC      lib/halfmd4.o
+  LD      sound/spi/built-in.o
+  CC      lib/debug_locks.o
+  LD      kernel/sched/built-in.o
+  AS      arch/arm64/lib/memcmp.o
+  CC      fs/ext4/balloc.o
+  CC      kernel/trace/trace_sched_switch.o
+  AS      arch/arm64/lib/memcpy.o
+  CC      kernel/trace/trace_nop.o
+  CC      lib/random32.o
+  CC      lib/bust_spinlocks.o
+  AS      arch/arm64/lib/memmove.o
+  AS      arch/arm64/lib/memset.o
+  CC      sound/soc/soc-dapm.o
+  CC      net/bluetooth/hci_core.o
+  CC      sound/soc/soc-jack.o
+  AS      arch/arm64/lib/strchr.o
+  CC      sound/soc/soc-cache.o
+  CC      kernel/trace/blktrace.o
+  CC      lib/hexdump.o
+  AS      arch/arm64/lib/strlen.o
+  AS      arch/arm64/lib/strnlen.o
+  CC      lib/kasprintf.o
+  AS      arch/arm64/lib/strrchr.o
+  CC      kernel/trace/trace_events.o
+  AR      arch/arm64/lib/lib.a
+  CC      fs/ext4/bitmap.o
+  CC      lib/bitmap.o
+  CC      net/bluetooth/hci_conn.o
+  CC      net/core/sock.o
+  CC      net/core/request_sock.o
+  CC      fs/ext4/dir.o
+  CC      sound/soc/soc-utils.o
+  CC      sound/soc/soc-pcm.o
+  CC      lib/scatterlist.o
+  CC      lib/gcd.o
+  CC      fs/ext4/file.o
+  CC      kernel/trace/trace_export.o
+  CC      kernel/trace/trace_event_perf.o
+  CC      sound/soc/soc-compress.o
+  CC      lib/lcm.o
+  CC      net/bluetooth/hci_event.o
+  CC      lib/list_sort.o
+  CC      net/core/skbuff.o
+  CC      net/bluetooth/mgmt.o
+  CC      kernel/trace/trace_events_filter.o
+  CC      fs/ext4/fsync.o
+  CC      lib/uuid.o
+  CC      sound/soc/soc-io.o
+  LD      sound/soc/atmel/built-in.o
+  CC      lib/flex_array.o
+  LD      sound/soc/au1x/built-in.o
+  LD      sound/soc/blackfin/built-in.o
+  CC      fs/ext4/ialloc.o
+  LD      sound/soc/cirrus/built-in.o
+  CC      fs/ext4/inode.o
+  CC      lib/iovec.o
+  CC      sound/soc/codecs/hi6402.o
+  CC      kernel/trace/power-traces.o
+  CC      lib/bsearch.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:532:9: warning: initialization from incompatible pointer type [enabled by default]
+         .read =     hi6402_read,
+         ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:532:9: warning: (near initialization for 'hi6402_list_fops.read') [enabled by default]
+  CC      lib/find_last_bit.o
+  CC      net/core/iovec.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:3418:6: warning: function declaration isn't a prototype [-Wstrict-prototypes]
+ void hi6402_digital_clk_disable()
+      ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:3426:6: warning: function declaration isn't a prototype [-Wstrict-prototypes]
+ void hi6402_digital_clk_enable()
+      ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c: In function 'hi6402_3mic_fade_out':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:3439:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  struct hi6402_irq *irq = priv->p_irq;
+  ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c: In function 'hi6402_3mic_audio_clk':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:3468:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  struct hi6402_irq *irq = priv->p_irq;
+  ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c: At top level:
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:3618:2: warning: initialization from incompatible pointer type [enabled by default]
+  .hw_free = hi6402_free_audio_hw_params,
+  ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:3618:2: warning: (near initialization for 'hi6402_audio_dai_ops.hw_free') [enabled by default]
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c: In function 'hi6402_voice_hw_params':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:3631:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  struct hi6402_priv *priv = snd_soc_codec_get_drvdata(codec);
+  ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c: At top level:
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:3706:2: warning: initialization from incompatible pointer type [enabled by default]
+  .hw_free = hi6402_free_voice_hw_params,
+  ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:3706:2: warning: (near initialization for 'hi6402_voice_dai_ops.hw_free') [enabled by default]
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c: In function 'hi6402_codec_probe':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:4133:2: warning: implicit declaration of function 'debugfs_create_file' [-Wimplicit-function-declaration]
+  debugfs_create_file("hi6402dump", 0644, NULL, NULL,&hi6402_list_fops);
+  ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/codecs/hi6402.c:4062:6: warning: unused variable 'ret' [-Wunused-variable]
+  int ret = 0;
+      ^
+  CC      lib/find_next_bit.o
+  CC      lib/llist.o
+  CC      net/core/datagram.o
+  LD      sound/synth/built-in.o
+  CC      lib/memweight.o
+  CC      net/core/stream.o
+  CC      kernel/trace/rpm-traces.o
+  CC      sound/soc/codecs/hi6402es.o
+  CC      lib/kfifo.o
+  CC      net/core/scm.o
+  LD      kernel/trace/built-in.o
+  CC      kernel/freezer.o
+  CC      net/core/gen_stats.o
+  CC      net/bluetooth/hci_sock.o
+  CC      lib/string_helpers.o
+  CC      net/core/gen_estimator.o
+  CC      lib/kstrtox.o
+  CC      kernel/profile.o
+  CC      net/core/secure_seq.o
+  CC      net/core/net_namespace.o
+  CC      lib/iomap.o
+  CC      kernel/stacktrace.o
+  CC      kernel/futex.o
+  CC      net/bluetooth/hci_sysfs.o
+  CC      net/core/flow_dissector.o
+  CC      lib/pci_iomap.o
+  CC      net/bluetooth/l2cap_core.o
+  CC      net/bluetooth/l2cap_sock.o
+  CC      fs/ext4/page-io.o
+  CC      lib/iomap_copy.o
+  CC      net/bluetooth/smp.o
+  LD      sound/soc/codecs/snd-soc-hi6402.o
+  CC      lib/devres.o
+  LD      sound/soc/codecs/snd-soc-hi6402es.o
+  LD      sound/soc/codecs/built-in.o
+  LD      sound/soc/davinci/built-in.o
+  CC      net/core/sysctl_net_core.o
+  CC      fs/ext4/ioctl.o
+  LD      sound/soc/dwc/built-in.o
+  CC      lib/hweight.o
+  LD      sound/soc/fsl/built-in.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/net/core/sysctl_net_core.c:24:12: warning: 'one' defined but not used [-Wunused-variable]
+ static int one = 1;
+            ^
+  LD      sound/soc/generic/built-in.o
+  CC      lib/smp_processor_id.o
+  CC      kernel/futex_compat.o
+  LD      sound/soc/jz4740/built-in.o
+  CC      net/core/dev.o
+  CC      net/core/ethtool.o
+  CC      net/core/dev_addr_lists.o
+  CC      lib/bitrev.o
+  CC      fs/ext4/namei.o
+  CC      sound/soc/hisilicon/hi3630_hi6402.o
+  CC      kernel/rtmutex.o
+  CC      lib/crc-ccitt.o
+  CC      lib/crc16.o
+  CC      net/bluetooth/sco.o
+  CC      sound/soc/hisilicon/hi3630_hi6402es.o
+  CC      kernel/smp.o
+  CC      sound/soc/hisilicon/hi3630_sio.o
+  HOSTCC  lib/gen_crc32table
+  CC      lib/libcrc32c.o
+  CC      sound/soc/hisilicon/hi6210_pcm.o
+  CC      kernel/spinlock.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/hisilicon/hi6210_pcm.c: In function 'hi6210_pcm_mailbox_thread':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/hisilicon/hi6210_pcm.c:391:9: warning: implicit declaration of function 'mailbox_get_timestamp' [-Wimplicit-function-declaration]
+         delay_time = HI6210_CYC_SUB(mailbox_get_timestamp(), priv->msg_timestamp, 0xffffffff);
+         ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/hisilicon/hi6210_pcm.c: In function 'hi6210_mailbox_send_data':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/hisilicon/hi6210_pcm.c:638:37: warning: unused variable 'pbuf' [-Wunused-variable]
+     struct hifi_channel_set_buffer* pbuf    = NULL;
+                                     ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/hisilicon/hi6210_pcm.c:637:37: warning: unused variable 'pmsg' [-Wunused-variable]
+     struct hifi_chn_pcm_trigger*    pmsg    = NULL;
+                                     ^
+In file included from /home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/hisilicon/hi6210_pcm.c:48:0:
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/hisilicon/hi6210_pcm.c: At top level:
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/include/trace/trace_kernel.h:61:13: warning: 'trace_dot' defined but not used [-Wunused-function]
+ static void trace_dot(unsigned int id, const char* point, int value) { return; }
+             ^
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/hisilicon/hi6210_pcm.c: In function 'hi6210_pcm_mailbox_thread':
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/sound/soc/hisilicon/hi6210_pcm.c:366:27: warning: ignoring return value of 'down_interruptible', declared with attribute warn_unused_result [-Wunused-result]
+         down_interruptible(&hi6210_pcm_maibox_controller.pcm_mailbox_sema);
+                           ^
+  CC      kernel/uid16.o
+  CC      lib/genalloc.o
+  CC      kernel/module.o
+  CC      net/core/dst.o
+  CC      sound/soc/hisilicon/hi3630_srcup_dsp.o
+  CC      net/bluetooth/lib.o
+  CC      fs/ext4/super.o
+  CC      net/bluetooth/a2mp.o
+  CC      sound/soc/hisilicon/hi3630_asp_common.o
+  CC      lib/lzo/lzo1x_compress.o
+  CC      lib/lzo/lzo1x_decompress_safe.o
+  CC      kernel/kallsyms.o
+  CC      net/core/netevent.o
+  CC      net/core/neighbour.o
+  CC      net/bluetooth/amp.o
+  CC      sound/soc/hisilicon/hi3630_srcdown.o
+  LD      lib/lzo/lzo_compress.o
+  LD      lib/lzo/lzo_decompress.o
+  CC      net/core/rtnetlink.o
+  LD      lib/lzo/built-in.o
+  CC      lib/reed_solomon/reed_solomon.o
+  CC      sound/soc/hisilicon/hi3630_fake_fm.o
+  CC      kernel/acct.o
+  CC      lib/zlib_deflate/deflate.o
+  CC      sound/soc/hisilicon/hi3630_fake_sio.o
+  LD      net/bluetooth/bluetooth.o
+  LD      net/bluetooth/built-in.o
+  CC      kernel/compat.o
+  CC      lib/zlib_deflate/deftree.o
+  LD      lib/reed_solomon/built-in.o
+  CC      lib/zlib_deflate/deflate_syms.o
+  LD      sound/soc/hisilicon/snd-soc-hi3630.o
+  LD      sound/soc/hisilicon/snd-soc-hi3630-hi6402.o
+  LD      sound/soc/hisilicon/built-in.o
+  CC      net/core/utils.o
+  CC      lib/zlib_inflate/inffast.o
+  LD      sound/soc/kirkwood/built-in.o
+  LD      sound/usb/6fire/built-in.o
+  LD      sound/usb/caiaq/built-in.o
+  LD      sound/soc/mid-x86/built-in.o
+  LD      sound/soc/mxs/built-in.o
+  LD      sound/usb/usx2y/built-in.o
+  LD      sound/usb/misc/built-in.o
+  LD      sound/soc/nuc900/built-in.o
+  CC      lib/zlib_inflate/infutil.o
+  CC      lib/zlib_inflate/inflate.o
+  LD      sound/usb/built-in.o
+  LD      sound/soc/omap/built-in.o
+  CC      net/core/link_watch.o
+  LD      lib/zlib_deflate/zlib_deflate.o
+  LD      sound/soc/pxa/built-in.o
+  LD      lib/zlib_deflate/built-in.o
+  CC      net/core/filter.o
+  LD      sound/soc/s6000/built-in.o
+  CC      kernel/cgroup.o
+  CC      sound/last.o
+  CC      fs/f2fs/dir.o
+  LD      sound/soc/samsung/built-in.o
+  CC      lib/zlib_inflate/inftrees.o
+  LD      sound/soc/sh/built-in.o
+  LD      sound/soc/tegra/built-in.o
+  CC      lib/zlib_inflate/inflate_syms.o
+  LD      sound/soc/txx9/built-in.o
+  LD      sound/soc/ux500/built-in.o
+  CC      fs/f2fs/file.o
+  CC      fs/f2fs/inode.o
+  CC      fs/f2fs/namei.o
+  CC      net/core/sock_diag.o
+  LD      sound/soc/snd-soc-core.o
+  LD      lib/zlib_inflate/zlib_inflate.o
+  LD      lib/zlib_inflate/built-in.o
+  CC      lib/textsearch.o
+  CC      kernel/cgroup_freezer.o
+  CC      fs/fat/cache.o
+  CC      lib/ts_kmp.o
+  LD      sound/soc/built-in.o
+  CC      fs/f2fs/hash.o
+  CC      net/core/dev_ioctl.o
+  LD      sound/soundcore.o
+  CC      fs/fat/dir.o
+  CC      kernel/cgroup_ionice.o
+  LD      sound/built-in.o
+  CC      lib/ts_bm.o
+  CC      fs/f2fs/super.o
+  CC      fs/f2fs/checkpoint.o
+  CC      net/core/flow.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/kernel/cgroup_ionice.c:37:30: warning: 'task_to_ionice' defined but not used [-Wunused-function]
+ static struct ionice_cgroup *task_to_ionice(struct task_struct *task)
+                              ^
+  CC      fs/fuse/dev.o
+  CC      kernel/cgroup_pids.o
+  CC      fs/ext4/symlink.o
+  CC      fs/ext4/hash.o
+  CC      lib/ts_fsm.o
+  CC      net/core/net-sysfs.o
+  CC      fs/fat/fatent.o
+  CC      lib/percpu_counter.o
+  CC      fs/f2fs/gc.o
+  CC      kernel/cpuset.o
+  CC      fs/ext4/resize.o
+  CC      net/ethernet/eth.o
+  CC      lib/audit.o
+  CC      fs/fuse/dir.o
+  CC      fs/fat/file.o
+  CC      net/core/net-procfs.o
+  CC      lib/swiotlb.o
+  LD      net/ethernet/built-in.o
+  CC      net/core/fib_rules.o
+  CC      fs/f2fs/data.o
+  CC      fs/ext4/extents.o
+  GZIP    kernel/config_data.gz
+  CC      kernel/res_counter.o
+  CC      net/ipv4/route.o
+  CC      fs/fat/inode.o
+  CC      fs/f2fs/node.o
+  CC      lib/iommu-helper.o
+  CC      kernel/stop_machine.o
+  CC      fs/fuse/file.o
+  CC      lib/syscall.o
+  CC      net/core/net-traces.o
+  CC      kernel/audit.o
+  CC      lib/dynamic_debug.o
+  CC      fs/fuse/inode.o
+  CC      fs/fat/misc.o
+  CC      net/ipv4/inetpeer.o
+  LD      net/core/built-in.o
+  CC      net/ipv4/protocol.o
+  CC      fs/f2fs/segment.o
+  CC      fs/fuse/control.o
+  CC      fs/ext4/ext4_jbd2.o
+  CC      fs/fat/nfs.o
+  CC      kernel/auditfilter.o
+  CC      fs/ext4/migrate.o
+  CC      lib/nlattr.o
+  CC      net/ipv4/ip_input.o
+  CC      fs/fat/namei_msdos.o
+  CC      fs/fuse/cuse.o
+  CC      kernel/hung_task.o
+  CC      net/ipv4/ip_fragment.o
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:316: recipe for target 'kernel/hung_task.o' failed
+make[2]: *** [kernel/hung_task.o] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:316: recipe for target 'fs/f2fs/segment.o' failed
+make[3]: *** [fs/f2fs/segment.o] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:316: recipe for target 'fs/fat/namei_msdos.o' failed
+make[3]: *** [fs/fat/namei_msdos.o] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:316: recipe for target 'fs/fuse/cuse.o' failed
+make[3]: *** [fs/fuse/cuse.o] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:468: recipe for target 'fs/f2fs' failed
+make[2]: *** [fs/f2fs] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:468: recipe for target 'fs/fat' failed
+make[2]: *** [fs/fat] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:468: recipe for target 'fs/fuse' failed
+make[2]: *** [fs/fuse] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/Makefile:905: recipe for target 'kernel' failed
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:316: recipe for target 'fs/ext4/migrate.o' failed
+make[1]: *** [kernel] Interrupt
+make[3]: *** [fs/ext4/migrate.o] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:316: recipe for target 'net/ipv4/ip_input.o' failed
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:468: recipe for target 'fs/ext4' failed
+make[2]: *** [fs/ext4] Interrupt
+make[3]: *** [net/ipv4/ip_input.o] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:316: recipe for target 'net/ipv4/ip_fragment.o' failed
+make[3]: *** [net/ipv4/ip_fragment.o] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:468: recipe for target 'net/ipv4' failed
+make[2]: *** [net/ipv4] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/Makefile:905: recipe for target 'fs' failed
+make[1]: *** [fs] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/Makefile:905: recipe for target 'net' failed
+make[1]: *** [net] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/scripts/Makefile.build:316: recipe for target 'lib/nlattr.o' failed
+make[2]: *** [lib/nlattr.o] Interrupt
+/home/timi/android/hwgra_kernel/android_kernel_hwgra/Makefile:905: recipe for target 'lib' failed
+make[1]: *** [lib] Interrupt
+Makefile:130: recipe for target 'sub-make' failed
+make: *** [sub-make] Interrupt

@@ -223,21 +223,20 @@ int
 {
     struct sensor_cfg_data *data;
     static bool imx179c_power_on = false;
-	static bool csi_enable = false;
-
+    static bool csi_enable = false;
 
     int ret =0;
     data = (struct sensor_cfg_data *)argp;
     cam_debug("imx179_carrera cfgtype = %d",data->cfgtype);
     switch(data->cfgtype) {
         case SEN_CONFIG_POWER_ON:
-        if(!imx179c_power_on){ 
+        if(!imx179c_power_on){
             ret = si->vtbl->power_up(si);
             imx179c_power_on = true;
         }
         break;
         case SEN_CONFIG_POWER_OFF:
-        if(imx179c_power_on){ 
+        if(imx179c_power_on){
             ret = si->vtbl->power_down(si);
             imx179c_power_on = false;
         }

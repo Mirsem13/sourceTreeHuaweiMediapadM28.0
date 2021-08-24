@@ -20,7 +20,7 @@
 #include <linux/irqreturn.h>
 #include <linux/interrupt.h>
 #include <linux/gpio.h>
-#include <huawei_platform/dsm/dsm_pub.h>
+#include <dsm/dsm_pub.h>
 
 #include "max98925.h"
 #define SUPPORT_DEVICE_TREE
@@ -30,6 +30,10 @@
 
 #define SMARTPA_I2C_ERR (20251)
 
+#define MAX98925_SMARTPA_R           "max98925_r"
+#define MAX98925_SMARTPA_R_ADDR      (0x34)
+static bool  max98925_r_enable = false;
+
 struct max98925_priv *max98925_data;
 static struct dsm_dev dsm_maxim_smartpa = {
     .name = "dsm_maxim_smartpa",
@@ -37,68 +41,6 @@ static struct dsm_dev dsm_maxim_smartpa = {
     .buff_size = 1024,
 };
 struct dsm_client * max98925_dclient = NULL;
-
-#define ERR_NO_ACK     (-121)
-static int ADDR_GROUP[]={0x31, 0x34};
-
-static int regmap_read_customize(struct regmap *map, unsigned int reg, unsigned int *val)
-{
-	struct i2c_client *i2c = (struct i2c_client *)(max98925_data->control_data);
-	int ret = 0;
-
-	ret = regmap_read(map, reg, val);
-    if (max98925_data->NeedCheckI2cAddr){
-        if (ret == ERR_NO_ACK){
-			i2c->addr = (i2c->addr==ADDR_GROUP[0])? ADDR_GROUP[1]:ADDR_GROUP[0];
-            pr_info("regmap_read_customize:max98925 i2c addr change to 0x%x\n", i2c->addr);
-            ret = regmap_read(map, reg, val);
-			}
-    }
-    return ret;
-}
-
-static int regmap_write_customize(struct regmap *map, unsigned int reg, unsigned int val)
-{
-	struct i2c_client *i2c = (struct i2c_client *)(max98925_data->control_data);
-	int ret = 0;
-
-	ret = regmap_write(map, reg, val);
-    if (max98925_data->NeedCheckI2cAddr){
-        if (ret == ERR_NO_ACK){
-			i2c->addr = (i2c->addr==ADDR_GROUP[0])? ADDR_GROUP[1]:ADDR_GROUP[0];
-            pr_info("regmap_write_customize:max98925 i2c addr change to 0x%x\n", i2c->addr);
-            ret = regmap_write(map, reg, val);
-			}
-    }
-    return ret;
-}
-
-static int regmap_update_bits_customize(struct regmap *map, unsigned int reg,
-										unsigned int mask, unsigned int val)
-{
-	struct i2c_client *i2c = (struct i2c_client *)(max98925_data->control_data);
-	int ret = 0;
-    unsigned int tmp, orig;
-
-    ret = regmap_update_bits(map, reg, mask, val);
-    if (max98925_data->NeedCheckI2cAddr){
-        if (ret == ERR_NO_ACK){
-			i2c->addr = (i2c->addr==ADDR_GROUP[0])? ADDR_GROUP[1]:ADDR_GROUP[0];
-            pr_info("regmap_update_bits_customize:max98925 i2c addr change to 0x%x\n", i2c->addr);
-            ret = regmap_read(map, reg, &orig);
-            if (ret != 0){
-                pr_info("regmap_update_bits_customize:max98925 regmap_read err ret %d\n", ret);
-                return ret;
-            }
-
-            tmp = orig & ~mask;
-            tmp |= val & mask;
-
-            ret = regmap_write(map, reg, tmp);
-        }
-    }
-    return ret;
-}
 
 static struct reg_default max98925_reg[] = {
 	{ 0x00, 0x00 }, /* Battery Voltage Data */
@@ -265,7 +207,7 @@ static ssize_t max98925_register_show(struct device *dev,
 
 	buf[0] = '\0';
 	for (i = 0; i <= 0x38; i++){
-		regmap_read_customize(max98925_data->regmapL, i, &value);
+		regmap_read(max98925_data->regmapL, i, &value);
 		sprintf(valStr, "0x%02x = 0x%02x\n", i, value);
 
 		strcat(buf, valStr);
@@ -276,31 +218,95 @@ static ssize_t max98925_register_show(struct device *dev,
 
 static DEVICE_ATTR(register_list, S_IRUGO | S_IWUSR, max98925_register_show, NULL);
 
+static ssize_t max98925_register_r_show(struct device *dev,
+	struct device_attribute *attr,
+	char *buf)
+{
+	int value, i;
+	char valStr[20];
+
+	buf[0] = '\0';
+	for (i = 0; i <= 0x38; i++){
+		regmap_read(max98925_data->regmapR, i, &value);
+		sprintf(valStr, "0x%02x = 0x%02x\n", i, value);
+
+		strcat(buf, valStr);
+	}
+
+	return strlen(buf);
+}
+
+static DEVICE_ATTR(register_r_list, S_IRUGO | S_IWUSR, max98925_register_r_show, NULL);
+
+static ssize_t max98925_r_enable_show(struct device* dev,
+                                     struct device_attribute* attr, char* buf)
+{
+    return snprintf(buf, 32, "%d\n", max98925_r_enable);
+}
+
+static DEVICE_ATTR(max98925_r_enable, 0660, max98925_r_enable_show, NULL);
+
+
+static struct attribute* max98925_r_attributes[] =
+{
+    &dev_attr_register_r_list.attr,
+    &dev_attr_max98925_r_enable.attr,
+    NULL
+};
+
+static const struct attribute_group max98925_r_attr_group =
+{
+    .attrs = max98925_r_attributes,
+};
+
 static int max98925_digital_mute(struct max98925_priv *max98925, int mute)
 {
 	mutex_lock(&max98925->lock);
 
 	if (mute) {
 		pr_info("%s: maxim smartpa mute\n",__func__);
-		regmap_update_bits_customize(max98925->regmapL, MAX98925_R02D_GAIN,
+		regmap_update_bits(max98925->regmapL, MAX98925_R02D_GAIN,
 			M98925_SPK_GAIN_MASK, 0x00);
 
-		regmap_update_bits_customize(max98925->regmapL, MAX98925_R038_GLOBAL_ENABLE,
+		regmap_update_bits(max98925->regmapL, MAX98925_R038_GLOBAL_ENABLE,
 			M98925_EN_MASK, 0x0);
+
+	        if(max98925_r_enable) {
+		        regmap_update_bits(max98925->regmapR, MAX98925_R02D_GAIN,
+				M98925_SPK_GAIN_MASK, 0x00);
+
+			regmap_update_bits(max98925->regmapR, MAX98925_R038_GLOBAL_ENABLE,
+				M98925_EN_MASK, 0x0);
+	        }
+
 	}
 	else {
 		pr_info("%s: maxim smartpa unmute\n",__func__);
-		regmap_update_bits_customize(max98925->regmapL, MAX98925_R02D_GAIN,
+		regmap_update_bits(max98925->regmapL, MAX98925_R02D_GAIN,
 			M98925_SPK_GAIN_MASK, max98925->spk_gain);
 
-		regmap_update_bits_customize(max98925->regmapL, MAX98925_R036_BLOCK_ENABLE,
+		regmap_update_bits(max98925->regmapL, MAX98925_R036_BLOCK_ENABLE,
 			M98925_BST_EN_MASK | M98925_SPK_EN_MASK |
 				M98925_ADC_IMON_EN_MASK | M98925_ADC_VMON_EN_MASK,
 			M98925_BST_EN_MASK | M98925_SPK_EN_MASK |
 				M98925_ADC_IMON_EN_MASK | M98925_ADC_VMON_EN_MASK);
-		regmap_write_customize(max98925->regmapL, MAX98925_R038_GLOBAL_ENABLE,
+		regmap_write(max98925->regmapL, MAX98925_R038_GLOBAL_ENABLE,
 			M98925_EN_MASK);
+
+	        if(max98925_r_enable) {
+		        regmap_update_bits(max98925->regmapR, MAX98925_R02D_GAIN,
+				M98925_SPK_GAIN_MASK, max98925->spk_gain);
+
+			regmap_update_bits(max98925->regmapR, MAX98925_R036_BLOCK_ENABLE,
+				M98925_BST_EN_MASK | M98925_SPK_EN_MASK |
+					M98925_ADC_IMON_EN_MASK | M98925_ADC_VMON_EN_MASK,
+				M98925_BST_EN_MASK | M98925_SPK_EN_MASK |
+					M98925_ADC_IMON_EN_MASK | M98925_ADC_VMON_EN_MASK);
+			regmap_write(max98925->regmapR, MAX98925_R038_GLOBAL_ENABLE,
+				M98925_EN_MASK);
+	        }
 	}
+
 	mutex_unlock(&max98925->lock);
 	return 0;
 }
@@ -354,32 +360,70 @@ static int max98925_set_slave(struct max98925_priv *max98925)
 	/*
 	 * 1. use BCLK instead of MCLK
 	 */
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R01A_DAI_CLK_MODE1,
+	regmap_update_bits(max98925->regmapL, MAX98925_R01A_DAI_CLK_MODE1,
 			M98925_DAI_CLK_SOURCE_MASK, M98925_DAI_CLK_SOURCE_MASK);
+
+	if(max98925_r_enable) {
+	    regmap_update_bits(max98925->regmapR, MAX98925_R01A_DAI_CLK_MODE1,
+			M98925_DAI_CLK_SOURCE_MASK, M98925_DAI_CLK_SOURCE_MASK);
+	}
+    
 	/*
 	 * 2. set DAI to slave mode
 	 */
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R01B_DAI_CLK_MODE2,
+	regmap_update_bits(max98925->regmapL, MAX98925_R01B_DAI_CLK_MODE2,
 			M98925_DAI_MAS_MASK, 0);
+    
+	if(max98925_r_enable) {
+	    regmap_update_bits(max98925->regmapR, MAX98925_R01B_DAI_CLK_MODE2,
+			M98925_DAI_MAS_MASK, 0);
+	}
+    
 	/*
 	 * 3. set BLCKs to LRCLKs to 64
 	 */
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R01B_DAI_CLK_MODE2,
+	regmap_update_bits(max98925->regmapL, MAX98925_R01B_DAI_CLK_MODE2,
 			M98925_DAI_BSEL_MASK, M98925_DAI_BSEL_64);
+
+	if(max98925_r_enable) {
+		regmap_update_bits(max98925->regmapR, MAX98925_R01B_DAI_CLK_MODE2,
+			M98925_DAI_BSEL_MASK, M98925_DAI_BSEL_64);
+	}
+    
 	/*
 	 * 4. set VMON slots
 	 */
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R022_DOUT_CFG_VMON,
+	regmap_update_bits(max98925->regmapL, MAX98925_R022_DOUT_CFG_VMON,
 			M98925_DAI_VMON_EN_MASK, M98925_DAI_VMON_EN_MASK);
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R022_DOUT_CFG_VMON,
-			M98925_DAI_VMON_SLOT_MASK, M98925_DAI_VMON_SLOT_00_01);
+	if(max98925_r_enable){
+		regmap_update_bits(max98925->regmapL, MAX98925_R022_DOUT_CFG_VMON,
+				M98925_DAI_VMON_SLOT_MASK, M98925_DAI_VMON_SLOT_02_03);
+		regmap_update_bits(max98925->regmapR, MAX98925_R022_DOUT_CFG_VMON,
+				M98925_DAI_VMON_EN_MASK, M98925_DAI_VMON_EN_MASK);
+		regmap_update_bits(max98925->regmapR, MAX98925_R022_DOUT_CFG_VMON,
+				M98925_DAI_VMON_SLOT_MASK, M98925_DAI_VMON_SLOT_06_07);
+	} else {
+		regmap_update_bits(max98925->regmapL, MAX98925_R022_DOUT_CFG_VMON,
+				M98925_DAI_VMON_SLOT_MASK, M98925_DAI_VMON_SLOT_00_01);
+	}
+        
 	/*
 	 * 5. set IMON slots
 	 */
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R023_DOUT_CFG_IMON,
+	regmap_update_bits(max98925->regmapL, MAX98925_R023_DOUT_CFG_IMON,
 			M98925_DAI_IMON_EN_MASK, M98925_DAI_IMON_EN_MASK);
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R023_DOUT_CFG_IMON,
-			M98925_DAI_IMON_SLOT_MASK, M98925_DAI_IMON_SLOT_04_05);
+    
+	if(max98925_r_enable) {
+		regmap_update_bits(max98925->regmapL, MAX98925_R023_DOUT_CFG_IMON,
+				M98925_DAI_IMON_SLOT_MASK, M98925_DAI_IMON_SLOT_00_01);
+		regmap_update_bits(max98925->regmapR, MAX98925_R023_DOUT_CFG_IMON,
+				M98925_DAI_IMON_EN_MASK, M98925_DAI_IMON_EN_MASK);
+		regmap_update_bits(max98925->regmapR, MAX98925_R023_DOUT_CFG_IMON,
+				M98925_DAI_IMON_SLOT_MASK, M98925_DAI_IMON_SLOT_04_05);    
+	} else {
+		regmap_update_bits(max98925->regmapL, MAX98925_R023_DOUT_CFG_IMON,
+				M98925_DAI_IMON_SLOT_MASK, M98925_DAI_IMON_SLOT_04_05);
+	}
 	return 0;
 }
 
@@ -390,13 +434,25 @@ static void max98925_set_master(struct max98925_priv *max98925)
 	/*
 	 * 1. use MCLK for Left channel, right channel always BCLK
 	 */
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R01A_DAI_CLK_MODE1,
+	regmap_update_bits(max98925->regmapL, MAX98925_R01A_DAI_CLK_MODE1,
 			M98925_DAI_CLK_SOURCE_MASK, 0);
+
+	if(max98925_r_enable) {
+		regmap_update_bits(max98925->regmapR, MAX98925_R01A_DAI_CLK_MODE1,
+				M98925_DAI_CLK_SOURCE_MASK, 0);
+	}
+
+    
 	/*
 	 * 2. set left channel DAI to master mode, right channel always slave
 	 */
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R01B_DAI_CLK_MODE2,
+	regmap_update_bits(max98925->regmapL, MAX98925_R01B_DAI_CLK_MODE2,
 			M98925_DAI_MAS_MASK, M98925_DAI_MAS_MASK);
+
+	if(max98925_r_enable) {
+		regmap_update_bits(max98925->regmapR, MAX98925_R01A_DAI_CLK_MODE1,
+				M98925_DAI_CLK_SOURCE_MASK, 0);
+	}
 }
 
 static int max98925_set_clock(struct max98925_priv *max98925, unsigned int rate)
@@ -434,27 +490,54 @@ static int max98925_set_clock(struct max98925_priv *max98925, unsigned int rate)
 	/*
 	 * 1. set DAI_SR to correct LRCLK frequency
 	 */
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R01B_DAI_CLK_MODE2,
+	regmap_update_bits(max98925->regmapL, MAX98925_R01B_DAI_CLK_MODE2,
 			M98925_DAI_SR_MASK, dai_sr << M98925_DAI_SR_SHIFT);
+    
+	if(max98925_r_enable) {
+		regmap_update_bits(max98925->regmapR, MAX98925_R01B_DAI_CLK_MODE2,
+				M98925_DAI_SR_MASK, dai_sr << M98925_DAI_SR_SHIFT);
+	}
+    
 	/*
 	 * 2. set DAI m divider
 	 */
-	regmap_write_customize(max98925->regmapL, MAX98925_R01C_DAI_CLK_DIV_M_MSBS,
+	regmap_write(max98925->regmapL, MAX98925_R01C_DAI_CLK_DIV_M_MSBS,
 			m >> 8);
-	regmap_write_customize(max98925->regmapL, MAX98925_R01D_DAI_CLK_DIV_M_LSBS,
+	regmap_write(max98925->regmapL, MAX98925_R01D_DAI_CLK_DIV_M_LSBS,
 			m & 0xFF);
+
+	if(max98925_r_enable) {
+		regmap_write(max98925->regmapR, MAX98925_R01C_DAI_CLK_DIV_M_MSBS,
+				m >> 8);
+		regmap_write(max98925->regmapR, MAX98925_R01D_DAI_CLK_DIV_M_LSBS,
+				m & 0xFF);
+	}
+    
 	/*
 	 * 3. set DAI n divider
 	 */
-	regmap_write_customize(max98925->regmapL, MAX98925_R01E_DAI_CLK_DIV_N_MSBS,
+	regmap_write(max98925->regmapL, MAX98925_R01E_DAI_CLK_DIV_N_MSBS,
 			n >> 8);
-	regmap_write_customize(max98925->regmapL, MAX98925_R01F_DAI_CLK_DIV_N_LSBS,
+	regmap_write(max98925->regmapL, MAX98925_R01F_DAI_CLK_DIV_N_LSBS,
 			n & 0xFF);
+
+	if(max98925_r_enable) {
+		regmap_write(max98925->regmapR, MAX98925_R01E_DAI_CLK_DIV_N_MSBS,
+				n >> 8);
+		regmap_write(max98925->regmapR, MAX98925_R01F_DAI_CLK_DIV_N_LSBS,
+				n & 0xFF);
+	}
+    
 	/*
 	 * 4. set MDLL
 	 */
-	regmap_update_bits_customize(max98925->regmapL, MAX98925_R01A_DAI_CLK_MODE1,
+	regmap_update_bits(max98925->regmapL, MAX98925_R01A_DAI_CLK_MODE1,
 			M98925_MDLL_MULT_MASK, mdll << M98925_MDLL_MULT_SHIFT);
+
+	if(max98925_r_enable) {
+		regmap_update_bits(max98925->regmapR, MAX98925_R01A_DAI_CLK_MODE1,
+				M98925_MDLL_MULT_MASK, mdll << M98925_MDLL_MULT_SHIFT);
+	}
 
 	return 0;
 }
@@ -463,13 +546,22 @@ static int max98925_set_clock(struct max98925_priv *max98925, unsigned int rate)
 static int max98925_suspend(struct device *dev)
 {
 	regcache_cache_only(max98925_data->regmapL, true);
+    
+	if(max98925_r_enable)
+		regcache_cache_only(max98925_data->regmapR, true);
 	return 0;
 }
 
 static int max98925_resume(struct device *dev)
 {
 	regcache_cache_only(max98925_data->regmapL, false);
-	return regcache_sync(max98925_data->regmapL);
+	regcache_sync(max98925_data->regmapL);
+
+	if(max98925_r_enable) {
+		regcache_cache_only(max98925_data->regmapR, false);
+			regcache_sync(max98925_data->regmapR);
+	}
+    return 0;
 }
 #else
 #define max98925_suspend NULL
@@ -482,40 +574,80 @@ static int max98925_open(struct inode *inode, struct file *filp)
 	int reg = 0;
 
 	max98925_data->sysclk = 12288000;
-	max98925_data->spk_gain = 0x14;
 
-	ret = regmap_read_customize(max98925_data->regmapL, MAX98925_R0FF_VERSION, &reg);
+	ret = regmap_read(max98925_data->regmapL, MAX98925_R0FF_VERSION, &reg);
 	if ((ret < 0) || (reg == 0x00)) {
 		pr_err("max98925 initialization error (%d 0x%02X)\n",
 			ret, reg);
 		goto err_access;
 	}
 
+	if(max98925_r_enable) {
+		ret = regmap_read(max98925_data->regmapR, MAX98925_R0FF_VERSION, &reg);
+		if ((ret < 0) || (reg == 0x00)) {
+			pr_err("max98925_r initialization error (%d 0x%02X)\n",
+				ret, reg);
+			goto err_access;
+		}
+	}
+
 	pr_info("max98925 version 0x%02X\n", reg);
 
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R038_GLOBAL_ENABLE, 0x00);
-
+	regmap_write(max98925_data->regmapL, MAX98925_R038_GLOBAL_ENABLE, 0x00);
+	if(max98925_r_enable) {
+		regmap_write(max98925_data->regmapR, MAX98925_R038_GLOBAL_ENABLE, 0x00);
+	}
+    
 	/* It's not the default but we need to set DAI_DLY */
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R020_FORMAT, M98925_DAI_DLY_MASK | M98925_DAI_CHANSZ_32);
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R021_TDM_SLOT_SELECT, 0xC0);
+	regmap_write(max98925_data->regmapL, MAX98925_R020_FORMAT, M98925_DAI_DLY_MASK | M98925_DAI_CHANSZ_32);
+	regmap_write(max98925_data->regmapL, MAX98925_R021_TDM_SLOT_SELECT, 0xC0);
 
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R027_DOUT_HIZ_CFG1, 0x00);
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R028_DOUT_HIZ_CFG2, 0x00);
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R029_DOUT_HIZ_CFG3, 0x00);
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R02A_DOUT_HIZ_CFG4, 0x00);
+	regmap_write(max98925_data->regmapL, MAX98925_R027_DOUT_HIZ_CFG1, 0x00);
+	regmap_write(max98925_data->regmapL, MAX98925_R028_DOUT_HIZ_CFG2, 0x00);
+	regmap_write(max98925_data->regmapL, MAX98925_R029_DOUT_HIZ_CFG3, 0x00);
+	if(max98925_r_enable){
+		regmap_write(max98925_data->regmapL, MAX98925_R02A_DOUT_HIZ_CFG4, 0xF0);
+	} else {
+		regmap_write(max98925_data->regmapL, MAX98925_R02A_DOUT_HIZ_CFG4, 0x00);
+	}
 
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R02C_FILTERS, 0x49);
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R034_ALC_CONFIGURATION, 0x12);
+	regmap_write(max98925_data->regmapL, MAX98925_R02C_FILTERS, 0x49);
+	regmap_write(max98925_data->regmapL, MAX98925_R034_ALC_CONFIGURATION, 0x12);
+
+	if(max98925_r_enable) {
+		regmap_write(max98925_data->regmapR, MAX98925_R020_FORMAT, M98925_DAI_DLY_MASK | M98925_DAI_CHANSZ_32);
+		regmap_write(max98925_data->regmapR, MAX98925_R021_TDM_SLOT_SELECT, 0xC0);
+
+		regmap_write(max98925_data->regmapR, MAX98925_R027_DOUT_HIZ_CFG1, 0x00);
+		regmap_write(max98925_data->regmapR, MAX98925_R028_DOUT_HIZ_CFG2, 0x00);
+		regmap_write(max98925_data->regmapR, MAX98925_R029_DOUT_HIZ_CFG3, 0x00);
+		regmap_write(max98925_data->regmapR, MAX98925_R02A_DOUT_HIZ_CFG4, 0x0F);
+
+		regmap_write(max98925_data->regmapR, MAX98925_R02C_FILTERS, 0x49);
+		regmap_write(max98925_data->regmapR, MAX98925_R034_ALC_CONFIGURATION, 0x12);
+	}
 
 	/*****************************************************************/
 	/* Set boost output to minimum until DSM is implemented          */
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R037_CONFIGURATION, 0x00);
+	regmap_write(max98925_data->regmapL, MAX98925_R037_CONFIGURATION, 0x00);
+	if(max98925_r_enable) {
+		regmap_write(max98925_data->regmapR, MAX98925_R037_CONFIGURATION, 0x00);
+	}
 	/*****************************************************************/
 
 	// Disable ALC muting
-	regmap_write_customize(max98925_data->regmapL, MAX98925_R03A_BOOST_LIMITER, 0xF8);
-	regmap_update_bits_customize(max98925_data->regmapL, MAX98925_R02D_GAIN,
-			M98925_DAC_IN_SEL_MASK, M98925_DAC_IN_SEL_DIV2_SUMMED_DAI);
+	regmap_write(max98925_data->regmapL, MAX98925_R03A_BOOST_LIMITER, 0xF8);
+    
+	if(max98925_r_enable) {
+		regmap_update_bits(max98925_data->regmapL, MAX98925_R02D_GAIN,
+				M98925_DAC_IN_SEL_MASK, M98925_DAC_IN_SEL_LEFT_DAI);
+		regmap_write(max98925_data->regmapR, MAX98925_R03A_BOOST_LIMITER, 0xF8);
+		regmap_update_bits(max98925_data->regmapR, MAX98925_R02D_GAIN,
+				M98925_DAC_IN_SEL_MASK, M98925_DAC_IN_SEL_RIGHT_DAI);
+	} else {
+		regmap_update_bits(max98925_data->regmapL, MAX98925_R02D_GAIN,
+		M98925_DAC_IN_SEL_MASK, M98925_DAC_IN_SEL_DIV2_SUMMED_DAI);
+	}
 
 	max98925_set_clock(max98925_data, 48000);
 	max98925_set_slave(max98925_data);
@@ -543,36 +675,70 @@ static int max98925_do_ioctl(struct file *file, unsigned int cmd,
 			   void __user *p, int compat_mode)
 {
 	int ret = 0;
-	unsigned int value;
+	unsigned int value = 0;
 	struct max98925_reg_ops reg_val;
 	unsigned int __user *pUser = (unsigned int __user *) p;
 	struct max98925_priv *max98925 = (struct max98925_priv *)file->private_data;
 	switch (cmd) {
 	case M98925_GET_VERSION:
-		ret = regmap_read_customize(max98925->regmapL, MAX98925_R0FF_VERSION, &value);
+		ret = regmap_read(max98925->regmapL, MAX98925_R0FF_VERSION, &value);
 		ret |= put_user(value, pUser);
+		break;
+
+	case M98925_R_GET_VERSION:
+		if(max98925_r_enable) {
+			ret = regmap_read(max98925->regmapR, MAX98925_R0FF_VERSION, &value);
+			ret |= put_user(value, pUser);
+		}else{
+			pr_err("%s: it has no max98925_r device\n", __func__);
+			return -1;
+		}
 		break;
 
     case M98925_GET_REG_VAL:
         if(copy_from_user(&reg_val,(void*) pUser, sizeof(struct max98925_reg_ops)))
 		{
-		    pr_err("%s: set reg copy_from_user fail", __func__);
+		    pr_err("%s: set reg copy_from_user fail\n", __func__);
 			return -1;
 		}
-		ret = regmap_read_customize(max98925->regmapL, reg_val.reg_addr, &reg_val.reg_val);
+		ret = regmap_read(max98925->regmapL, reg_val.reg_addr, &reg_val.reg_val);
 		if(copy_to_user((void*) pUser, &reg_val, sizeof(struct max98925_reg_ops)))
 		{
-		    pr_err("%s: send reg value to user fail", __func__);
+		    pr_err("%s: send reg value to user fail\n", __func__);
 			return -1;
 		}
-                break;
-	case M98925_SET_REG_VAL:
-	    if(copy_from_user(&reg_val,(void*) pUser, sizeof(struct max98925_reg_ops)))
+        break;
+
+	case M98925_R_GET_REG_VAL:
+		if(copy_from_user(&reg_val,(void*) pUser, sizeof(struct max98925_reg_ops)))
 		{
-		    pr_err("%s: set reg copy_from_user fail", __func__);
+			pr_err("%s: set reg copy_from_user fail\n", __func__);
 			return -1;
 		}
-		ret = regmap_write_customize(max98925->regmapL, reg_val.reg_addr, reg_val.reg_val);
+		if(max98925_r_enable) {
+			ret = regmap_read(max98925->regmapR, reg_val.reg_addr, &reg_val.reg_val);
+			if(copy_to_user((void*) pUser, &reg_val, sizeof(struct max98925_reg_ops)))
+			{
+				pr_err("%s: send reg value to user fail\n", __func__);
+				return -1;
+			}
+		}else{
+			pr_err("%s:GET_REG_VAL,addr =0x%x ,it has no max98925_r device\n", __func__,
+			reg_val.reg_addr);
+			return -1;
+		}
+		break;
+
+	case M98925_SET_REG_VAL:
+		if(copy_from_user(&reg_val,(void*) pUser, sizeof(struct max98925_reg_ops)))
+		{
+		    pr_err("%s: set reg copy_from_user fail\n", __func__);
+			return -1;
+		}
+		ret = regmap_write(max98925->regmapL, reg_val.reg_addr, reg_val.reg_val);
+		if(max98925_r_enable) {
+			ret = regmap_write(max98925->regmapR, reg_val.reg_addr, reg_val.reg_val);
+		}
 		pr_info("%s:  maxim smartpa set reg val: addr = 0x%x, val = 0x%x\n", __func__, reg_val.reg_addr, reg_val.reg_val);
 		break;
 
@@ -585,19 +751,42 @@ static int max98925_do_ioctl(struct file *file, unsigned int cmd,
 		break;
 
 	case M98925_GET_VOLUME:
-		ret = regmap_read_customize(max98925->regmapL, MAX98925_R02D_GAIN, &value);
+		ret = regmap_read(max98925->regmapL, MAX98925_R02D_GAIN, &value);
 		ret |= put_user(value, pUser);
+		break;
+
+	case M98925_R_GET_VOLUME:
+		if(max98925_r_enable) {
+			ret = regmap_read(max98925->regmapR, MAX98925_R02D_GAIN, &value);
+			ret |= put_user(value, pUser);
+		}else{
+			pr_err("%s:GET_VOLUME it has no max98925_r device\n", __func__);
+			return -1;
+		}
 		break;
 
 	case M98925_SET_VOLUME:
 		ret = get_user(value, pUser);
-		ret |= regmap_write_customize(max98925->regmapL, MAX98925_R02D_GAIN, value);
+		ret |= regmap_write(max98925->regmapL, MAX98925_R02D_GAIN, value);
+		if(max98925_r_enable) {
+			ret |= regmap_write(max98925->regmapR, MAX98925_R02D_GAIN, value);
+		}
 		pr_info("%s:  maxim smartpa set volume: 0x%x\n", __func__, value);
 		break;
 
 	case M98925_GET_DAICLOCK:
-		ret = regmap_read_customize(max98925->regmapL, MAX98925_R01B_DAI_CLK_MODE2, &value);
+		ret = regmap_read(max98925->regmapL, MAX98925_R01B_DAI_CLK_MODE2, &value);
 		ret |= put_user(value, pUser);
+		break;
+
+	case M98925_R_GET_DAICLOCK:
+		if(max98925_r_enable) {
+			ret = regmap_read(max98925->regmapR, MAX98925_R01B_DAI_CLK_MODE2, &value);
+			ret |= put_user(value, pUser);
+		}else{
+			pr_err("%s: GET_DAICLOCK it has no max98925_r device\n", __func__);
+			return -1;
+		}
 		break;
 
 	case M98925_SET_DAICLOCK:
@@ -606,65 +795,130 @@ static int max98925_do_ioctl(struct file *file, unsigned int cmd,
 		ret |= max98925_set_clock(max98925_data, value);
 		ret |= max98925_set_slave(max98925_data);
 		break;
-
+#if 0
 	case M98925_GET_DAIFORMAT:
-		ret = regmap_read_customize(max98925->regmapL, MAX98925_R020_FORMAT, &value);
+		ret = regmap_read(max98925->regmapL, MAX98925_R020_FORMAT, &value);
 		ret |= put_user(value, pUser);
+		break;
+
+	case M98925_R_GET_DAIFORMAT:
+		if(max98925_r_enable) {
+			ret = regmap_read(max98925->regmapR, MAX98925_R020_FORMAT, &value);
+			ret |= put_user(value, pUser);
+		}else{
+			pr_err("%s:GET_DAIFORMAT it has no max98925_r device\n", __func__);
+			return -1;
+		}
 		break;
 
 	case M98925_SET_DAIFORMAT:
 		ret = get_user(value, pUser);
 		pr_info("%s: maxim smartpa set daiformat: 0x%x\n",__func__, value);
-		ret |= regmap_write_customize(max98925->regmapL, MAX98925_R020_FORMAT, value);
+		ret |= regmap_write(max98925->regmapL, MAX98925_R020_FORMAT, value);
+		if(max98925_r_enable) {
+			ret |= regmap_write(max98925->regmapR, MAX98925_R020_FORMAT, value);
+		}
+		break;
+#endif
+	case M98925_GET_BOOSTVOLT:
+		ret = regmap_read(max98925->regmapL, MAX98925_R037_CONFIGURATION, &value);
+		ret |= put_user(value, pUser);
 		break;
 
-	case M98925_GET_BOOSTVOLT:
-		ret = regmap_read_customize(max98925->regmapL, MAX98925_R037_CONFIGURATION, &value);
-		ret |= put_user(value, pUser);
+	case M98925_R_GET_BOOSTVOLT:
+		if(max98925_r_enable) {
+			ret = regmap_read(max98925->regmapR, MAX98925_R037_CONFIGURATION, &value);
+			ret |= put_user(value, pUser);
+		}else{
+			pr_err("%s:GET_BOOSTVOLT it has no max98925_r device\n", __func__);
+			return -1;
+		}
 		break;
 
 	case M98925_SET_BOOSTVOLT:
 		ret = get_user(value, pUser);
 		pr_info("%s: maxim smartpa set boost voltage: 0x%x\n",__func__, value);
-		ret |= regmap_write_customize(max98925->regmapL, MAX98925_R037_CONFIGURATION, value);
+		ret |= regmap_write(max98925->regmapL, MAX98925_R037_CONFIGURATION, value);
+		if(max98925_r_enable) {
+			ret |= regmap_write(max98925->regmapR, MAX98925_R037_CONFIGURATION, value);
+		}
 		break;
 
 	case M98925_GET_ALCTHRESHOLD:
-		ret = regmap_read_customize(max98925->regmapL, MAX98925_R030_THRESHOLD, &value);
+		ret = regmap_read(max98925->regmapL, MAX98925_R030_THRESHOLD, &value);
 		ret |= put_user(value, pUser);
+		break;
+
+	case M98925_R_GET_ALCTHRESHOLD:
+		if(max98925_r_enable) {
+			ret = regmap_read(max98925->regmapR, MAX98925_R030_THRESHOLD, &value);
+			ret |= put_user(value, pUser);
+		}else{
+			pr_err("%s: GET_ALCTHRESHOLD it has no max98925_r device\n", __func__);
+			return -1;
+		}
 		break;
 
 	case M98925_SET_ALCTHRESHOLD:
 		ret = get_user(value, pUser);
 		pr_info("%s: maxim smartpa set alc threshold: 0x%x\n",__func__, value);
-		ret |= regmap_write_customize(max98925->regmapL, MAX98925_R030_THRESHOLD, value);
+		ret |= regmap_write(max98925->regmapL, MAX98925_R030_THRESHOLD, value);
+		if(max98925_r_enable) {
+			ret |= regmap_write(max98925->regmapR, MAX98925_R030_THRESHOLD, value);
+		}
 		break;
 
 	case M98925_GET_FILTERS:
-		ret = regmap_read_customize(max98925->regmapL, MAX98925_R02C_FILTERS, &value);
+		ret = regmap_read(max98925->regmapL, MAX98925_R02C_FILTERS, &value);
 		ret |= put_user(value, pUser);
+		break;
+
+	case M98925_R_GET_FILTERS:
+		if(max98925_r_enable) {
+			ret = regmap_read(max98925->regmapR, MAX98925_R02C_FILTERS, &value);
+			ret |= put_user(value, pUser);
+		}else{
+			pr_err("%s:GET_FILTERS it has no max98925_r device\n", __func__);
+			return -1;
+		}
 		break;
 
 	case M98925_SET_FILTERS:
 		ret = get_user(value, pUser);
 		pr_info("%s: maxim smartpa set fliters: 0x%x\n",__func__, value);
-		ret |= regmap_write_customize(max98925->regmapL, MAX98925_R02C_FILTERS, value);
+		ret |= regmap_write(max98925->regmapL, MAX98925_R02C_FILTERS, value);
+		if(max98925_r_enable) {
+			ret |= regmap_write(max98925->regmapR, MAX98925_R02C_FILTERS, value);
+		}
 		break;
 
 	case M98925_GET_GAINRAMP:
-		ret = regmap_read_customize(max98925->regmapL, MAX98925_R02E_GAIN_RAMPING, &value);
+		ret = regmap_read(max98925->regmapL, MAX98925_R02E_GAIN_RAMPING, &value);
 		ret |= put_user(value, pUser);
+		break;
+
+	case M98925_R_GET_GAINRAMP:
+		if(max98925_r_enable) {
+			ret = regmap_read(max98925->regmapR, MAX98925_R02E_GAIN_RAMPING, &value);
+			ret |= put_user(value, pUser);
+		}else{
+			pr_err("%s: GET_GAINRAMP it has no max98925_r device\n", __func__);
+			return -1;
+		}
 		break;
 
 	case M98925_SET_GAINRAMP:
 		ret = get_user(value, pUser);
 		pr_info("%s: maxim smartpa set gainramp: 0x%x\n",__func__, value);
-		ret |= regmap_write_customize(max98925->regmapL, MAX98925_R02E_GAIN_RAMPING, value);
+		ret |= regmap_write(max98925->regmapL, MAX98925_R02E_GAIN_RAMPING, value);
+		if(max98925_r_enable) {
+			ret |= regmap_write(max98925->regmapR, MAX98925_R02E_GAIN_RAMPING, value);
+		}
 		break;
 	}
 	if(ret && !dsm_client_ocuppy(max98925_dclient))
 	{
-		dsm_client_record(max98925_dclient, "%s: ioctl error %d\n", __func__, ret);
+		dsm_client_record(max98925_dclient, "%s: ioctl error %d", __func__, ret);
 		dsm_client_notify(max98925_dclient, SMARTPA_I2C_ERR);
 	}
 	return ret;
@@ -718,12 +972,34 @@ static const struct regmap_config max98925_regmap = {
 	.cache_type       = REGCACHE_RBTREE,
 };
 
+
+static struct i2c_board_info max98925_i2c_r[]= {
+	{
+		.type			= MAX98925_SMARTPA_R,
+		.addr			= MAX98925_SMARTPA_R_ADDR,
+	},
+};
+
+struct i2c_client *add_second_device(int busnum)
+{
+	struct i2c_client *i2c = NULL;
+	struct i2c_adapter *adapter;
+
+	adapter = i2c_get_adapter(busnum);
+	if (adapter != NULL)
+		i2c = i2c_new_device(adapter, max98925_i2c_r);
+
+	return i2c;
+}
+
 static int max98925_i2c_probe(struct i2c_client *i2c_l,
 			     const struct i2c_device_id *id)
 {
 	int ret;
-
-	pr_err("%s: enter, device '%s'\n", __func__, id->name);
+	struct i2c_client *i2c_r;
+	int max9895_r_bus_num;
+	const char *second_device_bus_num = "second_max98925_device_bus_num";
+	const char *speaker_gain = "speaker_gain";
 
 	max98925_data = kzalloc(sizeof(struct max98925_priv), GFP_KERNEL);
 	if (max98925_data == NULL)
@@ -739,14 +1015,6 @@ static int max98925_i2c_probe(struct i2c_client *i2c_l,
 		dev_err(&i2c_l->dev, "Failed to allocate regmapL: %d\n", ret);
 		goto err_out;
 	}
-
-	ret = of_property_read_u32(i2c_l->dev.of_node, "need_check_and_set_second_addr", &max98925_data->NeedCheckI2cAddr);
-	if (ret) {
-		pr_info("%s:not find  need_check_and_set_second_addr in dt node ,and set defalut value \n",__func__);
-		max98925_data->NeedCheckI2cAddr = 0;
-	}
-	pr_info("%s: get need_check_and_set_second_addr=%d\n",__func__,max98925_data->NeedCheckI2cAddr);
-
 /*
 	ret = of_property_read_u32(i2c_l->dev.of_node,
 				"irq-gpio", &max98925_data->irq_gpio);
@@ -763,8 +1031,50 @@ static int max98925_i2c_probe(struct i2c_client *i2c_l,
 		goto err_out;
 	}
 */
-	ret = sysfs_create_file(&i2c_l->dev.kobj, &dev_attr_register_list.attr);
-	ret |= misc_register(&max98925_ctrl_miscdev);
+	ret = of_property_read_u32(i2c_l->dev.of_node, speaker_gain, &max98925_data->spk_gain);
+	if (ret) {
+		pr_info("%s:not find  speaker_gain in dt node ,and set defalut value \n",__func__);
+		max98925_data->spk_gain = 0x14;
+	}
+	pr_info("%s: get max98925 spk_gain =0x%x\n",__func__,max98925_data->spk_gain);
+
+	ret = of_property_read_u32(i2c_l->dev.of_node, second_device_bus_num,
+		&max9895_r_bus_num);
+	if (ret) {
+		pr_info("%s:Looking up %s property in node %s failed\n",__func__,
+			second_device_bus_num, i2c_l->dev.of_node->full_name);
+		max98925_r_enable = false;
+	} else {
+		/* Check for second MAX98925, we're using I2C bus 0 here */
+		pr_info("%s: second MAX98925 bus  found, max9895_r_bus_num= %d\n", __func__,max9895_r_bus_num);
+		i2c_r = add_second_device(max9895_r_bus_num);
+		if (IS_ERR(i2c_r) || NULL == i2c_r) {
+			pr_err("%s: second MAX98925 not found, ret= %d\n", __func__, ret);
+			max98925_r_enable = false;
+		} else {
+			max98925_data->control_data_r = i2c_r;
+			max98925_data->regmapR = regmap_init_i2c(i2c_r, &max98925_regmap);
+			if (IS_ERR(max98925_data->regmapR)) {
+				ret = PTR_ERR(max98925_data->regmapR);
+				dev_err(&i2c_r->dev, "Failed to allocate regmapR: %d\n", ret);
+				max98925_r_enable = false;
+				goto err_out;
+			} else {
+				max98925_r_enable = true;
+			}
+		}
+	}
+    
+    if ((ret = sysfs_create_file(&i2c_l->dev.kobj, &dev_attr_register_list.attr)) < 0) {
+           pr_info("%s: failed to register i2c_l sysfs, ret =%d\n",__func__,ret);
+    }
+    
+	if(max98925_r_enable) {
+		if ((ret = sysfs_create_group(&i2c_r->dev.kobj, &max98925_r_attr_group)) < 0) {
+			pr_info("%s: failed to register i2c_r sysfs, ret =%d\n",__func__,ret);
+		}
+	}
+	ret = misc_register(&max98925_ctrl_miscdev);
 	mutex_init(&max98925_data->lock);
 
 	pr_info("%s: ret %d\n", __func__, ret);
@@ -776,6 +1086,8 @@ err_out:
 
 	if (ret < 0) {
 		if (max98925_data->regmapL)
+			regmap_exit(max98925_data->regmapL);
+		if (max98925_data->regmapR)
 			regmap_exit(max98925_data->regmapL);
 		kfree(max98925_data);
 	}
@@ -789,12 +1101,26 @@ static int max98925_i2c_remove(struct i2c_client *client)
 	if (max98925_data && max98925_data->regmapL)
 		regmap_exit(max98925_data->regmapL);
 
+	if (max98925_data && max98925_data->regmapR)
+		regmap_exit(max98925_data->regmapR);
+
 	kfree(max98925_data);
 	max98925_data = NULL;
 
 	pr_info("%s: exit\n", __func__);
 
 	return 0;
+}
+
+static void max98925_i2c_shutdown(struct i2c_client *client)
+{
+	if(NULL == max98925_data)
+		return;
+
+	pr_info("%s: shutdown for max98925\n", __func__);
+	max98925_digital_mute(max98925_data,1);
+
+	return;
 }
 
 static const struct dev_pm_ops max98925_pm_ops = {
@@ -822,6 +1148,7 @@ static struct i2c_driver max98925_i2c_driver = {
 	},
 	.probe  = max98925_i2c_probe,
 	.remove = max98925_i2c_remove,
+	.shutdown = max98925_i2c_shutdown,
 	.id_table = max98925_i2c_id,
 };
 

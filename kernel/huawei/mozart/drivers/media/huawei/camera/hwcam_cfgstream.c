@@ -16,8 +16,9 @@
 #include <media/videobuf2-core.h>
 
 #include "hwcam_intf.h"
+#ifdef CONFIG_COMPAT
 #include "hwcam_compat32.h"
-
+#endif
 #define HWCAM_CFGSTREAM_MAX                     16      //  no more than 16 streams
 
 typedef struct _tag_hwcam_cfgstream_mount_req
@@ -1164,12 +1165,7 @@ hwcam_cfgstream_vo_do_ioctl(
 {
     hwcam_cfgstream_t* stm = I2STM(filep->private_data);
     long rc = -EINVAL;
-
-    if(!filep->private_data)
-    {
-        HWCAM_CFG_ERR("do_ioctl but private_data is null! \n");
-        return rc;
-    }
+	BUG_ON(!filep->private_data);
 
     switch (cmd)
     {
@@ -1281,6 +1277,7 @@ hwcam_cfgstream_vo_ioctl32(
     int rc = 0;
 	void __user *up = NULL;
     void __user *kp = NULL;
+	/* struct v4l2_format kpvf; */
     up = compat_ptr(arg);
 	
     switch (cmd)
@@ -1335,16 +1332,16 @@ hwcam_cfgstream_vo_ioctl32(
     case VIDIOC_G_FMT:
     case VIDIOC_S_FMT:
         {
-            kp = compat_alloc_user_space(sizeof(struct v4l2_format));
-            if (NULL == kp)
-                return -EFAULT;
-            rc = compat_get_v4l2_format_data(kp, up);
+	        struct v4l2_format kpvf;
+            rc = compat_get_v4l2_format_data(&kpvf, up);
             if (0 != rc)
                 return rc;
-            rc = hwcam_cfgstream_vo_ioctl(filep, cmd, (unsigned long)kp);
-            if (0 != rc)
+            hwcam_cfgdev_lock();
+            rc = hwcam_cfgstream_vo_do_ioctl(filep, cmd, (void *)&kpvf);
+            hwcam_cfgdev_unlock();
+            if (0 != rc) 
                 return rc;
-            rc = compat_put_v4l2_format_data(kp, up);
+            rc = compat_put_v4l2_format_data(&kpvf, up);
             return rc;
         }
         break;

@@ -349,20 +349,11 @@ typedef struct
 } AT_PS_CALL_ENTITY_STRU;
 
 
-enum AT_PS_CALL_REDIAL_ENUM
-{
-    AT_PS_CALL_REDIAL_ENABLE	= 0,
-    AT_PS_CALL_REDIAL_DISENABLE = 1,
-    AT_PS_CALL_REDIAL_BUTT
-};
-typedef VOS_UINT8 AT_PS_CALL_REDIAL_ENUM_UINT8;
 typedef struct
 {
 #if (FEATURE_ON == FEATURE_IPV6)
     VOS_UINT8                           ucIpv6Capability;
-    VOS_UINT8                           ucDisableRedialForNoCause;
-    AT_PS_CALL_REDIAL_ENUM_UINT8                           enEnableRedialForIpv4v6Rej;
-    VOS_UINT8                           aucReserved1[5];
+    VOS_UINT8                           aucReserved1[7];
 
     /* 保存用户定制的用于回退处理的PS域原因值 */
     AT_PS_IPV6_BACKPROC_EXT_CAUSE_STRU  stIpv6BackProcExtCauseTbl;

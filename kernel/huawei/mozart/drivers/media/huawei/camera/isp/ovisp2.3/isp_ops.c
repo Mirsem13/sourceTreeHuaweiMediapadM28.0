@@ -766,6 +766,7 @@ static int isp_res_init(struct device *pdev)
 	if (ret != 0) {
 		cam_err("fail to request irq [%d], error: %d", isp_hw_data.irq_no, ret);
 		ret = -ENXIO;
+		isp_hw_data.irq_no = 0;
 		goto fail;
 	}
 
@@ -958,8 +959,8 @@ static void meta_data_done_hander(void)
 
 	dummy_meta_data_pad = *((u8 *)(isp_hw->meta_viraddr + META_DATA_RAW_SIZE));
     if (DUMMY_META_DATA_PAD != dummy_meta_data_pad) {
-        cam_warn("%s invalide dummy meta data pad: 0x%x", __func__, dummy_meta_data_pad);
-        return;
+		cam_warn("%s invalide dummy meta data pad: 0x%x", __func__, dummy_meta_data_pad);
+		return;
     }
 
 	/*todo: copy again from dmabuf for cached*/
@@ -1440,7 +1441,7 @@ int ispv3_hardware_update_addr(isp_port_e port, hwisp_buf_t *buf)
         ISP_SETREG32(REG_PORT_WRITE_ADDR_V(port), buf->info.u_addr_phy);
         /* use PHY addr*/
         cam_debug("%s phy=0x%x.", __func__, buf->info.y_addr_phy);
-   }
+    }
 	ispv3_hardware_set_ready(port);
 	return 0;
 }

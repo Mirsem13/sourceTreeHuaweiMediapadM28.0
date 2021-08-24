@@ -21,6 +21,35 @@
 #define OFFLINE_COMPOSE_TIMEOUT 500
 extern uint32_t g_dss_module_base[DSS_CHN_MAX][MODULE_CHN_MAX];
 
+static void offline_chn_lock(struct hisi_fb_data_type *hisifd)
+{
+	int i = 0;
+
+	BUG_ON(hisifd == NULL);
+
+	for(i = 0; i < hisifd->ov_req.layer_nums; i++){
+		if(hisifd->ov_req.layer_infos[i].chn_idx == DPE3_CHN0)
+			down(&hisifd->dpe3_ch0_sem);
+
+		if(hisifd->ov_req.layer_infos[i].chn_idx == DPE3_CHN1)
+			down(&hisifd->dpe3_ch1_sem);
+	}
+}
+
+static void offline_chn_unlock(struct hisi_fb_data_type *hisifd)
+{
+	int i = 0;
+
+	BUG_ON(hisifd == NULL);
+	for(i = 0; i < hisifd->ov_req.layer_nums; i++){
+		if(hisifd->ov_req.layer_infos[i].chn_idx == DPE3_CHN0)
+			up(&hisifd->dpe3_ch0_sem);
+
+		if(hisifd->ov_req.layer_infos[i].chn_idx == DPE3_CHN1)
+			up(&hisifd->dpe3_ch1_sem);
+	}
+}
+
 static void offline_save_bin_file(char * filename, char * str_line, uint32_t len)
 {
 	ssize_t write_len;
@@ -711,9 +740,13 @@ int hisi_ov_offline_play(struct hisi_fb_data_type *hisifd, void __user *argp)
 		}
 
 		if(g_debug_ovl_offline_cmdlist - 1 == k){
-			cmdlist_add_new_list(hisifd, &hisifd->offline_cmdlist_head[wbe_chn], TRUE, flag);
+			ret = cmdlist_add_new_list(hisifd, &hisifd->offline_cmdlist_head[wbe_chn], TRUE, flag);
 		}else{
-			cmdlist_add_new_list(hisifd, &hisifd->offline_cmdlist_head[wbe_chn], FALSE, flag);
+			ret = cmdlist_add_new_list(hisifd, &hisifd->offline_cmdlist_head[wbe_chn], FALSE, flag);
+		}
+		if(ret != 0){
+			HISI_FB_ERR("cmdlist_add_new_list err:%d \n",ret);
+			return ret;
 		}
 
 		if (true == first_valid_block) {
@@ -814,8 +847,14 @@ int hisi_ov_offline_play(struct hisi_fb_data_type *hisifd, void __user *argp)
 	/*unlock for hisifd data*/
 	//up(&hisifd->ov_wb_sem);
 
+	/*lock if use dpe3 chn0 and chn1*/
+	offline_chn_lock(hisifd);
+
 	ret = wait_event_interruptible_timeout(hisifd->offline_writeback_wq[wbe_chn],
 			(hisifd->offline_wb_done[wbe_chn] == flag), msecs_to_jiffies(OFFLINE_COMPOSE_TIMEOUT));
+
+	/*unlock if use dpe3 chn0 and chn1*/
+	offline_chn_unlock(hisifd);
 
 	/*lock for hisifd data*/
 	//down(&hisifd->ov_wb_sem);

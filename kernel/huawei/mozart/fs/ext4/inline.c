@@ -339,8 +339,10 @@ static int ext4_update_inline_data(handle_t *handle, struct inode *inode,
 
 	len -= EXT4_MIN_INLINE_DATA_SIZE;
 	value = kzalloc(len, GFP_NOFS);
-	if (!value)
+	if (!value) {
+		error = -ENOMEM;
 		goto out;
+	}
 
 	error = ext4_xattr_ibody_get(inode, i.name_index, i.name,
 				     value, len);
@@ -1145,10 +1147,9 @@ static int ext4_finish_convert_inline_dir(handle_t *handle,
 	set_buffer_uptodate(dir_block);
 	err = ext4_handle_dirty_dirent_node(handle, inode, dir_block);
 	if (err)
-		goto out;
+		return err;
 	set_buffer_verified(dir_block);
-out:
-	return err;
+	return ext4_mark_inode_dirty(handle, inode);
 }
 
 static int ext4_convert_inline_data_nolock(handle_t *handle,
@@ -1621,12 +1622,7 @@ out:
 struct buffer_head *ext4_find_inline_entry(struct inode *dir,
 					const struct qstr *d_name,
 					struct ext4_dir_entry_2 **res_dir,
-#ifdef CONFIG_SDCARD_FS_CI_SEARCH
-                                        int *has_inline_data,
-                                        char* ci_name_buf)
-#else
 					int *has_inline_data)
-#endif
 {
 	int ret;
 	struct ext4_iloc iloc;
@@ -1646,11 +1642,7 @@ struct buffer_head *ext4_find_inline_entry(struct inode *dir,
 						EXT4_INLINE_DOTDOT_SIZE;
 	inline_size = EXT4_MIN_INLINE_DATA_SIZE - EXT4_INLINE_DOTDOT_SIZE;
 	ret = search_dir(iloc.bh, inline_start, inline_size,
-#ifdef CONFIG_SDCARD_FS_CI_SEARCH
-			 dir, d_name, 0, res_dir, ci_name_buf);
-#else
                          dir, d_name, 0, res_dir);
-#endif
 	if (ret == 1)
 		goto out_find;
 	if (ret < 0)
@@ -1663,11 +1655,7 @@ struct buffer_head *ext4_find_inline_entry(struct inode *dir,
 	inline_size = ext4_get_inline_size(dir) - EXT4_MIN_INLINE_DATA_SIZE;
 
 	ret = search_dir(iloc.bh, inline_start, inline_size,
-#ifdef CONFIG_SDCARD_FS_CI_SEARCH
-			 dir, d_name, 0, res_dir, ci_name_buf);
-#else
                          dir, d_name, 0, res_dir);
-#endif
 	if (ret == 1)
 		goto out_find;
 

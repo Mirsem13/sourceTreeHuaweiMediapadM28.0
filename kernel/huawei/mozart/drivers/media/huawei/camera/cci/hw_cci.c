@@ -18,7 +18,6 @@
 #include "hw_cci.h"
 #include "../io/hw_isp_io.h"
 
-extern bool is_ovisp23_poweron(void);
 static inline int get_i2c_bus_mutex(int bus_mutex)
 {
 	int count = 0;
@@ -88,11 +87,6 @@ int hw_isp_read_sensor_byte(i2c_t *i2c_info, u16 reg, u16 *val)
 	volatile int val_h, val_l;
 	volatile int device_id, firmware_id;
 	u8 byte_ctrl = 0;
-
-	if (!is_ovisp23_poweron()) {
-		cam_notice("%s the ovisp has powered down.", __func__);
-		return -1;
-	}
 
 	if (reg > MAX_SENSOR_REG_VALUE) {
 		cam_err("%s: sensor reg value(%u) out of bounds", __func__, reg);
@@ -215,11 +209,6 @@ int hw_isp_write_sensor_byte(i2c_t *i2c_info, u16 reg, u16 val, u8 mask)
 	int reg_value_h, reg_value_l, reg_value_len, reg_bus_mutex;
 	u16 old_val = 0;
 	u8 byte_ctrl = 0;
-
-	if (!is_ovisp23_poweron()) {
-		cam_notice("%s the ovisp has powered down.", __func__);
-		return -1;
-	}
 
 	if (reg > MAX_SENSOR_REG_VALUE) {
 		cam_err("%s: sensor reg value(%u) out of bounds", __func__, reg);
@@ -352,11 +341,6 @@ int hw_isp_write_sensor_seq(i2c_t *i2c_info, const struct sensor_i2c_reg *buf, u
 	unsigned long flags;
 	volatile u8 original_config;
 	int reg_bus_mutex = REG_SCCB_MAST1_BUS_MUTEX;
-
-	if (!is_ovisp23_poweron()) {
-		cam_notice("%s the ovisp has powered down.", __func__);
-		return -1;
-	}
 
 	if (get_i2c_bus_mutex(reg_bus_mutex)) {
 		cam_err("%s, line %d: I2c get mutex timeout!", __func__, __LINE__);

@@ -141,8 +141,7 @@ static struct mutex	wl_softap_lock;
 #endif 
 extern bool wl_iw_conn_status_str(uint32 event_type, uint32 status,
 	uint32 reason, char* stringBuf, uint buflen);
-extern int wldev_set_country(
-    struct net_device *dev, char *country_code, bool notify, bool user_enforced);
+
 uint wl_msg_level = WL_ERROR_VAL;
 
 #define MAX_WLIW_IOCTL_LEN 1024
@@ -527,7 +526,6 @@ set_ap_cfg_hw(struct net_device *dev, struct ap_profile *ap)
 	int res = 0;
 	int mpc = 0;
 	int updown = 0;
-	char country[WLC_CNTRY_BUF_SZ]={0};
 	if (!dev) {
 		WL_ERROR(("%s: dev is null\n", __FUNCTION__));
 		return -1;
@@ -573,13 +571,6 @@ set_ap_cfg_hw(struct net_device *dev, struct ap_profile *ap)
 	channel = ap->channel;
 	if ((res = dev_wlc_ioctl(dev, WLC_SET_CHANNEL, &channel, sizeof(channel)))) {
 		WL_ERROR(("%s fail to set channel\n", __FUNCTION__));
-	}
-	OSL_DELAY(50*1000);
-	WL_SOFTAP(("%s: country=%s\n", __FUNCTION__, ap->country_code));
-	memcpy(country, ap->country_code, sizeof(country));
-	res = wldev_set_country(dev, country, true, true);
-	if (res) {
-		WL_ERROR(("%s fail to set country res=%d\n", __FUNCTION__, res));
 	}
 	OSL_DELAY(50*1000);
 	updown = 1;
@@ -2403,7 +2394,7 @@ wl_iw_get_essid(
 		return error;
 	}
 
-	ssid.SSID_len = dtoh32(ssid.SSID_len);
+	ssid.SSID_len = MIN(dtoh32(ssid.SSID_len), IW_ESSID_MAX_SIZE);
 
 	/* Get the current SSID */
 	memcpy(extra, ssid.SSID, ssid.SSID_len);

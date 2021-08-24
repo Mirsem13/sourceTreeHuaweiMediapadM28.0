@@ -23,8 +23,10 @@
 
 #include "hwcam_intf.h"
 #include "cam_log.h"
+#ifdef CONFIG_COMPAT
 #include "hwcam_compat32.h"
-#include <huawei_platform/dsm/dsm_pub.h>
+#endif
+#include <dsm/dsm_pub.h>
 
 #define CREATE_TRACE_POINTS
 #include "trace_hwcam.h"

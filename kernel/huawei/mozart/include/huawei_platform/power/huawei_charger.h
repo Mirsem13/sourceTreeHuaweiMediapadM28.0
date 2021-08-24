@@ -15,7 +15,7 @@
 #include <linux/notifier.h>    /*for struct charge_device_info*/
 #include <linux/workqueue.h>    /*for struct charge_device_info*/
 #include <linux/power_supply.h>    /*for struct charge_device_info*/
-#include <huawei_platform/dsm/dsm_pub.h>
+#include <dsm/dsm_pub.h>
 #ifndef _HUAWEI_CHARGER
 #define _HUAWEI_CHARGER
 
@@ -129,6 +129,7 @@ enum charge_sysfs_type{
     CHARGE_SYSFS_IBUS,
     CHARGE_SYSFS_HIZ,
     CHARGE_SYSFS_CHARGE_TYPE,
+    CHARGE_SYSFS_BOOTLOADER_CHARGER_INFO,
 #ifdef CONFIG_GRACE_SELECT_2A_1A_AC
     CHARGE_SYSFS_SELECTED_AC,
 #endif
@@ -170,8 +171,10 @@ struct charge_sysfs_data{
     int ibus;
     struct mutex dump_reg_lock;
     struct mutex dump_reg_head_lock;
+    struct mutex bootloader_info_lock;
     char reg_value[CHARGELOG_SIZE];
     char reg_head[CHARGELOG_SIZE];
+    char bootloader_info[CHARGELOG_SIZE];
 #ifdef CONFIG_GRACE_SELECT_2A_1A_AC
     unsigned int selected_AC;
 #endif

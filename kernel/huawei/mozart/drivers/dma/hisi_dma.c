@@ -31,7 +31,13 @@
 #include "virt-dma.h"
 
 #ifdef CONFIG_HUAWEI_TSIF
-#include <linux/tsif/tsif.h>
+//#include "../tsif/tsif.h"
+#ifndef TSIF_DMA_LLI_NUM_IN_CHUNK
+#define TSIF_DMA_LLI_NUM_IN_CHUNK (8)
+#endif
+#ifndef TSIF_CHUNK_SIZE
+#define TSIF_CHUNK_SIZE (204*32*8)
+#endif
 #endif
 
 #define DRIVER_NAME		"hisi-dma"
@@ -123,9 +129,8 @@ struct hisi_dma_dev {
         bool        dma_share;
 };
 #ifdef CONFIG_HUAWEI_TSIF
-struct hisi_dma_desc_sw *g_ds;
+struct hisi_dma_desc_sw *g_ds; 
 extern struct dma_chan *tsi_chan;
-extern void tsif_config_lli_num(void);
 #endif
 #define to_hisi_dma(dmadev) container_of(dmadev, struct hisi_dma_dev, slave)
 
@@ -253,16 +258,17 @@ static irqreturn_t hisi_dma_int_handler(int irq, void *dev_id)
 {
 	struct hisi_dma_dev *d = (struct hisi_dma_dev *)dev_id;
 	struct hisi_dma_phy *p;
+    struct hisi_dma_phy *p1;
 	struct hisi_dma_chan *c;
 	u32 stat = readl(d->base + INT_STAT);
 	u32 tc1  = readl(d->base + INT_TC1);
-	u32 tc2  = readl(d->base + INT_TC2);
+    u32 tc2  = readl(d->base + INT_TC2);
 	u32 err1 = readl(d->base + INT_ERR1);
 	u32 err2 = readl(d->base + INT_ERR2);
 	u32 i, tc1_irq = 0,tc2_irq = 0, err1_irq = 0, err2_irq = 0;
 	u32 stats = stat;
 
-
+  
 	while (stat) {
 		i = __ffs(stat);
 		stat &= (stat - 1);
@@ -270,7 +276,7 @@ static irqreturn_t hisi_dma_int_handler(int irq, void *dev_id)
 			p = &d->phy[i];
 			c = p->vchan;
 			if (c) {
-
+     
 				unsigned long flags;
 
 				spin_lock_irqsave(&c->vc.lock, flags);
@@ -285,20 +291,16 @@ static irqreturn_t hisi_dma_int_handler(int irq, void *dev_id)
 			tc1_irq |= BIT(i);
 		}
 
-		 if (likely(tc2 & BIT(i))) {
+    if (likely(tc2 & BIT(i))) {
 			p = &d->phy[i];
 			c = p->vchan;
-			if (c) {
+			if (c) {  
 
 				unsigned long flags;
 
 				spin_lock_irqsave(&c->vc.lock, flags);
-				if(p->ds_run != NULL){
-#ifdef CONFIG_HUAWEI_TSIF
-					tsif_config_lli_num();
-#endif
+				if(p->ds_run != NULL)					
 					vchan_cyclic_callback(&p->ds_run->vd);
-				}
 				//p->ds_done = p->ds_run;
 				spin_unlock_irqrestore(&c->vc.lock, flags);
 			} else {
@@ -324,7 +326,7 @@ static irqreturn_t hisi_dma_int_handler(int irq, void *dev_id)
 	}
 
 	writel(tc1_irq, d->base + INT_TC1_RAW);
-	writel(tc2_irq, d->base + INT_TC2_RAW);
+    writel(tc2_irq, d->base + INT_TC2_RAW);
 	writel(err1_irq, d->base + INT_ERR1_RAW);
 	writel(err2_irq, d->base + INT_ERR2_RAW);
 
@@ -358,10 +360,10 @@ static int hisi_dma_start_txd(struct hisi_dma_chan *c)
 		return -ENODEV;
 
 	if (BIT(c->phy->idx) & hisi_dma_get_chan_stat(d)) {
-        dev_err(d->slave.dev,  "%s: chan[%d] phy[%d] stat[0x%x]\n",__func__,
+        dev_err(d->slave.dev,  "%s: chan[%d] phy[%d] stat[0x%x]\n",
             c->vc.chan.chan_id, c->phy->idx, hisi_dma_get_chan_stat(d));
 		return -EBUSY;
-	}
+    }
 
 	if (vd) {
 		struct hisi_dma_desc_sw *ds =
@@ -543,13 +545,13 @@ static void hisi_dma_issue_pending(struct dma_chan *chan)
 	struct hisi_dma_dev *d = to_hisi_dma(chan->device);
 	unsigned long flags;
 
-#ifdef CONFIG_ARCH_HI6XXX
+#ifdef CONFIG_ARCH_HI6XXX  
         int  err = -1;
         err = pwrctrl_request_power_state(PWRCTRL_SLEEP_EDMAC,PWRCTRL_SYS_STAT_S1,&dma_power_qos_id);
         if(0 != err)
         {
             dev_err(d->slave.dev, "pwrctrl_request_power_state err %d\n", err);
-        }
+        }        
 #endif
 
 	spin_lock_irqsave(&c->vc.lock, flags);
@@ -663,9 +665,9 @@ static struct dma_async_tx_descriptor *hisi_dma_prep_slave_sg(
 	ds->desc_hw_lli = __virt_to_phys((unsigned long)&ds->desc_hw[0]);
 	ds->desc_num = num;
 	num = 0;
-#ifdef CONFIG_HUAWEI_TSIF
-	if (tsi_chan == chan)
-		g_ds = ds;
+#ifdef CONFIG_HUAWEI_TSIF    
+    if (tsi_chan == chan)
+        g_ds = ds;
 #endif
 	for_each_sg(sgl, sg, sglen, i) {
 		addr = sg_dma_address(sg);
@@ -704,20 +706,21 @@ static struct dma_async_tx_descriptor *hisi_dma_prep_slave_sg(
 }
 
 #ifdef CONFIG_HUAWEI_TSIF
-int hisi_dma_prep_slave_lli(struct tsif_device *tsif_device,struct dma_chan *chan, void *addr,int addr_num)
+int hisi_dma_prep_slave_lli(struct tsif_device *tsif_device,struct dma_chan *chan, long addr,int addr_num,int stop)
 {
 	struct hisi_dma_chan *c = to_hisi_chan(chan);
 	struct hisi_dma_desc_sw *ds = g_ds;
 	size_t len, avail, total = 0;
+	struct scatterlist *sg;
 	dma_addr_t src = 0, dst = 0;
 	int num = addr_num;
-	int next_num = 0;
+    int next_num = 0;    
 	avail = total = TSIF_CHUNK_SIZE;//204*32*8;
 
 	do {
 		len = DMA_MAX_SIZE;
 
-		src = c->dev_addr;
+	    src = c->dev_addr;
 		dst = __virt_to_phys((unsigned long)addr);
 
 		hisi_dma_fill_desc(ds, dst, src, len, num++, c->ccfg); //&& ~(0x3 << 2) |CCFG_PER2MEM));
@@ -728,21 +731,31 @@ int hisi_dma_prep_slave_lli(struct tsif_device *tsif_device,struct dma_chan *cha
 
 
 	if (TSIF_DMA_LLI_NUM_IN_CHUNK == addr_num){
-		next_num = 0;
-		ds->desc_hw[2*TSIF_DMA_LLI_NUM_IN_CHUNK -1].lli =  (ds->desc_hw_lli + next_num *
-	                   sizeof(struct hisi_desc_hw)) | CX_LLI_CHAIN_EN;
-	}else {
-		next_num = TSIF_DMA_LLI_NUM_IN_CHUNK;
-		ds->desc_hw[TSIF_DMA_LLI_NUM_IN_CHUNK - 1].lli =  (ds->desc_hw_lli + next_num *
-	                   sizeof(struct hisi_desc_hw)) | CX_LLI_CHAIN_EN;
+        next_num = 0;
+      if (stop)
+             ds->desc_hw[2*TSIF_DMA_LLI_NUM_IN_CHUNK -1].lli = 0;
+      else
+            ds->desc_hw[2*TSIF_DMA_LLI_NUM_IN_CHUNK -1].lli =  ds->desc_hw_lli + next_num *
+		                       sizeof(struct hisi_desc_hw) | CX_LLI_CHAIN_EN;
+    }else {
+        next_num = TSIF_DMA_LLI_NUM_IN_CHUNK;
+        if (stop)
+            ds->desc_hw[TSIF_DMA_LLI_NUM_IN_CHUNK - 1].lli = 0;
+        else {
 
-	}
+            ds->desc_hw[TSIF_DMA_LLI_NUM_IN_CHUNK - 1].lli =  ds->desc_hw_lli + next_num *
+		                       sizeof(struct hisi_desc_hw) | CX_LLI_CHAIN_EN;
 
+        }
+
+    }       
+ 	
 	ds->size = total;
 #if defined(CONFIG_DMA_NO_CCI)
-	dma_sync_single_for_device(chan->device->dev, ds->desc_hw_lli,
-	                       (TSIF_DMA_LLI_NUM_IN_CHUNK*2) * sizeof(ds->desc_hw[0]), DMA_TO_DEVICE);
-#endif
+    dma_sync_single_for_device(chan->device->dev, ds->desc_hw_lli,
+                           (TSIF_DMA_LLI_NUM_IN_CHUNK*2) * sizeof(ds->desc_hw[0]), DMA_TO_DEVICE);
+
+#endif	
 	return 0;
 }
 
@@ -806,12 +819,12 @@ static int hisi_dma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 		else
 			val = maxburst - 1;
 		c->ccfg |= (val << 20) | (val << 24);
-#ifdef CONFIG_HUAWEI_TSIF
-      if (tsi_chan == chan)
+#ifdef CONFIG_HUAWEI_TSIF        
+      if (tsi_chan == chan)  
 		c->ccfg |= CCFG_MEM2PER | CCFG_EN | CCFG_ITC_EN;
       else
 #endif
-        c->ccfg |= CCFG_MEM2PER | CCFG_EN;
+        c->ccfg |= CCFG_MEM2PER | CCFG_EN; 
 
 		/* specific request line */
 		c->ccfg |= c->vc.chan.chan_id << 4;
@@ -889,15 +902,15 @@ void show_dma_reg(struct dma_chan *chan)
 {
 	struct hisi_dma_chan *c = NULL;
 	struct hisi_dma_dev *d = NULL;
-	struct hisi_dma_phy *p = NULL;
-	int i = 0;
+    struct hisi_dma_phy *p = NULL;
+    int i = 0;
 
 	if (!chan) {
 	    printk("show_dma_reg: dma_chan *chan is NULL!\n");
 	    return;
 	}
 
-	printk(KERN_ERR "%s: chan[0x%p] id[%d] cookie[%d-%d]!\n", __func__,
+    printk(KERN_ERR "%s: chan[0x%x] id[%d] cookie[%d-%d]!\n", __func__,
             chan, chan->chan_id, chan->cookie, chan->completed_cookie);
 
 	if (!chan->device) {
@@ -906,7 +919,7 @@ void show_dma_reg(struct dma_chan *chan)
 	}
 
 	d = to_hisi_dma(chan->device);
-	if (!d) {
+    if (!d) {
 	    printk("hisi_dma_dev *d is NULL!\n");
 	    return;
 	}
@@ -934,7 +947,7 @@ void show_dma_reg(struct dma_chan *chan)
 	}
 
     p = c->phy;
-    printk(KERN_ERR "%s: chan[%p] ccfg[0x%x] dir[%d] dev_addr[0x%llx] status[%d]\n",
+    printk(KERN_ERR "%s: chan[%p] ccfg[0x%x] dir[%d] dev_addr[0x%x] status[%d]\n",
             __func__, c, c->ccfg, c->dir, c->dev_addr, c->status);
     printk(KERN_ERR "%s: phy idx[0x%x] ds_run[%p] ds_done[p%p]\n",
             __func__, p->idx, p->ds_run, p->ds_done);
@@ -1016,7 +1029,7 @@ static int hisi_dma_probe(struct platform_device *op)
 	struct hisi_dma_dev *d;
 	const struct of_device_id *of_id;
 	struct resource *iores;
-	int i, ret = 0, irq = 0;
+	int i, ret, irq = 0;
 
 	iores = platform_get_resource(op, IORESOURCE_MEM, 0);
 	if (!iores)

@@ -39,7 +39,7 @@ const struct cntry_locales_custom hw_translate_custom_table[] = {
     {"IE", "IE", 1},
     {"IS", "IS", 1},
     {"IT", "IT", 1},
-    {"JP", "JP", 58}, // Modified by huawei
+    {"JP", "JP", 0}, // Modified by huawei
     {"KR", "KR", 4}, // Modified by huawei
     {"KW", "KW", 1},
     {"LI", "LI", 1},

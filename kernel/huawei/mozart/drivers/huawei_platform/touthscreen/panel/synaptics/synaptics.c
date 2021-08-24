@@ -12,11 +12,16 @@
 #include <huawei_platform/log/log_jank.h>
 #include "../../huawei_touchscreen_algo.h"
 #if defined (CONFIG_HUAWEI_DSM)
-#include <huawei_platform/dsm/dsm_pub.h>
+#include <dsm/dsm_pub.h>
 #endif
 
+#include <linux/input.h>
+#include <linux/dt2w.h>
+#define POWER_KEY_RELEASE	(0)
+#define POWER_KEY_PRESS		(1)
 
 #define SYNAPTICS_CHIP_INFO "synaptics-"
+#define PLK_FPC_UNCLK_ENABLE_FLAG "plk-fpc-unclock-flag"
 #define EASY_WAKEUP_FASTRATE 0x011D
 #define F54_ANALOG_CMD0  0x016F
 #define PALM_REG_BIT 0x01
@@ -114,6 +119,7 @@ static int synaptics_irq_bottom_half(struct ts_cmd_node *in_cmd, struct ts_cmd_n
 static int synaptics_fw_update_boot(char *file_name);
 static int synaptics_fw_update_sd(void);
 static int synaptics_chip_get_info(struct ts_chip_info_param *info);
+static int synaptics_chip_get_project_id(char *info);
 static int synaptics_set_info_flag(struct ts_data *info);
 static int synaptics_before_suspend(void);
 static int synaptics_suspend(void);
@@ -135,10 +141,13 @@ static int synaptics_set_glove_switch(u8 glove_switch);
 static int synaptics_holster_switch(struct ts_holster_info *info);
 static int synaptics_roi_switch(struct ts_roi_info *info);
 static unsigned char* synaptics_roi_rawdata(void);
+static int synaptics_chip_get_capacitance_test_type(struct ts_test_type_info *info);
 #if defined (CONFIG_HUAWEI_DSM)
 static int synaptics_rmi4_dsm_debug(void);
 #endif
 static int synaptics_regs_operate(struct ts_regs_info *info);
+
+static struct input_dev *idev;
 
 #define GLOVE_SWITCH_ADDR 0x0400
 
@@ -190,7 +199,7 @@ static int synaptics_regs_operate(struct ts_regs_info *info);
 #define SYNAPTICS_COVER_FORCE_GLOVE	 "force_glove_in_smart_cover"
 #define SYNAPTICS_RAWDATA_DISP_FORMAT "rawdata_disp_format"
 #define SYNAPTICS_RAWDATA_ARRANGE_SWAP "rawdata_arrange_swap"
-
+#define SYNAPTICS_TEST_TYPE	 "tp_test_type"
 //#define SYNAPTICS_IOMUX	 "block_tp"
 
 #define SYNAPTICS_FWV_G_UPDATE_CHECK "fwv_g_update_check"
@@ -203,6 +212,7 @@ static char synaptics_reg_status[SYNAPTICS_MAX_REGDATA_NUM] = {0};
 
 #define S3718_IC_NAME	 "S3718"
 #define S3718_IC_NAME_SIZE	 5
+static uint32_t g_fpc_unclock_flag = 0;
 
 enum TP_register_type {
 	SYNA_REG_CTRL = 0,
@@ -595,9 +605,54 @@ static int synaptics_vddio_disable(void)
 	return 0;
 }
 
+/*keep vddio power down at leat 150ms to avoid lcd ic power up abnormal*/
+#define JDINT35695_VDDIO_MAX_TIME 150
+static unsigned long vddio_incell_poweroff_time = 0;
+static unsigned long get_tp_vddio_poweroff_time(void)
+{
+	return vddio_incell_poweroff_time;
+}
+static void set_tp_vddio_poweroff_time(unsigned long jz)
+{
+	vddio_incell_poweroff_time = jz;
+}
+static void lcd_vddio_poweroff_time(void)
+{
+	unsigned long timeout = 0;
+	unsigned long tp_vddio_poweroff_time = 0;
+	unsigned int  tp_vddio_delay = 0;
+	timeout = jiffies;
+	tp_vddio_poweroff_time = get_tp_vddio_poweroff_time();
+	if(tp_vddio_poweroff_time)
+	{
+	  if(time_before(timeout, (tp_vddio_poweroff_time + (HZ * JDINT35695_VDDIO_MAX_TIME/1000))))
+	  {
+	  //did not time out, vddio-incell pull down time is smaller than 150ms, do delay.
+	   if(timeout > tp_vddio_poweroff_time)
+	   {
+	     tp_vddio_delay = jiffies_to_msecs(timeout - tp_vddio_poweroff_time);
+	   }
+	   else
+	   {
+	     tp_vddio_delay = 0;
+	   }
+	   TS_LOG_INFO("power up lcd_vddio_delay=%u", tp_vddio_delay);
+	   if(tp_vddio_delay < JDINT35695_VDDIO_MAX_TIME)
+	   {
+	     TS_LOG_INFO("power up lcd_vddio_delay delay %u ms\n",JDINT35695_VDDIO_MAX_TIME-tp_vddio_delay);
+	     msleep(JDINT35695_VDDIO_MAX_TIME - tp_vddio_delay);
+	   }
+	  }
+	}
+}
+
 static void synatpics_regulator_enable(void)
 {
 	TS_LOG_INFO("synatpics_regulator_enable is called\n");
+	if(g_fpc_unclock_flag)
+	{
+	  lcd_vddio_poweroff_time();
+	}
 	if (1 == rmi4_data->synaptics_chip_data->vci_regulator_type) {
 		if (!IS_ERR(rmi4_data->tp_vci)) {
 			TS_LOG_INFO("vci enable is called\n");
@@ -621,12 +676,15 @@ static void synatpics_regulator_enable(void)
 
 static void synatpics_regulator_disable(void)
 {
+	unsigned long timeout = 0;
 	if (1 == rmi4_data->synaptics_chip_data->vddio_regulator_type) {
 		if (!IS_ERR(rmi4_data->tp_vddio) ) {
 			synaptics_vddio_disable();
 		}
 	}
-	
+	timeout = jiffies;
+	set_tp_vddio_poweroff_time(timeout);
+	TS_LOG_INFO("set_tp_vddio_poweroff_time\n");
 	mdelay(2);
 
 	if(1 == rmi4_data->synaptics_chip_data->vci_regulator_type) {
@@ -737,7 +795,9 @@ struct ts_device_ops ts_synaptics_ops = {
 	.chip_irq_bottom_half = synaptics_irq_bottom_half,
 	.chip_fw_update_boot = synaptics_fw_update_boot,
 	.chip_fw_update_sd = synaptics_fw_update_sd,
+	.chip_get_project_id = synaptics_chip_get_project_id,
 	.chip_get_info = synaptics_chip_get_info,
+	.chip_get_capacitance_test_type = synaptics_chip_get_capacitance_test_type,
 	.chip_set_info_flag = synaptics_set_info_flag,
 	.chip_before_suspend = synaptics_before_suspend,
 	.chip_suspend = synaptics_suspend,
@@ -813,6 +873,9 @@ static int synaptics_get_rawdata(struct ts_rawdata_info *info, struct ts_cmd_nod
 			TS_LOG_ERR("Failed to get rawdata\n");
 			return retval;
 		}
+		return NO_ERR;
+	}else{
+		return -EINVAL;
 	}
 	return NO_ERR;
 }
@@ -850,6 +913,28 @@ static int synaptics_chip_get_info(struct ts_chip_info_param *info)
 	return NO_ERR;
 }
 
+static int synaptics_chip_get_project_id(char *project_id)
+{
+	int retval = NO_ERR;
+	TS_LOG_INFO("%s called\n", __func__);
+
+	retval = synaptics_fw_data_s3718_init(rmi4_data);
+	if (retval) {
+		TS_LOG_ERR("synaptics_fw_data_s3718_init failed\n");
+		goto out;
+	}
+
+	retval = synaptics_read_project_id(project_id);
+	if (retval < 0){
+		TS_LOG_ERR("failed to get project id\n");
+		goto out;
+	}
+
+out:
+	synaptics_fw_data_s3718_release();
+	return retval;
+}
+
 /*  query the configure from dts and store in prv_data */
 static int synaptics_parse_dts(struct device_node *device,struct ts_device_data *chip_data)
 {
@@ -881,6 +966,14 @@ static int synaptics_parse_dts(struct device_node *device,struct ts_device_data 
 		retval = -EINVAL;
 		goto err;
 	}
+	retval = of_property_read_u32(device,PLK_FPC_UNCLK_ENABLE_FLAG, &g_fpc_unclock_flag);
+	if (retval)
+	{
+		TS_LOG_ERR("get plk-fpc-unclock-flag failed!\n");
+		retval = -EINVAL;
+		g_fpc_unclock_flag = 0;
+	}
+	TS_LOG_INFO("get g_fpc_unclock_flag: %d\n", g_fpc_unclock_flag);
 	retval = of_property_read_u32(device, SYNAPTICS_IC_TYPES, &chip_data->ic_type);
 	if (retval) {
 		TS_LOG_ERR("get device ic_type failed\n");
@@ -958,6 +1051,13 @@ static int synaptics_parse_dts(struct device_node *device,struct ts_device_data 
 	if (retval) {
 		TS_LOG_ERR("get rawdata_arrange_swap failed\n");
 		chip_data->rawdata_arrange_swap = 0;
+	}
+
+	retval = of_property_read_u32(device, SYNAPTICS_TEST_TYPE, &chip_data->tp_test_type);
+	if (retval) {
+		TS_LOG_ERR("get device SYNAPTICS_TEST_TYPE not exit,use default value\n");
+		strncpy(chip_data->tp_test_type,"Normalize_type",MAX_STR_LEN);
+		retval = 0;
 	}
 
 	/*0 is power supplied by gpio, 1 is power supplied by ldo*/
@@ -1070,6 +1170,7 @@ static void synaptics_power_on(void)
 		TS_LOG_INFO("Only vddio was controlled by gpio add delay 1ms\n");
 		ts_power_gpio_enable();
 	}
+	mdelay(1);
 	synaptics_power_on_gpio_set();
 }
 
@@ -1385,6 +1486,7 @@ static int synaptics_init_chip(void)
 			return rc;
 		}
 	}
+
 	for (count = 0; synaptics_sett_param_regs_map[count].module_name  != NULL; count++)
 	{
 		switch(synaptics_sett_param_regs_map[count].ic_type)
@@ -1412,6 +1514,9 @@ static int synaptics_init_chip(void)
 			if (SYNAPTICS_S3320 != rmi4_data->synaptics_chip_data->ic_type)
 				break;
 			synaptics_sett_param_regs = &synaptics_sett_param_regs_map[count];
+			if (!strncmp(rmi4_data->rmi4_mod_info.product_id_string, "PINE11110", strlen("PINE11110"))) {
+				synaptics_sett_param_regs->module_name = "tianma";
+			}
 			TS_LOG_INFO(" SYNAPTICS_S3320 synaptics_sett_param_regs_map count is %d\n", count);
 			goto out;
 		break;
@@ -1899,6 +2004,7 @@ static int synaptics_set_holster_switch(u8 holster_switch)
 	unsigned short holster_enable_addr = 0;
 	unsigned short glove_enable_addr = 0;
 	u8 force_cal = 0;
+	u8 temp_value;
 
 	TS_LOG_INFO("synaptics_set_holster_switch called\n");
 
@@ -1922,6 +2028,13 @@ static int synaptics_set_holster_switch(u8 holster_switch)
 		if (HOLSTER_SWITCH_ON == holster_switch)
 			holster_switch = 2;
 		holster_enable_addr = rmi4_data->rmi4_feature.f12_ctrl_base_addr + S3718_HOLSTER_SWITCH_OFFSET;
+
+		retval = synaptics_rmi4_i2c_read(rmi4_data, holster_enable_addr, &temp_value, 1);
+		if (retval < 0) {
+			TS_LOG_ERR("get current holster value Failed: %d\n", retval);
+		}
+		temp_value &= 0xFD;
+		holster_switch |= temp_value;
 		break;
 	default:
 		TS_LOG_ERR("rmi4_data->synaptics_chip_data->ic_type = %d\n", rmi4_data->synaptics_chip_data->ic_type);
@@ -2172,6 +2285,7 @@ static int synaptics_set_glove_switch(u8 glove_switch)
 {
 	int retval = NO_ERR;
 	u8 value = 0;
+	u8 temp_value;
 	unsigned char glove_enable_addr = 0;
 	//unsigned int pen_enable_addr = 0;
 
@@ -2193,6 +2307,13 @@ static int synaptics_set_glove_switch(u8 glove_switch)
 			value = 1;
 		else if (GLOVE_SWITCH_OFF == glove_switch)
 			value = 0;
+		retval = synaptics_rmi4_i2c_read(rmi4_data, glove_enable_addr, &temp_value, 1);
+		if (retval < 0) {
+			TS_LOG_ERR("get glove value failed: %d\n", retval);
+			goto out;
+		}
+		temp_value &= 0xFE;
+		value |= temp_value;
 		retval = synaptics_rmi4_i2c_write(rmi4_data, glove_enable_addr, &value, 1);
 		if (retval < 0) {
 			TS_LOG_ERR("open glove function failed: %d\n", retval);
@@ -2254,6 +2375,30 @@ static int synaptics_glove_switch(struct ts_glove_info *info)
 			break;
 	}
 
+	return retval;
+}
+
+static int synaptics_chip_get_capacitance_test_type(struct ts_test_type_info *info)
+{
+	int retval = NO_ERR;
+
+	if (!info) {
+		TS_LOG_ERR("synaptics_chip_get_capacitance_test_type: info is Null\n");
+		retval = -ENOMEM;
+		return retval;
+	}
+	switch (info->op_action) {
+		case TS_ACTION_READ:
+			memcpy(info->tp_test_type, rmi4_data->synaptics_chip_data->tp_test_type,MAX_STR_LEN);
+			TS_LOG_INFO("read_chip_get_test_type=%s, \n",info->tp_test_type);
+			break;
+		case TS_ACTION_WRITE:
+			break;
+		default:
+			TS_LOG_ERR("invalid status: %s", info->tp_test_type);
+			retval = -EINVAL;
+			break;
+	}
 	return retval;
 }
 
@@ -2362,6 +2507,9 @@ static int synaptics_palm_switch(struct ts_palm_info *info)
 static void synaptics_shutdown(void)
 {
 	TS_LOG_INFO("synaptics_shutdown\n");
+
+	synaptics_power_off_gpio_set();
+
 	if ((1 == rmi4_data->synaptics_chip_data->vci_gpio_type) && (1 == rmi4_data->synaptics_chip_data->vddio_gpio_type)) {
 		TS_LOG_INFO("Both  vci and vddio were need to output 0\n");
 		if (rmi4_data->synaptics_chip_data->vci_gpio_ctrl == rmi4_data->synaptics_chip_data->vddio_gpio_ctrl) {
@@ -2379,6 +2527,7 @@ static void synaptics_shutdown(void)
 		gpio_direction_output(rmi4_data->synaptics_chip_data->vddio_gpio_ctrl, 0);
 	}
 	gpio_direction_output(rmi4_data->synaptics_chip_data->reset_gpio, 0);
+	synatpics_regulator_disable();
 	synaptics_gpio_free();
 	synaptics_regulator_put();
 	return;
@@ -3172,8 +3321,6 @@ rescan:
 
 	rmi4_data->num_of_intr_regs = (intr_count + 7) / 8;
 	TS_LOG_DEBUG("Number of interrupt registers = %d\n", rmi4_data->num_of_intr_regs);
-	if (rmi4_data->num_of_intr_regs >= MAX_INTR_REGISTERS)
-		return -EINVAL;
 
 	memset(rmi4_data->intr_mask, 0x00, sizeof(rmi4_data->intr_mask));
 
@@ -3432,12 +3579,6 @@ static int synaptics_rmi4_f11_init(struct synaptics_rmi4_data *rmi4_data,
 			rmi4_data->sensor_max_y);
 
 	fhandler->intr_reg_num = (intr_count + 7) / 8;
-	if (fhandler->intr_reg_num >= MAX_INTR_REGISTERS) {
-		fhandler->intr_reg_num = 0;
-		fhandler->num_of_data_sources = 0;
-		fhandler->intr_mask = 0;
-		return -EINVAL;
-	}
 	if (fhandler->intr_reg_num != 0)
 		fhandler->intr_reg_num -= 1;
 
@@ -3698,12 +3839,6 @@ static int synaptics_rmi4_f12_init(struct synaptics_rmi4_data *rmi4_data,
 			rmi4_data->num_of_tx);
 
 	fhandler->intr_reg_num = (intr_count + 7) / 8;
-	if (fhandler->intr_reg_num >= MAX_INTR_REGISTERS) {
-		fhandler->intr_reg_num = 0;
-		fhandler->num_of_data_sources = 0;
-		fhandler->intr_mask = 0;
-		return -EINVAL;
-	}
 	if (fhandler->intr_reg_num != 0)
 		fhandler->intr_reg_num -= 1;
 
@@ -3840,12 +3975,6 @@ static int synaptics_rmi4_f1a_init(struct synaptics_rmi4_data *rmi4_data,
 	TS_LOG_DEBUG("fhandler->num_of_data_sources = %d, fhandler->fn_number = %d\n", fhandler->num_of_data_sources, fhandler->fn_number);
 
 	fhandler->intr_reg_num = (intr_count + 7) / 8;
-	if (fhandler->intr_reg_num >= MAX_INTR_REGISTERS) {
-		fhandler->intr_reg_num = 0;
-		fhandler->num_of_data_sources = 0;
-		fhandler->intr_mask = 0;
-		return -EINVAL;
-	}
 	if (fhandler->intr_reg_num != 0)
 		fhandler->intr_reg_num -= 1;
 
@@ -3889,12 +4018,6 @@ static int synaptics_rmi4_f51_init(struct synaptics_rmi4_data *rmi4_data,
 	fhandler->extra = NULL;
 
 	fhandler->intr_reg_num = (intr_count + 7) / 8;
-	if (fhandler->intr_reg_num >= MAX_INTR_REGISTERS) {
-		fhandler->intr_reg_num = 0;
-		fhandler->num_of_data_sources = 0;
-		fhandler->intr_mask = 0;
-		return -EINVAL;
-	}
 	if (fhandler->intr_reg_num != 0)
 		fhandler->intr_reg_num -= 1;
 
@@ -3921,6 +4044,12 @@ static int synaptics_rmi4_f51_init(struct synaptics_rmi4_data *rmi4_data,
 
 	return 0;
 }
+
+void register_power_input(struct input_dev *dev) {
+    idev = dev;
+    TS_LOG_DEBUG("Meticulus: power input registered with TS.\n");
+}
+
 
 static int synaptics_input_config(struct input_dev *input_dev)
 {
@@ -4054,6 +4183,16 @@ static int synaptics_rmi4_key_gesture_report(struct synaptics_rmi4_data *rmi4_da
 	switch (get_gesture_wakeup_data[0]) {
 	case DOUBLE_CLICK_WAKEUP:
 		if (IS_APP_ENABLE_GESTURE(GESTURE_DOUBLE_CLICK) & gesture_report_info->easy_wakeup_gesture) {
+			if(idev) {
+			    input_report_key(idev, KEY_POWER, POWER_KEY_PRESS);
+			    input_sync(idev);
+			    input_report_key(idev, KEY_POWER, POWER_KEY_RELEASE);
+			    input_sync(idev);
+			    TS_LOG_INFO("Meticulus: KEY_POWER reported!\n");
+			} else {
+			    TS_LOG_INFO("Meticulus: power key not registered!\n");
+			}
+
 			TS_LOG_INFO("@@@DOUBLE_CLICK_WAKEUP detected!@@@\n");
 			reprot_gesture_key_value = TS_DOUBLE_CLICK;
 			LOG_JANK_D(JLID_TP_GESTURE_KEY, "JL_TP_GESTURE_KEY");

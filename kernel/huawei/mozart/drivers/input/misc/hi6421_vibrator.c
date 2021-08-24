@@ -47,12 +47,14 @@ struct k3_vibrator_data {
 // Begin Immersion changes
 static struct k3_vibrator_data *p_data = NULL;
 // End Immersion changes
+volatile int vibrator_shake = 0;
 
 static void k3_vibrator_on(struct k3_vibrator_data  *pdata)
 {
 	u32 k3_vibrator_dr2_ctrl = 0;
 	u32 k3_vibrator_dr2_reserved = 0;
 	unsigned long flags;
+	vibrator_shake = 1;
 
 	if (!pdata) {
 		pr_err("error:k3_vibrator_on data is null\n");
@@ -85,6 +87,7 @@ static void k3_vibrator_off(struct k3_vibrator_data  *pdata)
 	u32 k3_vibrator_dr2_ctrl = 0;
 	u32 k3_vibrator_dr2_reserved = 0;
 	unsigned long flags;
+	vibrator_shake = 0;
 
 	if (!pdata) {
 		pr_err("error:k3_vibrator_off data is null\n");

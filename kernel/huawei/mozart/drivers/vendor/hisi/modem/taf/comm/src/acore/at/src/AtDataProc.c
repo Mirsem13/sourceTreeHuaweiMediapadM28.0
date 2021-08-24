@@ -8645,12 +8645,9 @@ VOS_UINT32 AT_PS_MatchIpv4v6ConnFailFallbackCause(
     VOS_UINT32                          ulCnt;
 
     ulRslt = VOS_FALSE;
-    AT_COMM_PS_CTX_STRU                *pstCommPsCtx = VOS_NULL_PTR;
-
-    pstCommPsCtx = AT_GetCommPsCtxAddr();
 
     /* 检查是否匹配拒绝原因值为#28 */
-    if ((TAF_PS_CAUSE_SM_NW_UNKNOWN_PDP_ADDR_OR_TYPE == enCause)&&(AT_PS_CALL_REDIAL_ENABLE == pstCommPsCtx->enEnableRedialForIpv4v6Rej))
+    if (TAF_PS_CAUSE_SM_NW_UNKNOWN_PDP_ADDR_OR_TYPE == enCause)
     {
         ulRslt = VOS_TRUE;
     }
@@ -8782,10 +8779,6 @@ VOS_VOID AT_PS_ProcDualStackCallConn(
     TAF_PS_CALL_PDP_ACTIVATE_CNF_STRU  *pstEvent
 )
 {
-    AT_COMM_PS_CTX_STRU                *pstCommPsCtx = VOS_NULL_PTR;
-
-    pstCommPsCtx = AT_GetCommPsCtxAddr();
-
     /* 不带原因值或#52原因值，需要发起另一种PDP激活 */
     if ( (VOS_FALSE == pstEvent->bitOpCause)
       || ( (VOS_TRUE == pstEvent->bitOpCause)
@@ -8794,16 +8787,6 @@ VOS_VOID AT_PS_ProcDualStackCallConn(
         switch (pstEvent->stPdpAddr.enPdpType)
         {
             case TAF_PDP_IPV4:
-                if ( (VOS_FALSE == pstEvent->bitOpCause)
-                  && (VOS_TRUE == pstCommPsCtx->ucDisableRedialForNoCause) )
-                {
-                    AT_PS_SndCallEndedResult(pstEvent->stCtrl.usClientId,
-                                             ucCallId,
-                                             TAF_PDP_IPV6,
-                                             TAF_PS_CAUSE_SM_NW_PDP_TYPE_IPV4_ONLY_ALLOWED);
-                    break;
-                }
-
                 if (VOS_OK != AT_PS_SetupSingleStackConn(pstEvent->stCtrl.usClientId, ucCallId, TAF_PDP_IPV6))
                 {
                     /* 记录呼叫错误码 */
@@ -8818,16 +8801,6 @@ VOS_VOID AT_PS_ProcDualStackCallConn(
                 break;
 
             case TAF_PDP_IPV6:
-                if ( (VOS_FALSE == pstEvent->bitOpCause)
-                  && (VOS_TRUE == pstCommPsCtx->ucDisableRedialForNoCause) )
-                {
-                    AT_PS_SndCallEndedResult(pstEvent->stCtrl.usClientId,
-                                             ucCallId,
-                                             TAF_PDP_IPV4,
-                                             TAF_PS_CAUSE_SM_NW_PDP_TYPE_IPV6_ONLY_ALLOWED);
-                    break;
-                }
-
                 if (VOS_OK != AT_PS_SetupSingleStackConn(pstEvent->stCtrl.usClientId, ucCallId, TAF_PDP_IPV4))
                 {
                     /* 记录呼叫错误码 */

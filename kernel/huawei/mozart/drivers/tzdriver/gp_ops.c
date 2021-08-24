@@ -209,11 +209,7 @@ static TC_NS_Operation *alloc_operation(TC_NS_DEV_File *dev_file,
 			/* find kernel addr refered to user addr */
 			list_for_each_entry(shared_mem, &dev_file->shared_mem_list, head){
 				if(shared_mem->user_addr == (void *)(client_param->memref.buffer | (unsigned long)(client_param->memref.size_h_addr) << 32)){
-
-					/* arbitrary CA can control offset by ioctl, so in here
-					 * offset must be checked, and avoid integer overflow. */
-					if (((shared_mem->len - client_param->memref.offset) >= buffer_size)
-					    && (shared_mem->len > client_param->memref.offset)) {
+					if(shared_mem->len >= buffer_size){
 						operation->params[i].memref.buffer =
 							virt_to_phys((void *)shared_mem->kernel_addr + client_param->memref.offset);
 					}
@@ -437,6 +433,8 @@ int tc_client_call(TC_NS_ClientContext *client_context, TC_NS_DEV_File *dev_file
 	smc_cmd->context_id = client_context->session_id;
 	smc_cmd->err_origin = 0;
 	smc_cmd->started = client_context->started;
+	smc_cmd->uid = current_uid();//TC_NS_get_uid();
+	TCVERBOSE("current uid is %d\n", smc_cmd->uid);
 	TCVERBOSE("operation start is :%d\n",smc_cmd->started);
 	if(operation) {
 		smc_cmd->operation_phys = virt_to_phys(operation);

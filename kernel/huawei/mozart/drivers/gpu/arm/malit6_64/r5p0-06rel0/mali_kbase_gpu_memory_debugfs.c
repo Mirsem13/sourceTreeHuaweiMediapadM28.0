@@ -49,7 +49,7 @@ static int kbasep_gpu_memory_seq_show(struct seq_file *sfile, void *data)
 		list_for_each_entry(element, &kbdev->kctx_list, link) {
 			/* output the memory usage and cap for each kctx
 			* opened on this device */
-			ret = seq_printf(sfile, "  %s-0x%pK %10u %10u %10u %10u\n", \
+			ret = seq_printf(sfile, "  %s-0x%p %10u %10u %10u %10u\n", \
 				"kctx",
 				element->kctx, \
 				element->kctx->pid, \

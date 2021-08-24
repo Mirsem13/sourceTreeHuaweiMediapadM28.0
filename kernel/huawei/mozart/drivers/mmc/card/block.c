@@ -57,6 +57,10 @@
 #include "queue.h"
 
 #include "hisi_partition.h"
+#ifdef CONFIG_HW_SD_HEALTH_DETECT
+#include "mmc_health_diag.h"
+#endif
+
 
 #ifdef CONFIG_HUAWEI_SDCARD_DSM
 #include <linux/mmc/dsm_sdcard.h>
@@ -80,13 +84,10 @@ struct emmc_dsm_log g_emmc_dsm_log;
 EXPORT_SYMBOL(emmc_dclient);
 #endif
 MODULE_ALIAS("mmc:block");
-/*not referenced,modified for pclint*/
-/*
 #ifdef MODULE_PARAM_PREFIX
 #undef MODULE_PARAM_PREFIX
 #endif
 #define MODULE_PARAM_PREFIX "mmcblk."
-*/
 #ifdef CONFIG_BALONG_MTD
 enum{
 	MODEMOM_PARTITION = 0,
@@ -150,8 +151,7 @@ static struct modem_mount_info modem_mount_list[MODEM_INVALID_MOUNT] = {
 #define MMC_BLK_TIMEOUT_MS  (20 * 60 * 1000)        /* 20 minute timeout */
 #define SD_BLK_TIMEOUT_MS  (1 * 60 * 1000)     /* for SD 1 minute timeout */
 
-#define mmc_req_rel_wr(req)	(((req->cmd_flags & REQ_FUA) || \
-				  (req->cmd_flags & REQ_META)) && \
+#define mmc_req_rel_wr(req)	((req->cmd_flags & REQ_FUA) && \
 				  (rq_data_dir(req) == WRITE))
 #define PACKED_CMD_VER	0x01
 #define PACKED_CMD_WR	0x02
@@ -1673,7 +1673,9 @@ static int mmc_blk_err_check(struct mmc_card *card,
 					pr_err("%s: SD card stuck in programming state!"\
 						" %s %s\n", mmc_hostname(card->host),
 						req->rq_disk->disk_name, __func__);
-
+#ifdef CONFIG_HW_SD_HEALTH_DETECT
+						mmc_diag_sd_health_status(req->rq_disk,MMC_BLK_STUCK_IN_PRG_ERR);
+#endif
 					return MMC_BLK_CMD_ERR;
 				}
 			} else {
@@ -1829,13 +1831,9 @@ static void mmc_blk_rw_rq_prep(struct mmc_queue_req *mqrq,
 
 	/*
 	 * Reliable writes are used to implement Forced Unit Access and
-	 * REQ_META accesses, and are supported only on MMCs.
-	 *
-	 * XXX: this really needs a good explanation of why REQ_META
-	 * is treated special.
+	 * are supported only on MMCs.
 	 */
-	bool do_rel_wr = ((req->cmd_flags & REQ_FUA) ||
-			  (req->cmd_flags & REQ_META)) &&
+	bool do_rel_wr = (req->cmd_flags & REQ_FUA) &&
 		(rq_data_dir(req) == WRITE) &&
 		(md->flags & MMC_BLK_REL_WR);
 
@@ -2116,8 +2114,8 @@ static void mmc_blk_packed_hdr_wrq_prep(struct mmc_queue_req *mqrq,
 
 	packed_cmd_hdr = packed->cmd_hdr;
 	memset(packed_cmd_hdr, 0, sizeof(packed->cmd_hdr));
-	packed_cmd_hdr[0] = (packed->nr_entries << 16) |
-		(PACKED_CMD_WR << 8) | PACKED_CMD_VER;
+	packed_cmd_hdr[0] = cpu_to_le32((packed->nr_entries << 16) |
+		(PACKED_CMD_WR << 8) | PACKED_CMD_VER);
 	hdr_blocks = mmc_large_sector(card) ? 8 : 1;
 
 	/*
@@ -2131,14 +2129,14 @@ static void mmc_blk_packed_hdr_wrq_prep(struct mmc_queue_req *mqrq,
 			((brq->data.blocks * brq->data.blksz) >=
 			 card->ext_csd.data_tag_unit_size);
 		/* Argument of CMD23 */
-		packed_cmd_hdr[(i * 2)] =
+		packed_cmd_hdr[(i * 2)] = cpu_to_le32(
 			(do_rel_wr ? MMC_CMD23_ARG_REL_WR : 0) |
 			(do_data_tag ? MMC_CMD23_ARG_TAG_REQ : 0) |
-			blk_rq_sectors(prq);
+			blk_rq_sectors(prq));
 		/* Argument of CMD18 or CMD25 */
-		packed_cmd_hdr[((i * 2)) + 1] =
+		packed_cmd_hdr[((i * 2)) + 1] = cpu_to_le32(
 			mmc_card_blockaddr(card) ?
-			blk_rq_pos(prq) : blk_rq_pos(prq) << 9;
+			blk_rq_pos(prq) : blk_rq_pos(prq) << 9);
 		packed->blocks += blk_rq_sectors(prq);
 		i++;
 	}
@@ -2291,9 +2289,22 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 	struct mmc_async_req *areq;
 	const u8 packed_nr = 2;
 	u8 reqs = 0;
+#ifdef CONFIG_HW_SD_HEALTH_DETECT
+	unsigned long long time1 = 0;
+	unsigned int rq_byte=0;
+#endif
 
 	if (!rqc && !mq->mqrq_prev->req)
 		return 0;
+
+#ifdef CONFIG_HW_SD_HEALTH_DETECT
+	if(!strcmp(current->comm,"mmcqd/1"))
+	{
+		mmc_trigger_ro_check(rqc,md->disk,md->read_only);
+		time1 = sched_clock();
+		rq_byte = mmc_calculate_ioworkload_and_rwspeed(time1,rqc,md->disk);
+	}
+#endif
 
 	if (rqc)
 		reqs = mmc_blk_prep_packed_list(mq, rqc);
@@ -2333,6 +2344,12 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 		type = rq_data_dir(req) == READ ? MMC_BLK_READ : MMC_BLK_WRITE;
 		mmc_queue_bounce_post(mq_rq);
 
+#ifdef CONFIG_HW_SD_HEALTH_DETECT
+		if(mmc_card_sd(card))
+		{
+		mmc_diag_sd_health_status(md->disk,mmc_get_rw_status(status));
+		}
+#endif
 		switch (status) {
 		case MMC_BLK_SUCCESS:
 		case MMC_BLK_PARTIAL:
@@ -2433,6 +2450,12 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 		}
 	} while (ret);
 
+#ifdef CONFIG_HW_SD_HEALTH_DETECT
+	if(!strcmp(current->comm,"mmcqd/1"))
+	{
+		mmc_calculate_rw_size(time1,rq_byte,rqc);
+	}
+#endif
 	return 1;
 
  cmd_abort:
@@ -2635,7 +2658,8 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
 	set_capacity(md->disk, size);
 
 	if (mmc_host_cmd23(card->host)) {
-		if (mmc_card_mmc(card) ||
+		if ((mmc_card_mmc(card) &&
+		     card->csd.mmca_vsn >= CSD_SPEC_VER_3) ||
 		    (mmc_card_sd(card) &&
 		     card->scr.cmds & SD_SCR_CMD23_SUPPORT))
 			md->flags |= MMC_BLK_CMD23;
@@ -2870,10 +2894,11 @@ static const struct mmc_fixup blk_fixups[] =
 		  MMC_QUIRK_BLK_NO_CMD23),
 
 	/*
-	 * Some Micron MMC cards needs longer data read timeout than
-	 * indicated in CSD.
+	 * Some MMC cards need longer data read timeout than indicated in CSD.
 	 */
 	MMC_FIXUP(CID_NAME_ANY, CID_MANFID_MICRON, 0x200, add_quirk_mmc,
+		  MMC_QUIRK_LONG_READ_TIME),
+	MMC_FIXUP("008GE0", CID_MANFID_TOSHIBA, CID_OEMID_ANY, add_quirk_mmc,
 		  MMC_QUIRK_LONG_READ_TIME),
 
 	/*
@@ -2959,7 +2984,12 @@ static int mmc_blk_probe(struct mmc_card *card)
 
 	mmc_set_drvdata(card, md);
 	mmc_fixup_device(card, blk_fixups);
-
+#ifdef CONFIG_HW_SD_HEALTH_DETECT
+	if(mmc_card_sd(card))
+	{
+		mmc_clear_report_info();
+	}
+#endif
 #ifdef CONFIG_MMC_BLOCK_DEFERRED_RESUME
 	if (mmc_card_sd(card)) {
 		mmc_set_bus_resume_policy(card->host, 1);

@@ -53,7 +53,6 @@ typedef enum
     TAG_STEP_DETECTOR,
     TAG_STEP_COUNTER,
     TAG_GEOMAGNETIC_RV,
-    TAG_AIRPRESS,
     TAG_HANDPRESS,
     TAG_CAP_PROX,
     TAG_SENSOR_END,/*27*/
@@ -129,10 +128,7 @@ typedef enum
     CMD_ALS_DATA_RESP,
     CMD_ALS_PARAMET_REQ,
     CMD_ALS_PARAMET_RESP,
-#ifdef CONFIG_ADAPT_TP_TYPE
-    CMD_ALS_SET_TPTYPE_REQ,
-    CMD_ALS_SET_TPTYPE_RESP,
-#endif
+
     //proximity sensor
     CMD_PS_DATA_REQ = CMD_PRIVATE,
     CMD_PS_DATA_RESP,
@@ -557,8 +553,8 @@ typedef struct
 typedef struct
 {
     pkt_header_t hd;
-    //this is the last pkt
-    //total can't big than
+    //如果是1表示这是最后一个报文了，否则后面还有需要动态加载请求报文。
+    //每次总数量不能大于
     //(MAX_PKT_LENGTH-sizeof(PKT_HEADER)-sizeof(End))/sizeof(uint16_t)
     uint8_t end;
     uint8_t file_count;

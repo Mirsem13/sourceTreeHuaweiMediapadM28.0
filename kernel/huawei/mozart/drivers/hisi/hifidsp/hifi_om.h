@@ -20,7 +20,6 @@ extern "C" {
 #ifdef PLATFORM_HI3XXX
 #define HIFI_LOG_PATH_PARENT "/data/hisi_logs/"
 #define HIFI_LOG_PATH "/data/hisi_logs/hifi_log/"
-#define HIFI_LOG_PATH_CHILD_RDR "/data/hisi_logs/hifi_log/rdr/"
 #define FILE_NAME_DUMP_DSP_LOG		 "hifi.log"
 #define FILE_NAME_DUMP_DSP_BIN		 "hifi.bin"
 #define FILE_NAME_DUMP_DSP_PANIC_LOG "hifi_panic.log"
@@ -49,9 +48,7 @@ typedef enum {
 typedef enum {
 	DSP_NORMAL,
 	DSP_PANIC,
-	DSP_LOG_BUF_FULL,
-	DSP_RDR,
-	DSP_BUT
+	DSP_LOG_BUF_FULL
 }DSP_ERROR_TYPE;
 
 typedef enum {
@@ -89,6 +86,8 @@ struct hifi_om_s {
 	unsigned int*	dsp_log_cur_addr;
 	char*			dsp_log_addr;
 	char*			dsp_bin_addr;
+	char*			dsp_ocram_bin_addr;
+	char*			dsp_tcm_bin_addr;
 	char			cur_dump_time[HIFI_DUMP_FILE_NAME_MAX_LEN];
 	bool			first_dump_log;
 	bool			force_dump_log;

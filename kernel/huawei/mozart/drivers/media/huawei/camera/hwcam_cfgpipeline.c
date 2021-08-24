@@ -15,8 +15,9 @@
 #include <media/v4l2-event.h>
 #include <media/v4l2-fh.h>
 #include <media/v4l2-ioctl.h>
+#ifdef CONFIG_COMPAT
 #include "hwcam_compat32.h"
-
+#endif
 #include "hwcam_intf.h"
 
 typedef struct _tag_hwcam_cfgpipeline_mount_req

@@ -18,4 +18,7 @@ extern struct ts_device_ops ts_cypress_ops;
 #ifdef CONFIG_WACOM_TS
 extern struct ts_device_ops ts_wacom_ops;
 #endif
+#ifdef CONFIG_HIDEEP_TS
+extern struct ts_device_ops ts_hideep_ops;
+#endif
 #endif

@@ -46,6 +46,11 @@ struct vmap_area {
 	struct list_head purge_list;    /* "lazy purge" list */
 	struct vm_struct *vm;
 	struct rcu_head rcu_head;
+
+	int 			tid;
+	int				tgid;
+	char 			thread_name[16];
+	char 			process_name[16];
 };
 
 /*

@@ -159,6 +159,7 @@
 #define ISPCMD_SYSTEM_SET_EXPO_TIME					0x0106
 #define ISPCMD_SYSTEM_SET_AD_GAIN					0x0107
 #define ISPCMD_SYSTEM_SET_LOG_LEVEL					0x0109
+#define ISPCMD_SYSTEM_GET_PIPELINE_STATUS			0x0112
 
 // AL6045 Operation
 #define ISPCMD_AL6045_MINIISPOPEN					0x4000
@@ -272,7 +273,7 @@
 #define T_TAKEPIC_STOP			2
 
 //AE metering mode
-#define T_AE_AUTO				0 
+#define T_AE_AUTO				0
 #define T_AE_AVERAGE 			1
 #define T_AE_CENTRWEIGHT		2
 #define T_AE_SPOT				3

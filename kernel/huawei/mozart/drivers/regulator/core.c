@@ -37,8 +37,8 @@
 
 #include "dummy.h"
 /*lint -emacro(750,*)*/
-#define rdev_crit(rdev, fmt, ...)					\
-	pr_crit("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
+/* #define rdev_crit(rdev, fmt, ...)					\
+	pr_crit("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__) */
 /*lint +emacro(750,*)*/
 #define rdev_err(rdev, fmt, ...)					\
 	pr_err("%s: " fmt, rdev_get_name(rdev), ##__VA_ARGS__)
@@ -1566,8 +1566,6 @@ static void regulator_ena_gpio_free(struct regulator_dev *rdev)
 				gpio_free(pin->gpio);
 				list_del(&pin->list);
 				kfree(pin);
-				rdev->ena_pin = NULL;
-				return;
 			} else {
 				pin->request_count--;
 			}

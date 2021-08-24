@@ -902,7 +902,7 @@ char close_als_dimming[] = {
 
 // 2steps
 char moving_dimming_steps[] = {
-	0x94, 0x07,
+	0x94, 0x18,
 };
 
 // 2steps
@@ -915,7 +915,7 @@ char still_dimming[] = {
 };
 
 char moving_dimming[] = {
-	0x94, 0x67
+	0x94, 0x78
 };
 
 char auto_moving_mode_detect[] = {

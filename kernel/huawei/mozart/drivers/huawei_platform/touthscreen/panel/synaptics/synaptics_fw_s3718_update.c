@@ -16,7 +16,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-#include <linux/ctype.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -1906,15 +1905,15 @@ static int fwu_read_f34_blocks(unsigned short block_cnt, unsigned char cmd)
 static int fwu_get_image_firmware_id(unsigned int *fw_id)
 {
 	int retval;
+	unsigned char index = 0;
+	char *strptr;
 	char *firmware_id;
 	struct synaptics_rmi4_data *rmi4_data = fwu->rmi4_data;
 
 	if (fwu->img.contains_firmware_id) {
 		*fw_id = fwu->img.firmware_id;
 	} else {
-		size_t index, max_index;
-		unsigned char *strptr = strnstr(fwu->image_name, "PR", MAX_IMAGE_NAME_LEN);
-
+		strptr = strnstr(fwu->image_name, "PR", MAX_IMAGE_NAME_LEN);
 		if (!strptr) {
 			TS_LOG_ERR("%s: No valid PR number (PRxxxxxxx) ""found in image file name (%s)\n", __func__, fwu->image_name);
 			return -EINVAL;
@@ -1926,11 +1925,7 @@ static int fwu_get_image_firmware_id(unsigned int *fw_id)
 			TS_LOG_ERR("%s: Failed to alloc mem for firmware_id\n", __func__);
 			return -ENOMEM;
 		}
-
-		max_index = min((ptrdiff_t)(MAX_FIRMWARE_ID_LEN - 1),
-			&fwu->image_name[MAX_IMAGE_NAME_LEN] - strptr);
-		index = 0;
-		while (index < max_index && isdigit(strptr[index])) {
+		while (strptr[index] >= '0' && strptr[index] <= '9') {
 			firmware_id[index] = strptr[index];
 			index++;
 		}
@@ -3252,27 +3247,33 @@ static int file_open_firmware(u8 **buf)
 	return 0;
 }
 
-static int read_project_id(char *project_id)
+static int synaptics_read_project_id_under_V6(char *project_id)
+{
+	memcpy(project_id, fwu->rmi4_data->rmi4_mod_info.product_id_string, CHIP_PROJECT_ID_LENGTH);
+	project_id[CHIP_PROJECT_ID_LENGTH] = 0;
+	return NO_ERR;
+}
+
+static int synaptics_read_project_id_above_V7(char *project_id)
 {
 	int retval = -EINVAL;
-	int i = 0;
+	int index = 0;
 	unsigned short block_count;
-	struct synaptics_rmi4_data *rmi4_data = fwu->rmi4_data;
 
 	fwu->config_area = PM_CONFIG_AREA;
 
 	if (!fwu->flash_properties.has_pm_config) {
-		goto exit;
+		goto out;
 	}
 
 	block_count = fwu->blkcount.pm_config;
 	if (block_count == 0) {
-		goto exit;
+		goto out;
 	}
 
 	retval = fwu_enter_flash_prog();
 	if (retval < 0){
-		goto exit;
+		goto out;
 	}
 
 	fwu->config_size = fwu->block_size * block_count;
@@ -3288,19 +3289,33 @@ static int read_project_id(char *project_id)
 	/* serial partition data is stored at fwu->read_config_buf pointer, data length = fwu->config_size, */
 	retval = fwu_read_f34_blocks(block_count, CMD_READ_CONFIG);
 
-	for(i = 0; i < RMI_PROJECT_ID_LENGTH && i < fwu->config_size; i++){
-		project_id[i] = fwu->read_config_buf[i];
+	for(index = 0; index < CHIP_PROJECT_ID_LENGTH && index < fwu->config_size; index++){
+		project_id[index] = fwu->read_config_buf[index];
 	}
+	project_id[index] = 0;
 
 reset:
 	/*once rmi4_data -> reset_device()  is called, device will be back to UI mode */
-	rmi4_data->reset_device(rmi4_data);
+	fwu->rmi4_data->reset_device(fwu->rmi4_data);
 	fwu_scan_pdt();
 
-exit:
-	project_id[i] = 0;
-	TS_LOG_INFO("%s: %s\n",__func__, project_id);
+out:
+	return retval;
+}
 
+//make sure you have init fwu before you call this function.
+int synaptics_read_project_id(char *project_id)
+{
+	int retval = -EINVAL;
+
+	TS_LOG_INFO("%s called\n",__func__);
+	if (fwu->bl_version == BL_V7){
+		retval = synaptics_read_project_id_above_V7(project_id);
+	}else{
+		retval = synaptics_read_project_id_under_V6(project_id);
+	}
+
+	TS_LOG_INFO("%s: %s\n",__func__, project_id);
 	return retval;
 }
 
@@ -3325,14 +3340,14 @@ static bool is_new_carrera_module(char *file_name)
 
 	if (!begin_with(file_name, carrrera)){
 		TS_LOG_ERR("%s: file_name: %s does not contin %s\n",__func__, file_name, carrrera);
-		goto exit;
+		goto out;
 	}
 
 	/* Refresh configid */
 	retval = synaptics_fw_s3718_configid(rmi4_data);
 	if (retval) {
 		TS_LOG_ERR("%s: Failed to read device config ID\n",__func__);
-		goto exit;
+		goto out;
 	}
 
 	TS_LOG_INFO("%s: config_id: 0x%02x, 0x%02x, 0x%02x, 0x%02x\n",__func__, s3718_config_id[0], s3718_config_id[1], s3718_config_id[2], s3718_config_id[3]);
@@ -3340,7 +3355,7 @@ static bool is_new_carrera_module(char *file_name)
 		return true;
 	}
 
-exit:
+out:
 	return false;
 }
 
@@ -3348,9 +3363,9 @@ static int get_carrera_project_id_num(void)
 {
 	int num = 0;
 	char carr[] = "CARR1709";
-	char project_id[RMI_PROJECT_ID_LENGTH+1] = "";
+	char project_id[CHIP_PROJECT_ID_LENGTH+1] = "";
 
-	if (0 != read_project_id(project_id)){
+	if (0 != synaptics_read_project_id(project_id)){
 		num = 0;
 	}else if (begin_with(project_id, carr)){
 		num = project_id[strlen(carr)] - '0';

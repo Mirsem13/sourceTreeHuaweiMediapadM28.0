@@ -1166,14 +1166,10 @@ VOS_VOID AT_ReadIpv6CapabilityNV( VOS_VOID )
      && (VOS_TRUE == ulIpv6CapabilityValid))
     {
         pstCommPsCtx->ucIpv6Capability = stNvIpv6Capability.ucIpv6Capablity;
-        pstCommPsCtx->ucDisableRedialForNoCause = stNvIpv6Capability.aucReversed[0];
-        pstCommPsCtx->enEnableRedialForIpv4v6Rej = stNvIpv6Capability.aucReversed[1];
     }
     else
     {
         pstCommPsCtx->ucIpv6Capability = AT_IPV6_CAPABILITY_IPV4_ONLY;
-        pstCommPsCtx->ucDisableRedialForNoCause = VOS_FALSE;
-        pstCommPsCtx->enEnableRedialForIpv4v6Rej = AT_PS_CALL_REDIAL_ENABLE;
     }
 
     return;

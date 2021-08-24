@@ -7,6 +7,7 @@
 
 obj-y				+= irqchip/
 obj-y				+= bus/
+obj-y     += hwusb/
 
 # GPIO must come after pinctrl as gpios may need to mux pins etc
 obj-y				+= pinctrl/
@@ -46,7 +47,6 @@ obj-$(CONFIG_RESET_CONTROLLER)	+= reset/
 # default.
 obj-y				+= tty/
 obj-y				+= char/
-obj-y				+= tsif/
 
 # gpu/ comes after char for AGP vs DRM startup
 obj-y				+= gpu/
@@ -182,7 +182,7 @@ obj-$(CONFIG_OF)		  += hsad/
 ifeq ($(CONFIG_UTTEST), y) 
 LINUXINCLUDE := -I$(BALONG_TOPDIR)/build/tools/ut_tool/linux_stub/arch/$(SRCARCH)/include $(LINUXINCLUDE)
 endif 
-
+obj-$(CONFIG_SENSORS_CLASS)		+= sensors/
 obj-$(CONFIG_TZDRIVER)          += tzdriver/
 obj-$(CONFIG_POWER_SUPPLY)     += power/
 obj-$(CONFIG_BT)               += bluetooth/

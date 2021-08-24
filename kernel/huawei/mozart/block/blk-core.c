@@ -1875,7 +1875,10 @@ EXPORT_SYMBOL(generic_make_request);
 #ifdef CONFIG_HW_SYSTEM_WR_PROTECT
 int blk_set_ro_secure_debuggable(int state)
 {
-	*ro_secure_debuggable = state;
+	if(NULL != ro_secure_debuggable)
+	{
+		*ro_secure_debuggable = state;
+	}
 	return 0;
 }
 EXPORT_SYMBOL(blk_set_ro_secure_debuggable);
@@ -1936,7 +1939,7 @@ void submit_bio(int rw, struct bio *bio)
 			 * root user: send write request to mmc driver.
 			 */
 			if (unlikely(name && (strncmp(name, PART_SYSTEM, PART_SYSTEM_LEN) == 0) && (name[PART_SYSTEM_LEN] == '\0')) &&
-					*ro_secure_debuggable) {
+					((NULL != ro_secure_debuggable) ? (*ro_secure_debuggable):1)) {
 
 				pr_info("[HW]: eMMC protect driver built on %s @ %s, into printk\n", __DATE__, __TIME__);
 #ifdef CONFIG_HUAWEI_EMMC_DSM
@@ -1946,7 +1949,7 @@ void submit_bio(int rw, struct bio *bio)
 						(unsigned long long)bio->bi_sector,
 						name,
 						count,
-						*ro_secure_debuggable,
+						((NULL != ro_secure_debuggable) ? (*ro_secure_debuggable):1),
 						(strstr(saved_command_line,"fblock=locked") != NULL) ? "locked" : "unlock");
 
 #endif
@@ -1956,7 +1959,7 @@ void submit_bio(int rw, struct bio *bio)
 						(unsigned long long)bio->bi_sector,
 						name,
 						count,
-						*ro_secure_debuggable,
+						((NULL != ro_secure_debuggable) ? (*ro_secure_debuggable):1),
 						(strstr(saved_command_line,"fblock=locked") != NULL) ? "locked" : "unlock");
 
 				bio_endio(bio, -EIO);
@@ -3185,6 +3188,9 @@ int blk_pre_runtime_suspend(struct request_queue *q)
 {
 	int ret = 0;
 
+	if (!q->dev)
+		return ret;
+
 	spin_lock_irq(q->queue_lock);
 	if (q->nr_pending) {
 		ret = -EBUSY;
@@ -3212,6 +3218,9 @@ EXPORT_SYMBOL(blk_pre_runtime_suspend);
  */
 void blk_post_runtime_suspend(struct request_queue *q, int err)
 {
+	if (!q->dev)
+		return;
+
 	spin_lock_irq(q->queue_lock);
 	if (!err) {
 		q->rpm_status = RPM_SUSPENDED;
@@ -3236,6 +3245,9 @@ EXPORT_SYMBOL(blk_post_runtime_suspend);
  */
 void blk_pre_runtime_resume(struct request_queue *q)
 {
+	if (!q->dev)
+		return;
+
 	spin_lock_irq(q->queue_lock);
 	q->rpm_status = RPM_RESUMING;
 	spin_unlock_irq(q->queue_lock);
@@ -3258,6 +3270,9 @@ EXPORT_SYMBOL(blk_pre_runtime_resume);
  */
 void blk_post_runtime_resume(struct request_queue *q, int err)
 {
+	if (!q->dev)
+		return;
+
 	spin_lock_irq(q->queue_lock);
 	if (!err) {
 		q->rpm_status = RPM_ACTIVE;

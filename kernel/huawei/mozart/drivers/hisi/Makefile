@@ -17,7 +17,6 @@ obj-y += efuse/
 obj-$(CONFIG_HI6XXX_IPC_MULTICORE)	+= ipc_hi6xxx/
 obj-$(CONFIG_HIFI_MAILBOX)					+= hifi_mailbox/
 ifneq ($(strip $(HISI_PILOT_LIBS)), true)
-obj-$(CONFIG_HISILICON_PLATFORM)	+= modem_hi6xxx/
 endif
 
 obj-$(CONFIG_HISILICON_PLATFORM)	+= mailbox/
@@ -32,9 +31,11 @@ obj-$(CONFIG_HISI_AXI)+= axi/
 obj-$(CONFIG_HISI_SOCP) += socp/
 #obj-$(CONFIG_HISILICON_PLATFORM_SUBVIC) += subvic/
 #obj-$(CONFIG_HISILICON_PLATFORM_SYNC)	+= sync/
-#obj-y += mcushell/
+obj-$(CONFIG_HISILICON_PLATFORM_TELE_MNTN) += tele_mntn/
+obj-y += mcushell/
 #obj-$(CONFIG_HISILICON_PLATFORM_UDI)	+= udi/
 obj-$(CONFIG_HISILICON_PLATFORM_USB)	+= usb/
+obj-$(CONFIG_HISILICON_HI6XXX_FREQDUMP) += freqdump/
 obj-$(CONFIG_HISILICON_PLATFORM)	+= hi3xxx/
 #obj-$(CONFIG_CONNECTIVITY_HI110X) += hi110x/
 obj-$(CONFIG_HI6421_SPK) += hi6421_spk/
@@ -44,6 +45,7 @@ obj-$(CONFIG_SUSPEND) += pm_common/
 obj-$(CONFIG_HISI_HMPTH_SET) += hmpthresholds/
 obj-$(CONFIG_HISILICON_PLATFORM_KEYMASTER) += keymaster/
 obj-$(CONFIG_HISILICON_PLATFORM)                                       += secure_boot/
+obj-y += watchpoint/
 
 ifeq ($(TARGET_VERSION_MODE),factory)
 CFLAGS_KERNEL   += -DCONFIG_FACTORY_MODE
@@ -58,3 +60,4 @@ obj-$(CONFIG_HISI_BALONG_MODEM_HI3630)        += modem_hi3630/
 endif
 
 
+obj-$(CONFIG_HISI_PERFHUB) += perfhub/

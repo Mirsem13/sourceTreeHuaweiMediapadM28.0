@@ -29,21 +29,11 @@
 #define HI6402_TCM_SIZE                    (0x25000)
 #define HI6402_OCRAM_START_ADDR            (0x10000000)
 #define HI6402_OCRAM_SIZE                  (0x60000)
-#define HI6402_REG_SIZE                    (0x4E0)
-#define HI6402_CFG_SUB_SIZE                (0xA0)
+#define HI6402_REG_SIZE                    (0x300)
+#define HI6402_CFG_SUB_SIZE                (0x100)
 #define HI6402_AUDIO_SUB_SIZE              (0x200)
 #define HI6402_DSP_EDMA_SIZE1              (0x30)
-#define HI6402_DSP_EDMA_SIZE2              (0xA0)
-#define HI6402_DSP_EDMA_SIZE3              (0x4E0)
-#define HI6402_DSP_WATCHDOG_SIZE1          (0xC)
-#define HI6402_DSP_WATCHDOG_SIZE2          (0x8)
-#define HI6402_DSP_SCTRL_SIZE1             (0x1C)
-#define HI6402_DSP_SCTRL_SIZE2             (0x20)
-#define HI6402_DSP_EDMA_SIZE2_OFFSET       (0x600)
-#define HI6402_DSP_EDMA_SIZE3_OFFSET       (0x700)
-#define HI6402_DSP_WATCHDOG_SIZE2_OFFSET   (0x10)
-#define HI6402_DSP_SCTRL_SIZE2_OFFSET      (0x100)
-
+#define HI6402_DSP_EDMA_SIZE2              (0x300)
 
 /* 0x20001000 */
 #define HI6402_DSP_IOS_AF_CTRL0            (HI6402_DSP_IOSHARE_BASE + 0x100)
@@ -64,7 +54,6 @@
 #define HI6402_DSP_UART_LCR                (HI6402_DSP_UART_BASE + 0x00C)
 
 /* 0x20007000 */
-#define HI6402_VERSION                     (HI6402_CFG_SUB_BASE + 0x000)
 #define HI6402_DSP_SW_RST_REQ              (HI6402_CFG_SUB_BASE + 0x001)
 #define HI6402_DSP_SC_DSP_CTRL0            (HI6402_CFG_SUB_BASE + 0x004)
 #define HI6402_DSP_SC_MAD_CTRL0            (HI6402_CFG_SUB_BASE + 0x013)
@@ -88,17 +77,20 @@
 #define HI6402_UART_MODE                   (HI6402_DSP_CMD2)
 /* use for notify soundtrigger event */
 #define HI6402_DSP_CMD3                    (HI6402_CFG_SUB_BASE + 0x073)
-#define HI6402_CODEC_ANA_PLL               (HI6402_CFG_SUB_BASE + 0x0F6)
+
 /* 0x20007200 */
 #define HI6402_CODE_CORE_BASE              (HI6402_CFG_SUB_BASE + 0x200)
 #define HI6402_SC_S1_SRC_LR_CTRL_M         (HI6402_CODE_CORE_BASE + 0x37)
 #define HI6402_SC_S2_SRC_LR_CTRL_M         (HI6402_CODE_CORE_BASE + 0x49)
 #define HI6402_SC_S3_SRC_LR_CTRL_M         (HI6402_CODE_CORE_BASE + 0x58)
 #define HI6402_SC_S4_SRC_LR_CTRL_M         (HI6402_CODE_CORE_BASE + 0x67)
+#define HI6402_SC_MISC_SRC_CTRL_H          (HI6402_CODE_CORE_BASE + 0x88)
+
 #define HI6402_SC_FS_S1_CTRL_H             (HI6402_CODE_CORE_BASE + 0xAF)
 #define HI6402_SC_FS_S2_CTRL_H             (HI6402_CODE_CORE_BASE + 0xB1)
 #define HI6402_SC_FS_S3_CTRL_H             (HI6402_CODE_CORE_BASE + 0xB3)
 #define HI6402_SC_FS_S4_CTRL_H             (HI6402_CODE_CORE_BASE + 0xB5)
+#define HI6402_SC_FS_MISC_CTRL             (HI6402_CODE_CORE_BASE + 0xB6)
 
 /* 0x20008000 */
 #define HI6402_GPIO0_DATA_ch5              (HI6402_GPIO0_BASE + 0x080)

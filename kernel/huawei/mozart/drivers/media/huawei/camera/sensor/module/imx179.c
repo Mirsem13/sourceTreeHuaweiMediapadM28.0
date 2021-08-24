@@ -276,7 +276,7 @@ imx179_config(
         void  *argp)
 {
 	struct sensor_cfg_data *data;
-    static bool imx179_power_on = false;
+	static bool imx179_power_on = false;
 	static bool csi_enable = false;
 
 	int ret =0;
@@ -284,17 +284,17 @@ imx179_config(
 	cam_debug("imx179 cfgtype = %d",data->cfgtype);
 	switch(data->cfgtype){
 		case SEN_CONFIG_POWER_ON:
-            if (!imx179_power_on) {
-                ret = si->vtbl->power_up(si);
-                imx179_power_on = true;
+			if (!imx179_power_on) {
+				ret = si->vtbl->power_up(si);
+				imx179_power_on = true;
             }
-            break;
+			break;
 		case SEN_CONFIG_POWER_OFF:
-            if (imx179_power_on) {
-                ret = si->vtbl->power_down(si);
-                imx179_power_on = false;
-            }
-            break;
+			if (imx179_power_on) {
+				ret = si->vtbl->power_down(si);
+				imx179_power_on = false;
+			}
+			break;
 		case SEN_CONFIG_WRITE_REG:
 			break;
 		case SEN_CONFIG_READ_REG:
@@ -303,18 +303,18 @@ imx179_config(
 			break;
 		case SEN_CONFIG_READ_REG_SETTINGS:
 			break;
-        case SEN_CONFIG_ENABLE_CSI:
-            if(imx179_power_on && !csi_enable) {	
-                ret = si->vtbl->csi_enable(si);
+		case SEN_CONFIG_ENABLE_CSI:
+			if(imx179_power_on && !csi_enable) {
+				ret = si->vtbl->csi_enable(si);
 				csi_enable = true;
-            }
-            break;
+			}
+			break;
 		case SEN_CONFIG_DISABLE_CSI:
-            if(imx179_power_on && csi_enable) {
-                ret = si->vtbl->csi_disable(si);
+			if(imx179_power_on && csi_enable) {
+				ret = si->vtbl->csi_disable(si);
 				csi_enable = false;
-            }
-            break;
+			}
+			break;
 		case SEN_CONFIG_MATCH_ID:
 			ret = si->vtbl->match_id(si,argp);
 			break;

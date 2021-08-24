@@ -269,7 +269,11 @@ static ssize_t imx278_davince_powerctrl_show(struct device *dev,
 static ssize_t imx278_davince_powerctrl_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
-	int state = simple_strtol(buf, NULL, 10);
+#ifndef DEBUG_HISI_CAMERA
+    return count;
+#else
+    int state  = 0;
+    state = simple_strtol(buf, NULL, 10);
 	cam_info("enter %s, state %d", __func__, state);
 
 	if (state == POWER_ON)
@@ -278,6 +282,7 @@ static ssize_t imx278_davince_powerctrl_store(struct device *dev,
 		imx278_davince_power_down(&s_imx278_davince.intf);
 
 	return count;
+#endif
 }
 
 

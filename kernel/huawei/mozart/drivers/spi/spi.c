@@ -38,7 +38,7 @@
 #include <linux/kthread.h>
 #include <linux/ioport.h>
 #include <linux/acpi.h>
-#include <huawei_platform/dsm/dsm_pub.h>
+#include <dsm/dsm_pub.h>
 
 extern void print_spi_registers(struct spi_master * master);
 extern void cleanup_spi(struct spi_master *master);
@@ -1037,8 +1037,7 @@ static struct class spi_master_class = {
  *
  * The caller is responsible for assigning the bus number and initializing
  * the master's methods before calling spi_register_master(); and (after errors
- * adding the device) calling spi_master_put() and kfree() to prevent a memory
- * leak.
+ * adding the device) calling spi_master_put() to prevent a memory leak.
  */
 struct spi_master *spi_alloc_master(struct device *dev, unsigned size)
 {
@@ -1055,7 +1054,7 @@ struct spi_master *spi_alloc_master(struct device *dev, unsigned size)
 	master->bus_num = -1;
 	master->num_chipselect = 1;
 	master->dev.class = &spi_master_class;
-	master->dev.parent = get_device(dev);
+	master->dev.parent = dev;
 	spi_master_set_devdata(master, &master[1]);
 
 	return master;
@@ -1570,12 +1569,8 @@ static int __spi_sync(struct spi_device *spi, struct spi_message *message, int b
             dev_err(&spi->dev, "message status=%d,spi driver wait for completion timeout\n", message->status);
             dev_spi_dsm_client_notify("spi driver wait for completion timeout\n", DSM_SPI_ERROR_NO, spi);
             status = -ETIME;
-            if (!bus_locked){
-                mutex_lock(&master->bus_lock_mutex);
-                print_spi_registers(master);
-                cleanup_spi(master);
-                mutex_unlock(&master->bus_lock_mutex);
-            }
+            print_spi_registers(master);
+            cleanup_spi(master);
         }
     } else if (-ESHUTDOWN == status) {
         dev_err(&spi->dev, "spi shutdown error\n");

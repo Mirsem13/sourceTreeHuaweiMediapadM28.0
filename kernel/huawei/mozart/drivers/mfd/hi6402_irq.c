@@ -24,17 +24,14 @@
 #include <linux/wakelock.h>
 #include <linux/mutex.h>
 #include <linux/clk.h>
-#include <linux/clk-private.h>
-
 #include <linux/mfd/hi6402_irq.h>
 #include <linux/hisi/hi6402_hifi_misc.h>
 #include <linux/irq.h>
-#include <huawei_platform/dsm/dsm_pub.h>
+#include <dsm/dsm_pub.h>
 #ifndef NO_IRQ
 #define NO_IRQ 0
 #endif
 
-#define HI6402_VERSION_CS	0x11
 /* 8-bit register offset in irq */
 #define HI6402_IRQ_CFG_BASE_ADDR	0x20007000
 
@@ -67,11 +64,6 @@
 #define	HI6402_REG32_OFFSET_MASK_SSI	0xFC
 #define	HI6402_REG_VAL_BIT		8
 #define	HI6402_REG_VAL_MASK		0xFF
-
-#define HI6402_CODEC_CORE_BEGIN         0x20007200
-#define HI6402_CODEC_CORE_END           0x200073FF
-#define HI6402_CODEC_CORE_CLK_BEGIN     0x20007041
-#define HI6402_CODEC_CORE_CLK_END       0x2000704C
 
 #define	HI6402_PAGE_SELECT_REG_0_SSI	0x1FD
 #define	HI6402_PAGE_SELECT_REG_1_SSI	0x1FE
@@ -138,10 +130,10 @@
 #define HI6402_DSP_APB_CLK_INIT			(0x71)
 #define HI6402_CODEC_MAINPGA_SEL	(HI6402_IRQ_CFG_BASE_ADDR + 0x0AA)
 #define HI6402_CODEC_MAINPGA_SEL_BIT		(1)
+#define HI6402_CODEC_ADC0_MUX_SEL      (0x20007294)
+#define HI6402_CODEC_ADCL0_MAINMIC             (0)
 
 /* PLL */
-#define HI6402_ANA_REG45		(HI6402_IRQ_CFG_BASE_ADDR + 0x0CE)
-
 #define HI6402_ANA_REG47		(HI6402_IRQ_CFG_BASE_ADDR + 0x0D0)
 
 #define HI6402_PLL_SEL			HI6402_ANA_REG47
@@ -199,6 +191,8 @@
 
 #define HI6402_ANA_REG59		(HI6402_IRQ_CFG_BASE_ADDR + 0x0DC)
 #define HI6402_PLL_FCW_17_10		HI6402_ANA_REG59
+
+
 
 #define HI6402_ANA_REG68		(HI6402_IRQ_CFG_BASE_ADDR + 0x0E5)
 
@@ -471,8 +465,6 @@ static struct of_device_id of_hi6402_irq_match[] = {
 static void hi6402_reg_wr_cache(unsigned int reg, int val);
 #endif
 
-extern struct dsm_client *dsm_audio_client;
-
 static void hi6402_select_reg_page_ssi(struct hi6402_irq *irq, unsigned int reg )
 {
 	unsigned int reg_page = reg & (~HI6402_PAGE_SELECT_MASK_SSI);
@@ -533,140 +525,6 @@ static unsigned int hi6402_reg_read_32bit_ssi(struct hi6402_irq *irq, unsigned i
 
 	return ret ;
 }
-
-static bool hi6402_reg_is_codec_core(unsigned int reg)
-{
-	if ((reg >= HI6402_CODEC_CORE_BEGIN && reg <= HI6402_CODEC_CORE_END)
-		|| (reg >= HI6402_CODEC_CORE_CLK_BEGIN
-			&& reg <= HI6402_CODEC_CORE_CLK_END))
-		return true;
-	else
-		return false;
-
-}
-
-static bool hi6402_codec_error_detect(struct hi6402_irq *irq)
-{
-	if (HI6402_VERSION_CS != hi6402_irq_read(irq, HI6402_REG_VERSION)) {
-		pr_err("CODEC ERR!!!Ver 0x%x,ANA_REG45 0x%x\n",
-			hi6402_irq_read(irq, HI6402_REG_VERSION),
-			hi6402_irq_read(irq, HI6402_ANA_REG45));
-		return true;
-	}
-
-	return false;
-}
-
-/**
- * record error type upload to DMD
- * and reset system if the error can't amend
- * @error_cause: cause of the 6402 error
- * @sys_reset: if need reset system
- */
-static void hi6402_codec_error_upload(char *error_cause, bool sys_reset)
-{
-	dump_stack();
-
-	if (!dsm_client_ocuppy(dsm_audio_client)) {
-		dsm_client_record(dsm_audio_client, error_cause);
-		dsm_client_notify(dsm_audio_client, DSM_HI6402_PLL_CANNOT_LOCK);
-	}
-
-	BUG_ON(sys_reset);
-}
-
-static bool hi6402_pmu_audio_clk_is_off(struct hi6402_irq *irq)
-{
-	return irq->pmu_audio_clk->enable_count ? false : true;
-}
-
-/**
- * try to enable pmu_audio_clk, reset system when audio clk enable error
- */
-static void hi6402_audio_clk_enable_try(struct hi6402_irq *irq)
-{
-	if (0 != clk_prepare_enable(irq->pmu_audio_clk)) {
-		pr_err("pmu_audio_clk :clk prepare enable failed !\n");
-		hi6402_codec_error_upload("DSM_HI6402_CLK_REPREPARE_FAIL\n", true);
-	}
-
-	if (hi6402_codec_error_detect(irq)) {
-		clk_disable_unprepare(irq->pmu_audio_clk);
-		hi6402_codec_error_upload("DSM_HI6402_CRASH\n", true);
-	}
-
-	return;
-}
-
-/**
- * disable pmu_audio_clk, this interface is always paired with
- * hi6402_audio_clk_enable_try
- */
-static void hi6402_audio_clk_disable_try(struct hi6402_irq *irq)
-{
-	clk_disable_unprepare(irq->pmu_audio_clk);
-}
-
-/**
- * try to requset a low pll if pll status if PD
- *
- * Returns true if requested a new pll
- */
-static bool hi6402_request_pll_try(struct hi6402_irq *irq)
-{
-	bool ret = false;
-
-	mutex_lock(&(irq->pll_mutex));
-
-	if (irq->pll_status == HI6402_PLL_PD
-		|| irq->pll_status == HI6402_PLL_RST) {
-
-		pr_err("%s pll status is powerdown or reset\n", __FUNCTION__);
-		hi6402_codec_error_upload("DSM_HI6402_PLL_PD\n", false);
-
-		mutex_unlock(&(irq->pll_mutex));
-		hi6402_irq_low_freq_pll_enable(irq, true);
-		mutex_lock(&(irq->pll_mutex));
-
-		ret = true;
-	}
-
-	return ret;
-}
-
-/**
- * release pll mutex and release pll if need,
- * this interface is always paired with
- * hi6402_request_pll_try
- */
-static void hi6402_release_pll_try(struct hi6402_irq *irq, bool release_pll)
-{
-	mutex_unlock(&(irq->pll_mutex));
-
-	if (release_pll)
-		hi6402_irq_low_freq_pll_enable(irq, false);
-
-	return;
-}
-
-#define hi6402_irq_request_clk(irq, reg, pll_need_release, audio_pmu_need_disable) do {\
-	if (hi6402_pmu_audio_clk_is_off(irq)) {                                  \
-		pr_err("%s pmu_audio_clk is disabled,try to enable\n", __FUNCTION__);\
-		hi6402_audio_clk_enable_try(irq);                                    \
-		audio_pmu_need_disable = true;                                       \
-	}                                                                        \
-	if (hi6402_reg_is_codec_core(reg)) {                                     \
-		pll_need_release = hi6402_request_pll_try(irq);                      \
-	}                                                                        \
-} while (0)
-
-#define hi6402_irq_release_clk(irq, reg, pll_need_release, audio_pmu_need_disable) do {\
-	if (hi6402_reg_is_codec_core(reg))                \
-		hi6402_release_pll_try(irq, pll_need_release);\
-	if (audio_pmu_need_disable)                       \
-		hi6402_audio_clk_disable_try(irq);            \
-} while (0)
-
 static unsigned int hi6402_reg_read_ssi(struct hi6402_irq *irq, unsigned int reg)
 {
 	unsigned int ret = 0;
@@ -678,7 +536,6 @@ static unsigned int hi6402_reg_read_ssi(struct hi6402_irq *irq, unsigned int reg
 
 	return ret;
 }
-
 static void hi6402_reg_write_8bit_ssi(struct hi6402_irq *irq, unsigned int reg, unsigned int val)
 {
 	hi6402_select_reg_page_ssi(irq, reg);
@@ -724,95 +581,65 @@ static void hi6402_reg_write_ssi(struct hi6402_irq *irq, unsigned int reg, unsig
 u32 hi6402_irq_read(struct hi6402_irq *irq, unsigned int reg)
 {
 	u32 ret = 0;
-	bool pll_need_release = false;
-	bool audio_pmu_need_disable = false;
 
-	BUG_ON(NULL == irq);
-
-	hi6402_irq_request_clk(irq, reg, pll_need_release, audio_pmu_need_disable);
 	mutex_lock(&irq->rw_mutex);
 	ret = hi6402_reg_read_ssi(irq, reg);
 	mutex_unlock(&irq->rw_mutex);
-	hi6402_irq_release_clk(irq, reg, pll_need_release, audio_pmu_need_disable);
 
 	return ret;
 }
-
 EXPORT_SYMBOL(hi6402_irq_read);
 
 void hi6402_irq_write(struct hi6402_irq *irq, unsigned int reg, u32 val)
 {
-	bool pll_need_release = false;
-	bool audio_pmu_need_disable = false;
-
-	BUG_ON(NULL == irq);
-
-	hi6402_irq_request_clk(irq, reg, pll_need_release, audio_pmu_need_disable);
 	mutex_lock(&irq->rw_mutex);
 	hi6402_reg_write_ssi(irq, reg, val);
 	mutex_unlock(&irq->rw_mutex);
-	hi6402_irq_release_clk(irq, reg, pll_need_release, audio_pmu_need_disable);
 }
-
 EXPORT_SYMBOL(hi6402_irq_write);
 
 void hi6402_reg_set_bit(struct hi6402_irq *irq,
 		unsigned int reg, unsigned int offset)
 {
 	unsigned int val = 0;
-	bool pll_need_release = false;
-	bool audio_pmu_need_disable = false;
 
 	BUG_ON(NULL == irq);
 
-	hi6402_irq_request_clk(irq, reg, pll_need_release, audio_pmu_need_disable);
 	mutex_lock(&irq->rw_mutex);
 	val = hi6402_reg_read_ssi(irq, reg) | (1 << offset);
 	hi6402_reg_write_ssi(irq, reg, val);
 	mutex_unlock(&irq->rw_mutex);
-	hi6402_irq_release_clk(irq, reg, pll_need_release, audio_pmu_need_disable);
 }
-
 EXPORT_SYMBOL(hi6402_reg_set_bit);
 
 void hi6402_reg_clr_bit(struct hi6402_irq *irq,
 		unsigned int reg, unsigned int offset)
 {
 	unsigned int val = 0;
-	bool pll_need_release = false;
-	bool audio_pmu_need_disable = false;
 
 	BUG_ON(NULL == irq);
 
-	hi6402_irq_request_clk(irq, reg, pll_need_release, audio_pmu_need_disable);
 	mutex_lock(&irq->rw_mutex);
 	val = hi6402_reg_read_ssi(irq, reg) & ~(1 << offset);
 	hi6402_reg_write_ssi(irq, reg, val);
 	mutex_unlock(&irq->rw_mutex);
-	hi6402_irq_release_clk(irq, reg, pll_need_release, audio_pmu_need_disable);
 }
-
 EXPORT_SYMBOL(hi6402_reg_clr_bit);
 
 void hi6402_reg_write_bits(struct hi6402_irq *irq,
 		unsigned int reg, unsigned int value, unsigned int mask)
 {
 	unsigned int val = 0;
-	bool pll_need_release = false;
-	bool audio_pmu_need_disable = false;
 
 	BUG_ON(NULL == irq);
 
-	hi6402_irq_request_clk(irq, reg, pll_need_release, audio_pmu_need_disable);
 	mutex_lock(&irq->rw_mutex);
 	val = hi6402_reg_read_ssi(irq, reg);
 	val &= ~mask;
 	val |= value & mask;
 	hi6402_reg_write_ssi(irq, reg, val);
 	mutex_unlock(&irq->rw_mutex);
-	hi6402_irq_release_clk(irq, reg, pll_need_release, audio_pmu_need_disable);
 }
-
 EXPORT_SYMBOL(hi6402_reg_write_bits);
 
 void hi6402_irq_enable_ldo8(struct hi6402_irq *irq, bool enable)
@@ -831,7 +658,6 @@ void hi6402_irq_enable_ldo8(struct hi6402_irq *irq, bool enable)
 		regulator_bulk_disable(1, &irq->regu);
 	}
 }
-
 EXPORT_SYMBOL(hi6402_irq_enable_ldo8);
 
 static void hi6402_irq_enable_ibias(struct hi6402_irq *irq, bool enable)
@@ -842,7 +668,7 @@ static void hi6402_irq_enable_ibias(struct hi6402_irq *irq, bool enable)
 
 	if (!irq->mbhc_ibias_work && 0 == irq->dapm_ibias_work) {
 		if (enable) {
-			/* enable ldo8 analog power */
+			/* enable ldo8 */
 			ret = regulator_bulk_enable(1, &irq->regu);
 			if (0 != ret) {
 				pr_err("%s : couldn't enable regulators %d\n",
@@ -885,18 +711,12 @@ void hi6402_irq_ibias_work_enable(struct hi6402_irq *irq, bool enable)
 			hi6402_irq_enable_ibias(irq, true);
 		++irq->dapm_ibias_work;
 	} else {
-		if(0 == irq->dapm_ibias_work) {
-			WARN(1,"%s dapm_ibias enable or disable not paired\n", __FUNCTION__);
-			mutex_unlock(&irq->ibias_mutex);
-			return;
-		}
 		--irq->dapm_ibias_work;
 		if (0 == irq->dapm_ibias_work)
 			hi6402_irq_enable_ibias(irq, false);
 	}
 	mutex_unlock(&irq->ibias_mutex);
 }
-
 EXPORT_SYMBOL(hi6402_irq_ibias_work_enable);
 
 static void hi6402_irq_ibias_mbhc_enable(struct hi6402_irq *irq, bool enable)
@@ -922,14 +742,14 @@ static void hi6402_irq_autoclk_enable(struct hi6402_irq *irq, bool enable)
 {
 	BUG_ON(NULL == irq);
 
-	if (enable) {
-		/* clr sc_mad_mic_bp only when mainpga selected mainmic. */
-		if (hi6402_irq_read(irq, HI6402_CODEC_MAINPGA_SEL)
-			& (1 << HI6402_CODEC_MAINPGA_SEL_BIT)) {
-			/* mainpga selected hsmic. */
+	if(enable) {
+		/* clr sc_mad_mic_bp only when soundtrigger use mainmic. */
+		if(hi6402_irq_read(irq, HI6402_CODEC_MAINPGA_SEL) & (1<<HI6402_CODEC_MAINPGA_SEL_BIT)
+                || (HI6402_CODEC_ADCL0_MAINMIC != (hi6402_irq_read(irq, HI6402_CODEC_ADC0_MUX_SEL) & 0x0f))) {
+			/* soundtrigger does not use mainmic */
 			hi6402_irq_write(irq, HI6402_SC_MAD_CTRL0, 0x4d);
 		} else {
-			/* mainpga selected mainmic. */
+			/* soundtrigger use mainmic. */
 			hi6402_irq_write(irq, HI6402_SC_MAD_CTRL0, 0x45);
 		}
 	} else {
@@ -946,7 +766,6 @@ void hi6402_irq_mask_btn_irqs(struct hi6402_irq *irq)
 	irq->mask0 |= 0x33;
 	mutex_unlock(&irq->irq_lock);
 }
-
 EXPORT_SYMBOL(hi6402_irq_mask_btn_irqs);
 
 void hi6402_irq_unmask_btn_irqs(struct hi6402_irq *irq)
@@ -958,7 +777,6 @@ void hi6402_irq_unmask_btn_irqs(struct hi6402_irq *irq)
 	irq->mask0 &= 0xCC;
 	mutex_unlock(&irq->irq_lock);
 }
-
 EXPORT_SYMBOL(hi6402_irq_unmask_btn_irqs);
 
 void hi6402_irq_clr_btn_irqs(struct hi6402_irq *irq)
@@ -969,7 +787,6 @@ void hi6402_irq_clr_btn_irqs(struct hi6402_irq *irq)
 	hi6402_irq_write(irq, HI6402_REG_IRQ_0, 0x33);
 	mutex_unlock(&irq->irq_lock);
 }
-
 EXPORT_SYMBOL(hi6402_irq_clr_btn_irqs);
 
 static void hi6402_irq_eco_enable(struct hi6402_irq *irq, bool enable)
@@ -1029,7 +846,6 @@ void hi6402_irq_hs_micbias_enable(struct hi6402_irq *irq, bool enable)
 	/* unmask btn irqs */
 	hi6402_irq_unmask_btn_irqs(irq);
 }
-
 EXPORT_SYMBOL(hi6402_irq_hs_micbias_enable);
 
 void hi6402_micbias_work_func(struct work_struct *work)
@@ -1046,7 +862,6 @@ void hi6402_irq_cancel_delay_work(struct hi6402_irq *irq)
 	cancel_delayed_work(&irq->hi6402_micbias_delay_work);
 	flush_workqueue(irq->hi6402_micbias_delay_wq);
 }
-
 EXPORT_SYMBOL(hi6402_irq_cancel_delay_work);
 
 void hi6402_irq_micbias_enable(struct hi6402_irq *irq, bool enable)
@@ -1081,7 +896,7 @@ void hi6402_irq_micbias_mbhc_enable(struct hi6402_irq *irq, bool enable)
 			irq->mbhc_micbias_work = true;
 		}
 	} else {
-		if (irq->mbhc_micbias_work) {
+		if (irq->mbhc_micbias_work){
 			irq->mbhc_micbias_work = false;
 			/* hs micbias pd */
 			hi6402_irq_micbias_enable(irq, false);
@@ -1090,7 +905,6 @@ void hi6402_irq_micbias_mbhc_enable(struct hi6402_irq *irq, bool enable)
 	mutex_unlock(&irq->hs_micbias_mutex);
 	return;
 }
-
 EXPORT_SYMBOL(hi6402_irq_micbias_mbhc_enable);
 
 void hi6402_irq_micbias_work_enable(struct hi6402_irq *irq, bool enable)
@@ -1107,7 +921,7 @@ void hi6402_irq_micbias_work_enable(struct hi6402_irq *irq, bool enable)
 			irq->dapm_micbias_work = true;
 		}
 	} else {
-		if (irq->dapm_micbias_work) {
+		if (irq->dapm_micbias_work){
 			irq->dapm_micbias_work = false;
 			/* hs micbias pd */
 			hi6402_irq_micbias_enable(irq, false);
@@ -1116,7 +930,6 @@ void hi6402_irq_micbias_work_enable(struct hi6402_irq *irq, bool enable)
 	mutex_unlock(&irq->hs_micbias_mutex);
 	return;
 }
-
 EXPORT_SYMBOL(hi6402_irq_micbias_work_enable);
 
 static inline void hi6402_irq_pll_mode_cfg(struct hi6402_irq *irq, enum hi6402_pll_status status)
@@ -1229,8 +1042,6 @@ void hi6402_irq_high_freq_pll_enable_work(struct hi6402_irq *irq, bool enable)
 			pr_err("pmu_audio_clk :clk prepare enable failed !\n");
 			return;
 		}
-		pr_info("%s enable ldo26 and pmu_audio_clk,clk count:%d\n",
-			__FUNCTION__, irq->pmu_audio_clk->enable_count);
 		/* 19.2M -> pll clk */
 		hi6402_reg_clr_bit(irq, HI6402_PLL_CLK_SEL_REG, HI6402_PLL_CLK_SEL_REG_BIT);
 		hi6402_irq_pll_mode_cfg(irq, HI6402_PLL_HIGH_FREQ);
@@ -1274,8 +1085,6 @@ void hi6402_irq_high_freq_pll_enable_work(struct hi6402_irq *irq, bool enable)
 		clk_disable_unprepare(irq->pmu_audio_clk);
 		/* ldo26 disable */
 		regulator_bulk_disable(1, &irq->regu_ldo26);
-		pr_info("%s disable ldo26 and pmu_audio_clk,clk count:%d\n",
-			__FUNCTION__, irq->pmu_audio_clk->enable_count);
 
 		hi6402_irq_ibias_work_enable(irq, false);
 
@@ -1304,41 +1113,13 @@ void hi6402_pll_pd(struct hi6402_irq *irq)
 		clk_disable_unprepare(irq->pmu_audio_clk);
 		/* ldo26 disable */
 		regulator_bulk_disable(1, &irq->regu_ldo26);
-		pr_info("%s disable ldo26 and pmu_audio_clk,clk count:%d\n",
-			__FUNCTION__, irq->pmu_audio_clk->enable_count);
 	}
 
 	hi6402_irq_ibias_work_enable(irq, false);
 
 	irq->pll_status = HI6402_PLL_PD;
 }
-
-static bool hi6402_irq_pll_locked(struct hi6402_irq *irq)
-{
-	u8 reg_pll_lock = 0;
-	int pll_lock_check_counter = 3;
-
-	/* we must check pll lock three time!!! */
-	while (pll_lock_check_counter) {
-		reg_pll_lock = hi6402_irq_read(irq, HI6402_PLL_LOCK)
-						& HI6402_PLL_LOCK_STATUS;
-		if (reg_pll_lock == 0)
-			break;
-		udelay(5);
-		pll_lock_check_counter--;
-	}
-
-	if ((0 == pll_lock_check_counter)
-		&& (HI6402_VERSION_CS == hi6402_irq_read(irq, HI6402_REG_VERSION))) {
-		return true;
-	} else {
-		pr_err("%s:pll lock check fail,ver:0x%x,pll:0x%x\n",
-			__FUNCTION__, hi6402_irq_read(irq, HI6402_REG_VERSION),
-			hi6402_irq_read(irq, HI6402_PLL_LOCK));
-		return false;
-	}
-}
-
+extern struct dsm_client *dsm_audio_client;
 void hi6402_irq_set_pll_mode(struct hi6402_irq *irq)
 {
 	bool need_notify_dsp = false;
@@ -1378,27 +1159,20 @@ void hi6402_irq_set_pll_mode(struct hi6402_irq *irq)
 			case HI6402_PLL_PD:
 				if (0 != irq->ref_pll)
 					hi6402_irq_high_freq_pll_enable_work(irq, true);
-				else if (0 != irq->ref_low_pll)
+				else if (0 != irq->mad_need_pll)
 					hi6402_irq_low_freq_pll_enable_work(irq, true);
 				else
 					/* todo */;
-					pr_info("%s:%d :pll_status:%u,mad_pll:%u,pll no change\n",
-						__FUNCTION__, __LINE__, irq->pll_status,
-						irq->ref_low_pll);
 				break;
 			case HI6402_PLL_HIGH_FREQ:
 				if (0 == irq->ref_pll) {
 					hi6402_irq_high_freq_pll_enable_work(irq, false);
-					if (0 != irq->ref_low_pll)
+					if(0 != irq->mad_need_pll)
 						hi6402_irq_low_freq_pll_enable_work(irq, true);
-				} else {
-					pr_info("%s:%d :pll_status:%u,mad_pll:%u,pll no change\n",
-						__FUNCTION__, __LINE__, irq->pll_status,
-						irq->ref_low_pll);
 				}
 				break;
 			case HI6402_PLL_LOW_FREQ:
-				if ((0 == irq->ref_low_pll) || (0 != irq->ref_pll))
+				if ((0 == irq->mad_need_pll) || (0 != irq->ref_pll))
 					hi6402_irq_low_freq_pll_enable_work(irq, false);
 				if (0 != irq->ref_pll)
 					hi6402_irq_high_freq_pll_enable_work(irq, true);
@@ -1412,8 +1186,14 @@ void hi6402_irq_set_pll_mode(struct hi6402_irq *irq)
 
 			pll_lock_counter = 5;
 			do {
-				if (hi6402_irq_pll_locked(irq)) {
-					break;
+				if (0 != (hi6402_irq_read(irq, HI6402_ANA_REG75) & HI6402_PLL_LOCK_STATUS)) {
+					udelay(5);
+					if (0 != (hi6402_irq_read(irq, HI6402_ANA_REG75) & HI6402_PLL_LOCK_STATUS)) {
+						udelay(5);
+						if (0 != (hi6402_irq_read(irq, HI6402_ANA_REG75) & HI6402_PLL_LOCK_STATUS)) {
+							break;
+						}
+					}
 				}
 				msleep(1);
 				pll_lock_counter --;
@@ -1453,8 +1233,6 @@ void hi6402_irq_set_pll_mode(struct hi6402_irq *irq)
 		for (i = PLL_NOTLOCK_REG_START; i<= PLL_NOTLOCK_REG_END; i++) {
 			pr_err("%s(%u): %x is %x \n", __FUNCTION__, __LINE__, i, hi6402_irq_read(irq, i));
 		}
-		/* pll lock fail and can't get codec version,reset system */
-		BUG_ON(hi6402_codec_error_detect(irq));
 		return;
 	}
 
@@ -1463,7 +1241,7 @@ void hi6402_irq_set_pll_mode(struct hi6402_irq *irq)
 	}
 
 	pr_info("%s : high pll num is %d\n", __FUNCTION__, irq->ref_pll);
-	pr_info("%s : mad pll num is %d\n", __FUNCTION__, irq->ref_low_pll);
+	pr_info("%s : mad pll num is %d\n", __FUNCTION__, irq->mad_need_pll);
 
 	return;
 }
@@ -1474,48 +1252,36 @@ void hi6402_irq_low_freq_pll_enable(struct hi6402_irq *irq, bool enable)
 
 	mutex_lock(&irq->pll_mutex);
 	if (enable) {
-		irq->ref_low_pll++;
-		if (1 == irq->ref_low_pll)
+		irq->mad_need_pll++;
+		if (1 == irq->mad_need_pll)
 			hi6402_irq_set_pll_mode(irq);
 	} else {
-		if (0 == irq->ref_low_pll) {
-			WARN(1,"%s low pll enable or disable not paired\n", __FUNCTION__);
-			mutex_unlock(&irq->pll_mutex);
-			return;
-		}
-		irq->ref_low_pll--;
-		if (0 == irq->ref_low_pll)
+		irq->mad_need_pll--;
+		if (0 == irq->mad_need_pll)
 			hi6402_irq_set_pll_mode(irq);
 	}
 	mutex_unlock(&irq->pll_mutex);
 
 	return;
 }
-
 EXPORT_SYMBOL(hi6402_irq_low_freq_pll_enable);
 
 void hi6402_irq_high_freq_pll_enable(struct hi6402_irq *irq, bool enable)
 {
 	BUG_ON(NULL == irq);
 	mutex_lock(&irq->pll_mutex);
-	if (enable) {
+	if(enable) {
 		irq->ref_pll++;
-		if (1 == irq->ref_pll)
+		if(1 == irq->ref_pll)
 			hi6402_irq_set_pll_mode(irq);
 	} else {
-		if (0 == irq->ref_pll) {
-			WARN(1,"%s high pll enable or disable not paired\n", __FUNCTION__);
-			mutex_unlock(&irq->pll_mutex);
-			return;
-		}
 		irq->ref_pll--;
-		if (0 == irq->ref_pll)
+		if(0 == irq->ref_pll)
 			hi6402_irq_set_pll_mode(irq);
 	}
 	mutex_unlock(&irq->pll_mutex);
 	return;
 }
-
 EXPORT_SYMBOL(hi6402_irq_high_freq_pll_enable);
 
 static irqreturn_t hi6402_irq_handler(int irq, void *data)
@@ -1587,12 +1353,13 @@ static irqreturn_t hi6402_irq_handler_thread(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+
 static void hi6402_irq_mask(struct irq_data *d)
 {
 	struct hi6402_irq *irq = irq_data_get_irq_chip_data(d);
 	unsigned int id = irqd_to_hwirq(d);
 
-	switch (id >> 3) {
+	switch(id >> 3) {
 	case 0:
 		irq->mask0 |= (1 << (id & 0x07));
 		break;
@@ -1615,7 +1382,7 @@ static void hi6402_irq_unmask(struct irq_data *d)
 	struct hi6402_irq *irq = irq_data_get_irq_chip_data(d);
 	unsigned int id = irqd_to_hwirq(d);
 
-	switch (id >> 3) {
+	switch(id >> 3) {
 	case 0:
 		irq->mask0 &= ~(1 << (id & 0x07));
 		irq->irq0 = (1 << (id & 0x07));
@@ -1647,10 +1414,7 @@ static void hi6402_irq_bus_lock(struct irq_data *d)
 static void hi6402_irq_bus_unlock(struct irq_data *d)
 {
 	struct hi6402_irq *irq = irq_data_get_irq_chip_data(d);
-	bool audio_pmu_need_disable = false;
-	bool pll_need_release = false;
 
-	hi6402_irq_request_clk(irq, HI6402_REG_IRQ_0, pll_need_release, audio_pmu_need_disable);
 	mutex_lock(&irq->rw_mutex);
 
 	hi6402_reg_write_ssi(irq, HI6402_REG_IRQ_0, irq->irq0);
@@ -1668,8 +1432,6 @@ static void hi6402_irq_bus_unlock(struct irq_data *d)
 	irq->irq3 = 0;
 
 	mutex_unlock(&irq->rw_mutex);
-	hi6402_irq_release_clk(irq, HI6402_REG_IRQ_0, pll_need_release, audio_pmu_need_disable);
-
 	mutex_unlock(&irq->irq_lock);
 }
 
@@ -1724,7 +1486,6 @@ static inline int codec_ssi_iomux_idle(struct hi6402_irq *irq)
 
 	return 0;
 }
-
 #ifdef CONFIG_DEBUG_FS
 static void hi6402_page_dp(unsigned int page, char *buf)
 {
@@ -2018,6 +1779,7 @@ static const struct file_operations hi6402_rh_fops = {
 };
 #endif
 
+
 static void hi6402_irq_init_chip(struct hi6402_irq *irq)
 {
 	BUG_ON(NULL == irq);
@@ -2055,7 +1817,6 @@ static int hi6402_irq_probe(struct platform_device *pdev)
 	/* Ensure make a page change at first time. */
 	irq->page_sel_ssi = 1;
 	irq->ref_pll = 0;
-	irq->ref_low_pll = 0;
 	irq->pll_status = HI6402_PLL_PD;
 	irq->dapm_ibias_work = 0;
 	irq->mbhc_ibias_work = false;
@@ -2164,8 +1925,6 @@ static int hi6402_irq_probe(struct platform_device *pdev)
 		pr_err("pmu_audio_clk :clk prepare enable failed !\n");
 		goto pmu_audio_clk_enable_err;
 	}
-	pr_info("%s enable ldo26 and pmu_audio_clk,clk count:%d\n",
-		__FUNCTION__, irq->pmu_audio_clk->enable_count);
 
 	/* check chip id */
 	ret = hi6402_irq_read(irq, HI6402_REG_VERSION);
@@ -2261,6 +2020,7 @@ static int hi6402_irq_probe(struct platform_device *pdev)
 		goto gpio_err;
 	}
 
+
 	hi6402_irq_init_chip(irq);
 
 	/* select hifi_aclk for CLKB because of cfg clk switch */
@@ -2290,7 +2050,7 @@ static int hi6402_irq_probe(struct platform_device *pdev)
 	gpirq = irq;
 #endif
 
-	pr_info("%s: init ok\n", __FUNCTION__);
+	pr_info("%s: init ok\n",__FUNCTION__);
 
 	return 0;
 
@@ -2332,7 +2092,7 @@ err_exit:
 
 	devm_kfree(dev, irq);
 
-	pr_err("%s: init failed\n", __FUNCTION__);
+	pr_err("%s: init failed\n",__FUNCTION__);
 
 	return ret;
 }
@@ -2368,40 +2128,38 @@ static int hi6402_irq_remove(struct platform_device *pdev)
 	return 0;
 }
 
-static void hi6402_apb_clk_hifi(struct hi6402_irq *irq, bool enable)
+static void hi6402_apb_clk_hifi(struct hi6402_irq *irq,bool enable)
 {
-	if (enable) {
-		hi6402_reg_clr_bit(irq, HI6402_APB_CLK_CFG_REG, HI6402_APB_CLK_EN_BIT);
-		hi6402_reg_set_bit(irq, HI6402_APB_CLK_CFG_REG,
-			HI6402_PERI_CLK_SEL_BIT);
-		hi6402_reg_set_bit(irq, HI6402_APB_CLK_CFG_REG, HI6402_APB_CLK_EN_BIT);
-	} else {
-		hi6402_reg_clr_bit(irq, HI6402_APB_CLK_CFG_REG, HI6402_APB_CLK_EN_BIT);
-		hi6402_reg_clr_bit(irq, HI6402_APB_CLK_CFG_REG,
-			HI6402_PERI_CLK_SEL_BIT);
-		hi6402_reg_set_bit(irq, HI6402_APB_CLK_CFG_REG, HI6402_APB_CLK_EN_BIT);
-	}
+       if (enable) {
+		   hi6402_reg_clr_bit(irq, HI6402_APB_CLK_CFG_REG, HI6402_APB_CLK_EN_BIT);
+		   hi6402_reg_set_bit(irq, HI6402_APB_CLK_CFG_REG, HI6402_PERI_CLK_SEL_BIT);
+		   hi6402_reg_set_bit(irq, HI6402_APB_CLK_CFG_REG, HI6402_APB_CLK_EN_BIT);
+       } else {
+		   hi6402_reg_clr_bit(irq, HI6402_APB_CLK_CFG_REG, HI6402_APB_CLK_EN_BIT);
+		   hi6402_reg_clr_bit(irq, HI6402_APB_CLK_CFG_REG, HI6402_PERI_CLK_SEL_BIT);
+		   hi6402_reg_set_bit(irq, HI6402_APB_CLK_CFG_REG, HI6402_APB_CLK_EN_BIT);
+       }
 }
 
-static void hi6402_hifi_mad_auto_clk(struct hi6402_irq *irq, bool enable)
+static void hi6402_hifi_mad_auto_clk(struct hi6402_irq *irq,bool enable)
 {
-	if (enable) {
+	if(enable) {
 		/* HI6402_DSP_SC_MAD_CTRL0  0x41 */
 		pr_info("set mad mode[enable] \n");
 		/*HI6402_IRQ_SC_DSP_CTRL0 0x11 */
 		/* 0. sc_dsp_en lowpower 0:disable 1:enable */
 		hi6402_reg_set_bit(irq, HI6402_IRQ_SC_DSP_CTRL0, 0);
-		/* 1. sc_dsp_bp hifi clk enable 0:hardware ctl  1:software ctl */
+		/* 1. sc_dsp_bp hifi clk 	enable 0:hardware ctl  1:software ctl */
 		hi6402_reg_clr_bit(irq, HI6402_IRQ_SC_DSP_CTRL0, 1);
 
-		/* 4.sc_mad_mode 0:disable 1:enable */
+		/* 4.sc_mad_mode 0:disable 1:enable*/
 		hi6402_reg_set_bit(irq, HI6402_IRQ_SC_DSP_CTRL0, 4);
 		/* 5.sc_dsp_runstall_bp 0:hardware ctl  1:software ctl */
 		hi6402_reg_clr_bit(irq, HI6402_IRQ_SC_DSP_CTRL0, 5);
-		/* 6. sc_dsp_hifi_div_bp:0:hardware 1:software */
+		/* 6. sc_dsp_hifi_div_bp:0:hardware 1:software*/
 		hi6402_reg_clr_bit(irq, HI6402_IRQ_SC_DSP_CTRL0, 6);
 
-	} else {
+	}else{
 		pr_info("set mad mode[disable] \n");
 		/* open hifi clk */
 		hi6402_reg_clr_bit(irq, HI6402_IRQ_SC_DSP_CTRL0, 0);
@@ -2422,14 +2180,15 @@ static int hi6402_dsp_cfg_sw_mode(struct hi6402_irq *irq, int val)
 	u32 state = 0xffff;
 
 	/* wait 6402 dsp enter cfg clk sel mode */
-	while (state != val && loopcount < 1000) {
+	while(state != val && loopcount < 1000) {
 		udelay(60);
 		state = hi6402_irq_read(irq, HI6402_CFG_REG_CLK_STATUS);
-		loopcount++;
+		loopcount ++;
 	}
-	pr_info("%s cfg switch%s wait%dus\n", __FUNCTION__,
-		val == HI6402_CFG_SW_ENTER ? "++" : "--", loopcount * 60);
-	if (state != val) {
+	pr_info("%s cfg switch%s wait%dus\n",__FUNCTION__,
+				val == HI6402_CFG_SW_ENTER ? "++" : "--",
+				loopcount*60);
+	if(state != val) {
 		return -1;
 	} else {
 		return 0;
@@ -2477,13 +2236,14 @@ static int hi6402_cfg_clk_hifi(struct hi6402_irq *irq, bool enable)
 			HI6402_CFG_REG_CLK_CTRL_REG,
 			HI6402_CFG_REG_CLK_SW_REQ_BIT);
 	/* 5.wait 6402 dsp exit cfg clk sel mode */
-	ret = hi6402_dsp_cfg_sw_mode(irq, HI6402_CFG_SW_EXIT);
-	if (0 != ret) {
-		pr_info("%s get ack2 err dsp wrong state!\n", __FUNCTION__);
+	ret = hi6402_dsp_cfg_sw_mode(irq,HI6402_CFG_SW_EXIT);
+	if(0 != ret) {
+		pr_info("%s get ack2 err dsp wrong state!\n",__FUNCTION__);
 	}
 exit:
 	return ret;
 }
+
 
 static int hi6402_irq_suspend(struct platform_device *pdev, pm_message_t state)
 {
@@ -2499,9 +2259,9 @@ static int hi6402_irq_suspend(struct platform_device *pdev, pm_message_t state)
 	mutex_lock(&irq->sr_mutex);
 
 	dsp_running = hi6402_hifi_is_running();
-	if ((HI6402_PLL_LOW_FREQ == irq->pll_status) && (true == dsp_running)) {
+	if((HI6402_PLL_LOW_FREQ == irq->pll_status) && (true == dsp_running)) {
 		hi6402_irq_autoclk_enable(irq, true);
-		ret = hi6402_cfg_clk_hifi(irq, true);
+		ret = hi6402_cfg_clk_hifi(irq,true);
 		if (0 != ret)
 			dev_err(dev, "6402 cfg clk switch to dsp err\n");
 	}
@@ -2509,8 +2269,6 @@ static int hi6402_irq_suspend(struct platform_device *pdev, pm_message_t state)
 	clk_disable_unprepare(irq->pmu_audio_clk);
 
 	clk_disable_unprepare(irq->codec_ssi_clk);
-	pr_info("%s disable pmu_audio_clk,clk count:%d\n",
-		__FUNCTION__, irq->pmu_audio_clk->enable_count);
 
 	ret = codec_ssi_iomux_idle(irq);
 	if (0 != ret) {
@@ -2529,7 +2287,7 @@ static int hi6402_irq_resume(struct platform_device *pdev)
 	struct hi6402_irq *irq = dev_get_drvdata(dev);
 	int ret = 0;
 
-	bool dsp_running = false;
+    bool dsp_running = false;
 	BUG_ON(NULL == irq);
 
 	ret = codec_ssi_iomux_default(irq);
@@ -2547,18 +2305,18 @@ static int hi6402_irq_resume(struct platform_device *pdev)
 		dev_err(dev, "pmu_audio_clk :clk prepare enable failed !\n");
 		goto err_exit;
 	}
-	pr_info("%s enable pmu_audio_clk,clk count:%d\n",
-		__FUNCTION__, irq->pmu_audio_clk->enable_count);
 
 	dsp_running = hi6402_hifi_is_running();
-	if ((irq->pll_status == HI6402_PLL_LOW_FREQ) && (true == dsp_running)) {
-		ret = hi6402_cfg_clk_hifi(irq, false);
+	if((irq->pll_status == HI6402_PLL_LOW_FREQ) && (true == dsp_running)) {
+		ret = hi6402_cfg_clk_hifi(irq,false);
 		if (0 != ret) {
 			dev_err(dev, "6402 cfg clk switch to ap err\n");
 			goto err_exit;
 		}
 		hi6402_irq_autoclk_enable(irq, false);
+
 	}
+
 
 err_exit:
 	dev_info(dev, "%s-", __FUNCTION__);

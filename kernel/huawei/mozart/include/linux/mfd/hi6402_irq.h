@@ -67,14 +67,14 @@ struct hi6402_irq {
 
 	bool			mbhc_micbias_work;
 	bool			dapm_micbias_work;
-	int			dapm_ibias_work;
+	unsigned int	dapm_ibias_work;
 	bool			mbhc_ibias_work;
 
 	struct mutex		ibias_mutex;
 	struct mutex		pll_mutex;
 	struct mutex		hs_micbias_mutex;
-	int			ref_pll;
-	int			ref_low_pll;
+	unsigned int		ref_pll;
+	unsigned int		mad_need_pll;
 	enum hi6402_pll_status pll_status;
 	bool			hifi_misc_probe;
 };

@@ -41,6 +41,7 @@
 #include <asm/atomic.h>
 #include <tspdrv.h>
 #include <../../../../../kernel/drivers/misc/drv2605/drv2605.h>
+#include <linux/of.h>
 
 /* 5ms timer by default. This variable could be used by the SPI.*/
 static int g_nTimerPeriodMs = 5;
@@ -49,7 +50,7 @@ static int g_nTimerPeriodMs = 5;
 #define NUM_ACTUATORS 1
 
 /* Device name and version information */
-#define VERSION_STR " v5.0.36.6\n"                  /* DO NOT CHANGE - this is auto-generated */
+#define VERSION_STR " v5.1.71.6\n"                  /* DO NOT CHANGE - this is auto-generated */
 #define VERSION_STR_LEN 16                          /* account extra space for future extra digits in version number */
 static char g_szDeviceName[  (VIBE_MAX_DEVICE_NAME_LENGTH
                             + VERSION_STR_LEN)
@@ -298,11 +299,43 @@ static int ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsig
 	return 0;
 }
 
+
+static int check_immersion_version(void)
+{
+	int len = 0;
+	struct device_node *immersion_node = NULL;
+	const char *is_immersion = NULL;
+	immersion_node = of_find_compatible_node(NULL, NULL, "immersion,tspdrv");
+	if (!immersion_node) {
+		printk(KERN_ERR "tspdrv: can't find node immersion\n");
+		return false;
+	}
+	is_immersion = of_get_property(immersion_node, "immersion_exist", &len);
+	if (!is_immersion) {
+		printk(KERN_ERR "tspdrv: can't find property immersion_exist\n");
+		return false;
+	}
+	if (!strncmp(is_immersion, "yes", sizeof("yes"))) {
+		printk(KERN_ERR "tspdrv: immersion feature exsit!\n");
+		return true;
+	} else {
+		printk(KERN_ERR "tspdrv: immersion feature no exsit!\n");
+		return false;
+	}
+}
+
 static int __init tspdrv_init(void)
 {
 	printk(KERN_ERR "tspdrv: init_module.\n");
 
 	int nRet = 0;   /* initialized below */
+	int immersion_version = false;
+
+	immersion_version = check_immersion_version();
+	if(immersion_version == false){
+		printk(KERN_ERR "tspdrv: no immersion feature.\n");
+		return 0;
+	}
 
 	nRet = misc_register(&miscdev);
 	if (nRet)

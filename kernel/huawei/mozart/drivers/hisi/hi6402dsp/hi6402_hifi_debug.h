@@ -42,7 +42,7 @@ extern unsigned long hi6402_dsp_debug_level;
 #define IN_FUNCTION  HI6402_DSP_DEBUG("++\n");
 #define OUT_FUNCTION HI6402_DSP_DEBUG("--\n");
 
-enum hi6402_hifi_debug {
+enum HI6402_HIFI_DEBUG {
 	HI6402_HIFI_IMG_DOWNLOAD = 0,
 	HI6402_HIFI_INIT,
 	HI6402_HIFI_DEINIT,
@@ -57,6 +57,7 @@ enum hi6402_hifi_debug {
 	HI6402_HIFI_FPGA_CODEC_RESET,
 	HI6402_HIFI_FPGA_PWRON_TEST,
 	HI6402_HIFI_FPGA_OM_TEST,
+	HI6402_HIFI_FACTORY_TEST,
 };
 
 #endif

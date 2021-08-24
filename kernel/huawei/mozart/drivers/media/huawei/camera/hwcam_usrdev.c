@@ -55,6 +55,10 @@ hwcam_user_release(
         struct kref* r)
 {
     hwcam_user_t* user = REF2USER(r);
+    if (NULL == user){
+        HWCAM_CFG_ERR("REF2USER returns null. \n");
+        return;
+    }
 
     HWCAM_CFG_INFO("instance(0x%p)", &user->intf);
 
@@ -178,7 +182,12 @@ hwcam_user_vb2q_queue_setup(
         void* alloc_ctxs[])
 {
     int i = 0;
-    hwcam_user_t* user = q->drv_priv;
+    hwcam_user_t* user = NULL;
+    if (NULL == q){
+        HWCAM_CFG_ERR("%s() input parameter q is null. \n", __func__);
+        return -1;
+    }
+    user = q->drv_priv;
     *num_planes = user->format.fmt.pix_mp.num_planes;
     for (; i != user->format.fmt.pix_mp.num_planes; i++) {
         sizes[i] = user->format.fmt.pix_mp.plane_fmt[i].sizeimage;
@@ -192,7 +201,12 @@ static void
 hwcam_user_vb2q_wait_prepare(
         struct vb2_queue* q)
 {
-    hwcam_user_t* user = q->drv_priv;
+    hwcam_user_t* user = NULL;
+    if (NULL == q){
+        HWCAM_CFG_ERR("%s() input parameter q is null. \n", __func__);
+        return;
+    }
+    user = q->drv_priv;
     mutex_unlock(&user->cam->lock);
 }
 
@@ -200,7 +214,12 @@ static void
 hwcam_user_vb2q_wait_finish(
         struct vb2_queue* q)
 {
-    hwcam_user_t* user = q->drv_priv;
+    hwcam_user_t* user = NULL;
+    if (NULL == q){
+        HWCAM_CFG_ERR("%s() input parameter q is null. \n", __func__);
+        return;
+    }
+    user = q->drv_priv;
     mutex_lock(&user->cam->lock);
 }
 
@@ -209,7 +228,12 @@ hwcam_user_vb2q_start_streaming(
         struct vb2_queue *q,
         unsigned int count)
 {
-    hwcam_user_t* user = q->drv_priv;
+    hwcam_user_t* user = NULL;
+    if (NULL == q){
+        HWCAM_CFG_ERR("%s() input parameter q is null. \n", __func__);
+        return -1;
+    }
+    user = q->drv_priv;
     return user->stream
         ? hwcam_cfgstream_intf_start(user->stream)
         : -ENOENT;
@@ -219,7 +243,12 @@ static int
 hwcam_user_vb2q_stop_streaming(
         struct vb2_queue *q)
 {
-    hwcam_user_t* user = q->drv_priv;
+    hwcam_user_t* user = NULL;
+    if (NULL == q){
+        HWCAM_CFG_ERR("%s() input parameter q is null. \n", __func__);
+        return -1;
+    }
+    user = q->drv_priv;
     return user->stream
         ? hwcam_cfgstream_intf_stop(user->stream)
         : -ENOENT;

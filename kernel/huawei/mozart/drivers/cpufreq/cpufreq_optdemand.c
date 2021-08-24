@@ -52,7 +52,7 @@ unsigned int cur_cpu;
 #define MICRO_FREQUENCY_MIN_SAMPLE_RATE		(10000)
 #define DEF_BOOST_PULSE_DURATION        (80000)
 #define DEF_GO_HISPEED_LOAD         (95)
-#define DEF_HISPEED_FREQ            (960000)
+#define DEF_HISPEED_FREQ            (1209600)
 #define DEF_UP_THRESHOLD		    (40)
 #define DEF_DOWN_THRESHOLD          (30)
 
@@ -343,12 +343,6 @@ static void optdemand_dbs_check_cpu(struct dbs_data *dbs_data, int cpu)
 			max_load = load;
 	}
 
-#ifdef CONFIG_SCHED_HMP
-	hmp_slower_domain_avg_load = little_total_load/4;
-	/*hmp_slower_domain_load = min_load;*/
-	hmp_slower_domain_load = hmp_slower_domain_avg_load;
-#endif
-
 	dbs_data->cdata->gov_check_cpu(cpu, max_load);
 }
 
@@ -356,11 +350,13 @@ static void optdemand_dbs_timer(struct work_struct *work)
 {
 	struct cpufreq_optdemand_cpuinfo *optdemand_cpuinfo =
 		container_of(work, struct cpufreq_optdemand_cpuinfo, cdbs.work.work);
-	unsigned int cpu = optdemand_cpuinfo->cdbs.cur_policy->cpu;
+	struct cpufreq_policy *policy = optdemand_cpuinfo->cdbs.cur_policy;
+	if(!policy || !policy->governor_enabled)
+		return;
+	unsigned int cpu = policy->cpu;
 	cur_cpu = optdemand_cpuinfo->cdbs.cpu;
 	struct cpufreq_optdemand_cpuinfo *pcpu = &per_cpu(cpuinfo, cpu);
-	struct cpufreq_policy *policy = optdemand_cpuinfo->cdbs.cur_policy;
-	struct dbs_data *dbs_data = optdemand_cpuinfo->cdbs.cur_policy->governor_data;
+	struct dbs_data *dbs_data = policy->governor_data;
 	struct cpufreq_optdemand_tunables *tunables = dbs_data->tuners;
 	unsigned int freq_cur;
 	int delay = 1;
@@ -1304,9 +1300,6 @@ static int cpufreq_governor_optdemand(struct cpufreq_policy *policy,
 
 		cpuinfo->rate_mult = 1;
         cpufreq_optdemand_initialized = 1;
-        #ifdef CONFIG_SCHED_HMP
-        hmp_load_ctrl_flag = 1;
-        #endif
 
 		mutex_unlock(&dbs_data->mutex);
 
@@ -1320,9 +1313,6 @@ static int cpufreq_governor_optdemand(struct cpufreq_policy *policy,
 
 	case CPUFREQ_GOV_STOP:
         cpufreq_optdemand_initialized = 0;
-        #ifdef CONFIG_SCHED_HMP
-        hmp_load_ctrl_flag = 0;
-        #endif
 		gov_cancel_work(dbs_data, policy);
 
 		mutex_lock(&dbs_data->mutex);
@@ -1333,6 +1323,11 @@ static int cpufreq_governor_optdemand(struct cpufreq_policy *policy,
 		break;
 
 	case CPUFREQ_GOV_LIMITS:
+		mutex_lock(&dbs_data->mutex);
+		if (!cpu_cdbs->cur_policy) {
+			mutex_unlock(&dbs_data->mutex);
+			break;
+		}
 		mutex_lock(&cpu_cdbs->timer_mutex);
 		if (policy->max < cpu_cdbs->cur_policy->cur)
 			__cpufreq_driver_target(cpu_cdbs->cur_policy,
@@ -1342,6 +1337,7 @@ static int cpufreq_governor_optdemand(struct cpufreq_policy *policy,
 					policy->min, CPUFREQ_RELATION_L);
 		optdemand_dbs_check_cpu(dbs_data, cpu);
 		mutex_unlock(&cpu_cdbs->timer_mutex);
+		mutex_unlock(&dbs_data->mutex);
 		break;
 	}
 	return 0;

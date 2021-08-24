@@ -3809,23 +3809,6 @@ static int cyttsp5_wakeup_host(struct cyttsp5_core_data *cd)
 
     // double click easy wakeup area
     if(cd->gesture_id == CYTTSP5_GESTURE_DOUBLE_CLICK && cd->double_tap_enabled) {
-        TS_LOG_INFO("%s: e=%d, rc=%d\n", __func__, event_id, rc);
-
-        input_report_key(cd->md.input, KEY_WAKEUP, 1);
-        input_sync(cd->md.input);
-        input_report_key(cd->md.input, KEY_WAKEUP, 0);
-        input_sync(cd->md.input);
-        /*
-        input_report_key(cd->md.input, KEY_POWER, 1);
-        input_sync(cd->md.input);
-        input_report_key(cd->md.input, KEY_POWER, 0);
-        input_sync(cd->md.input);
-        */
-        return rc;
-    }
-
-    // double click easy wakeup area
-    if(cd->gesture_id == CYTTSP5_GESTURE_DOUBLE_CLICK && cd->double_tap_enabled) {
         for(i = 0; i < 2; i++) {
             if (cd->gest_pos[i].x < cd->dtz_x0 || cd->gest_pos[i].x > cd->dtz_x1 ||
                 cd->gest_pos[i].y < cd->dtz_y0 || cd->gest_pos[i].y > cd->dtz_y1) { 
@@ -4060,13 +4043,22 @@ static int cyttsp5_parse_input(struct cyttsp5_core_data *cd)
 static int cyttsp5_read_input(struct cyttsp5_core_data *cd)
 {
     struct device *dev = cd->dev;
-    int rc;
+    int rc = 0;
+    unsigned int size = 0;
 
     rc = cyttsp5_adap_read_default_nosize(cd, cd->input_buf, CY_MAX_INPUT);
     if (rc) {
         TS_LOG_ERR("%s: Error getting report, r=%d\n",
                 __func__, rc);
         return rc;
+    }
+    size = get_unaligned_le16(&cd->input_buf[0]);
+    if( size > CY_MAX_INPUT ) {
+        TS_LOG_ERR("%s line%d: max input size exceeded!size=%d\n",__func__,__LINE__,size);
+        size = CY_MAX_INPUT;
+        cd->input_buf[0] = (char)size;
+        cd->input_buf[1] = (char)(size>>8);
+        TS_LOG_INFO("%s line%d: manual set size to CY_MAX_INPUT: %d\n",__func__,__LINE__,size);
     }
     TS_LOG_DEBUG("%s: Read input successfully\n", __func__);
     return rc;
@@ -4331,12 +4323,19 @@ static int cyttsp5_core_wake_device_from_easy_wakeup_(struct cyttsp5_core_data *
 static int cyttsp5_core_wake_device_from_deep_sleep_(
         struct cyttsp5_core_data *cd)
 {
-    int rc;
+    int rc = -EAGAIN;
+    int retry_times = 0;
 
-    rc = cyttsp5_hid_cmd_set_power_(cd, HID_POWER_ON);
-    if (rc)
+    for (retry_times = 0; retry_times < CY_WAKEUP_RETRY_TIMES; retry_times++) {
+        rc = cyttsp5_hid_cmd_set_power_(cd, HID_POWER_ON);
+        if (!rc) {
+            TS_LOG_INFO("%s %d:set power to wake up success\n", __func__, __LINE__);
+            break;
+        } else {
+            TS_LOG_INFO("%s:set power to wake up fail,retry=%d\n", __func__, retry_times);
+        }
         rc =  -EAGAIN;
-
+    }
     /* Prevent failure on sequential wake/sleep requests from OS */
     msleep(20);
 
@@ -4530,7 +4529,11 @@ static int cyttsp5_get_ic_crc_(struct cyttsp5_core_data *cd, u8 ebid)
 
     if (status) {
         rc = -EINVAL;
+        cd->config_crc_fail_flag = true;
+        TS_LOG_ERR("%s: crc fail ,status=%d\n",__func__,status);
         goto exit;
+    } else {
+        cd->config_crc_fail_flag = false;
     }
 
     si->ttconfig.crc = stored_crc;
@@ -5214,11 +5217,6 @@ static ssize_t cyttsp5_easy_wakeup_gesture_store(struct device *dev,
     mutex_lock(&cd->system_lock);
     if (cd->sysinfo.ready && IS_PIP_VER_GE(&cd->sysinfo, 1, 2)) {
         cd->easy_wakeup_gesture = (unsigned int)value;
-        if (cd ->easy_wakeup_gesture == 1) {
-            cd->double_tap_enabled = 1;
-	    } else {
-            cd->double_tap_enabled = 0;
-        }
     } else {
         TS_LOG_ERR("%s: easy wakeup Error value: %d\n", __func__,
                     cd->sysinfo.ready);
@@ -5465,7 +5463,7 @@ static ssize_t cyttsp5_touch_glove_store(struct device *dev,
         rc = size;
         goto out;
     }
-
+    cd->glove_mode_enabled = glove_mode;
     if (glove_mode) {
         rc = cyttsp5_set_touch_mode(dev,FINGER_GLOVE_MODE);
     } else {
@@ -5478,10 +5476,10 @@ static ssize_t cyttsp5_touch_glove_store(struct device *dev,
 
     if (rc < 0) {
         TS_LOG_INFO("%s: set mode %d failed, rc = %d.\n", __func__, glove_mode, rc);
-		rc = -EINVAL;
+        rc = -EINVAL;
+        cd->glove_set_fail = 1;
         goto out;
     } else {
-        cd->glove_mode_enabled = glove_mode;
         rc = size;
     }
 
@@ -5667,32 +5665,28 @@ static void remove_sysfs_interfaces(struct device *dev)
 static int tthe_debugfs_open(struct inode *inode, struct file *filp)
 {
     struct cyttsp5_core_data *cd = inode->i_private;
-	mutex_lock(&cd->tthe_lock);
+
     filp->private_data = inode->i_private;
 
-	if (cd->tthe_buf){
-		mutex_unlock(&cd->tthe_lock);
-		return -EBUSY;
-	}
+    if (cd->tthe_buf)
+        return -EBUSY;
 
-	cd->tthe_buf = kzalloc(CY_MAX_PRBUF_SIZE, GFP_KERNEL);
-	if (!cd->tthe_buf){
-		mutex_unlock(&cd->tthe_lock);
-		return -ENOMEM;
-	}
-	mutex_unlock(&cd->tthe_lock);
-	return 0;
+    cd->tthe_buf = kzalloc(CY_MAX_PRBUF_SIZE, GFP_KERNEL);
+    if (!cd->tthe_buf)
+        return -ENOMEM;
+
+    return 0;
 }
 
 static int tthe_debugfs_close(struct inode *inode, struct file *filp)
 {
     struct cyttsp5_core_data *cd = filp->private_data;
-	mutex_lock(&cd->tthe_lock);
+
     filp->private_data = NULL;
 
     kfree(cd->tthe_buf);
     cd->tthe_buf = NULL;
-	mutex_unlock(&cd->tthe_lock);
+
     return 0;
 }
 
@@ -5701,7 +5695,7 @@ static ssize_t tthe_debugfs_read(struct file *filp, char __user *buf,
 {
     struct cyttsp5_core_data *cd = filp->private_data;
     int size;
-	int ret = 0;
+    int ret;
 
     wait_event_interruptible(cd->wait_q,
             cd->tthe_buf_len != 0 || cd->tthe_exit);
@@ -5720,16 +5714,13 @@ static ssize_t tthe_debugfs_read(struct file *filp, char __user *buf,
     }
 
     ret = copy_to_user(buf, cd->tthe_buf, cd->tthe_buf_len);
-	if (ret == size){
-		mutex_unlock(&cd->tthe_lock);
-		return -EFAULT;
-	}
-	size -= ret;
-	cd->tthe_buf_len -= size;
-
-	*ppos += size;
-	mutex_unlock(&cd->tthe_lock);
-	return size;
+    if (ret == size)
+        return -EFAULT;
+    size -= ret;
+    cd->tthe_buf_len -= size;
+    mutex_unlock(&cd->tthe_lock);
+    *ppos += size;
+    return size;
 }
 
 static const struct file_operations tthe_debugfs_fops = {
@@ -5862,6 +5853,7 @@ static int fb_notifier_callback(struct notifier_block *self,
         container_of(self, struct cyttsp5_core_data, fb_notifier);
     struct fb_event *evdata = data;
     int *blank;
+    int rc = 0;
 
     if(atomic_read(&mmi_test_status)){
         TS_LOG_INFO("%s: MMI test is running, exit now.\n", __func__);
@@ -5879,6 +5871,17 @@ static int fb_notifier_callback(struct notifier_block *self,
                 mod_timer(&cd->holster_timer, jiffies + msecs_to_jiffies(CY_COVER_MODE_TIMEOUT));
             }else{
                 cyttsp5_core_resume(cd->dev);
+            }
+            if(cd->glove_set_fail) {
+                if (cd->glove_mode_enabled) {
+                    rc = cyttsp5_set_touch_mode(cd->dev, FINGER_GLOVE_MODE);
+                    if (rc < 0) {
+                        TS_LOG_ERR("%s: set glove mode failed, rc = %d.\n", __func__, rc);
+                    } else {
+                        TS_LOG_INFO("%s: set glove mode success.\n", __func__);
+                        cd->glove_set_fail = 0;
+                    }
+                }
             }
         } else if (*blank == FB_BLANK_POWERDOWN) {
             TS_LOG_INFO("%s: POWERDOWN!\n", __func__);
@@ -6226,7 +6229,6 @@ static int cyttsp5_regulator_disable(struct cyttsp5_power_control *power_ctrl)
         if (!IS_ERR(power_ctrl->vci)) {
             regulator_disable(power_ctrl->vci);
             TS_LOG_INFO("%s: disable vci regulator success.\n",__func__);
-            goto exit;
         }
     }
 
@@ -6234,14 +6236,10 @@ static int cyttsp5_regulator_disable(struct cyttsp5_power_control *power_ctrl)
         if (!IS_ERR(power_ctrl->vddio)) {
             regulator_disable(power_ctrl->vddio);
             TS_LOG_INFO("%s: disable vddio regulator success.\n",__func__);
-            goto exit;
         }
     }
 
     return 0;
-
-exit:
-    return -EINVAL;
 }
 
 static int cyttsp5_set_power(struct cyttsp5_core_data *cd,

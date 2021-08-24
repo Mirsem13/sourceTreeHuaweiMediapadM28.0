@@ -170,8 +170,8 @@ enum
 	VM_UNUSED8=8,		/* was: struct: Control kswapd behaviour */
 	VM_UNUSED9=9,		/* was: struct: Set page table cache parameters */
 	VM_PAGE_CLUSTER=10,	/* int: set number of pages to swap together */
-	VM_DIRTY_BACKGROUND=11,	/* dirty_background_ratio */
-	VM_DIRTY_RATIO=12,	/* dirty_ratio */
+	VM_DIRTY_BACKGROUND=5,	/* dirty_background_ratio */
+	VM_DIRTY_RATIO=15,	/* dirty_ratio */
 	VM_DIRTY_WB_CS=13,	/* dirty_writeback_centisecs */
 	VM_DIRTY_EXPIRE_CS=14,	/* dirty_expire_centisecs */
 	VM_NR_PDFLUSH_THREADS=15, /* nr_pdflush_threads */
@@ -185,7 +185,7 @@ enum
 	VM_LAPTOP_MODE=23,	/* vm laptop mode */
 	VM_BLOCK_DUMP=24,	/* block dump mode */
 	VM_HUGETLB_GROUP=25,	/* permitted hugetlb group */
-	VM_VFS_CACHE_PRESSURE=26, /* dcache/icache reclaim pressure */
+	VM_VFS_CACHE_PRESSURE=50, /* dcache/icache reclaim pressure */
 	VM_LEGACY_VA_LAYOUT=27, /* legacy/compatibility virtual address space layout */
 	VM_SWAP_TOKEN_TIMEOUT=28, /* default time for token time out */
 	VM_DROP_PAGECACHE=29,	/* int: nuke lots of pagecache */

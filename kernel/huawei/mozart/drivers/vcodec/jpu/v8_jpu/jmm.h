@@ -524,9 +524,9 @@ jmem_exit(
 
 unsigned long
 jmem_alloc(
-	jpu_mm_t* mm,
+    jpu_mm_t* mm,
     int size,
-	unsigned long pid
+    unsigned long pid
     )
 {
     avl_node_t* node;
@@ -535,14 +535,14 @@ jmem_alloc(
     int         alloc_pageno;
     unsigned long  ptr;
 
-	if (mm == NULL) {
-		printk(KERN_INFO "jmem_alloc: invalid handle\n");
-		return -1;
-	}
+    if (mm == NULL) {
+        printk(KERN_INFO "jmem_alloc: invalid handle\n");
+        return -1;
+    }
 
     if (size <= 0) return -1;
 
-	npages = (size + JMEM_PAGE_SIZE -1)/JMEM_PAGE_SIZE;
+    npages = (size + JMEM_PAGE_SIZE -1)/JMEM_PAGE_SIZE;
 
     mm->free_tree = remove_approx_value(mm->free_tree, &node, MAKE_KEY(npages, 0));
     if (node == NULL) {

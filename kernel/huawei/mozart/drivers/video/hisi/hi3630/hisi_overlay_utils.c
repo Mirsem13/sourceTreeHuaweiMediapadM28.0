@@ -22,6 +22,7 @@ static int g_scf1_coef_load_refcount;
 static int g_scf2_coef_load_refcount;
 
 uint32_t g_frame_count = 0;
+int32_t g_enable_te_debug = 0;
 
 extern bool g_enable_extra_data;
 
@@ -8171,8 +8172,8 @@ int hisi_overlay_ioctl_handler(struct hisi_fb_data_type *hisifd,
 	default:
 		break;
 	}
+	sigprocmask(SIG_SETMASK, &oldmask, NULL);
 
-        sigprocmask(SIG_SETMASK, &oldmask, &setmask);
 	return ret;
 }
 
@@ -8342,6 +8343,8 @@ int hisi_vactive0_start_config(struct hisi_fb_data_type *hisifd)
 
 					hisifd->ldi_data_gate_en = 0;
 
+					g_enable_te_debug = 1;
+
 				#if defined (CONFIG_HUAWEI_DSM)
 					outp32(hisifd->dss_base + DSS_MIPI_DSI0_OFFSET + MIPIDSI_GEN_HDR_OFFSET, 0x0A06);
 					if (!mipi_dsi_read(&read_value, hisifd->dss_base + DSS_MIPI_DSI0_OFFSET))
@@ -8403,6 +8406,9 @@ int hisi_vactive0_start_config(struct hisi_fb_data_type *hisifd)
 
 		HISI_FB_ERR("fb%d, isr_s1_mask=0x%x, isr_s2_mask=0x%x, isr_s1=0x%x, isr_s2=0x%x.\n",
 			hisifd->index, isr_s1_mask, isr_s2_mask, isr_s1, isr_s2);
+		HISI_FB_ERR("fb%d, dss_ch_status = 0x%x, dfs_status = 0x%x, dphy_status = 0x%x.\n",
+			hisifd->index, inp32(hisifd->dss_base + DSS_GLB_DSS_CH_STATUS),
+			inp32(hisifd->dss_base + DFS_STATUS), inp32(hisifd->dss_base + DSS_MIPI_DSI0_OFFSET + MIPIDSI_PHY_STATUS_OFFSET));
 
 	#if defined (CONFIG_HUAWEI_DSM)
 		if (s_vactive0_timeout_count > VACTIVE0_TIMEOUT_EXPIRE_COUNT) {

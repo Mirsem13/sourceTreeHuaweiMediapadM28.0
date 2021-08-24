@@ -39,15 +39,15 @@
 #define TS_WATCHDOG_TIMEOUT		1000
 
 #define NO_SYNC_TIMEOUT		0
-#define SHORT_SYNC_TIMEOUT		20
-#define LONG_SYNC_TIMEOUT		30
+#define SHORT_SYNC_TIMEOUT		5
+#define LONG_SYNC_TIMEOUT		10
 #define LONG_LONG_SYNC_TIMEOUT	50
 
 #define TS_CMD_QUEUE_SIZE  20
 #define TS_MAX_FINGER 10
 #define TS_ERR_NEST_LEVEL  5
 #define TS_RAWDATA_BUFF_MAX 1600
-#define TS_RAWDATA_RESULT_MAX	50
+#define TS_RAWDATA_RESULT_MAX	80
 #define TS_FB_LOOP_COUNTS 100
 #define TS_FB_WAIT_TIME 5
 
@@ -88,6 +88,7 @@
 #define TS_GESTURE_INVALID_CONTROL_NO 0xFF
 
 #define CHIP_INFO_LENGTH	16
+#define CHIP_PROJECT_ID_LENGTH 10
 #define RAWDATA_NUM 8
 #define MAX_POSITON_NUMS 6
 #ifndef CONFIG_OF
@@ -147,6 +148,7 @@ enum ts_cmd{
 	TS_POWER_CONTROL,
 	TS_FW_UPDATE_BOOT,
 	TS_FW_UPDATE_SD,
+	TS_GET_CHIP_PROJECT_ID,
 	TS_GET_CHIP_INFO,
 	TS_READ_RAW_DATA,
 	TS_CALIBRATE_DEVICE,
@@ -165,6 +167,8 @@ enum ts_cmd{
 	TS_PALM_SWITCH,
 	TS_REGS_STORE,
 	TS_SET_INFO_FLAG,
+	TS_TEST_TYPE,
+	TS_TOUCH_WEIGHT_SWITCH,
 	TS_INVAILD_CMD = 255,
 };
 
@@ -310,6 +314,11 @@ struct ts_rawdata_info{
 	char result[TS_RAWDATA_RESULT_MAX];
 };
 
+struct ts_chip_project_id_param{
+	int status;
+	char project_id[CHIP_PROJECT_ID_LENGTH + 1];
+};
+
 struct ts_chip_info_param{
 	int status;
 	u8 chip_name[CHIP_INFO_LENGTH*2];
@@ -391,6 +400,12 @@ struct ts_window_info{
 	int status;
 };
 
+struct ts_test_type_info{
+	char tp_test_type[MAX_STR_LEN];
+	int op_action;
+	int status;
+};
+
 #if defined (CONFIG_HUAWEI_DSM)
 struct ts_dsm_info{
 	char fw_update_result[8];
@@ -436,6 +451,11 @@ struct ts_palm_info{
 	int status;
 };
 
+struct ts_single_touch_info{
+	u16 single_touch_switch;
+	int op_action;
+	int status;
+};
 struct ts_cmd_sync {
 	atomic_t timeout_flag;
 	struct completion done;
@@ -467,6 +487,7 @@ struct ts_device_ops{
 	int (*chip_irq_bottom_half)(struct ts_cmd_node *in_cmd, struct ts_cmd_node *out_cmd);
 	int (*chip_reset)(void);
 	void (*chip_shutdown)(void);
+	int (*chip_get_project_id)(struct ts_chip_project_id_param *info);
 	int (*chip_get_info)(struct ts_chip_info_param *info);
 	int (*chip_set_info_flag)(struct ts_data *info);
 	int (*chip_fw_update_boot)(char *file_name);
@@ -476,6 +497,7 @@ struct ts_device_ops{
 	int (*chip_get_rawdata)(struct ts_rawdata_info *info, struct ts_cmd_node *out_cmd);
 	int (*chip_glove_switch)(struct ts_glove_info *info);
 	int (*chip_palm_switch)(struct ts_palm_info *info);
+	int (*chip_single_touch_switch)(struct ts_single_touch_info *info);
 	int (*chip_wakeup_gesture_enable_switch)(struct ts_wakeup_gesture_enable_info *info);
 	int (*chip_holster_switch)(struct ts_holster_info *info);
 	int (*chip_roi_switch)(struct ts_roi_info *info);
@@ -489,6 +511,7 @@ struct ts_device_ops{
 	int (*chip_check_status)(void);
 	int (*chip_hw_reset)(void);
 	int (*chip_regs_operate)(struct ts_regs_info *info);
+	int (*chip_get_capacitance_test_type)(struct ts_test_type_info *info);
 };
 
 struct ts_device_data{
@@ -499,6 +522,7 @@ struct ts_device_data{
 	char chip_name[MAX_STR_LEN];
 	char module_name[MAX_STR_LEN];
 	char version_name[MAX_STR_LEN];
+	char tp_test_type[MAX_STR_LEN];
 	int raw_limit_buf[RAWDATA_NUM];
 	u8 reg_values[TS_MAX_REG_VALUE_NUM];
 	struct device_node *cnode;
@@ -511,6 +535,7 @@ struct ts_device_data{
 	int vddio_gpio_type;
 	int vddio_regulator_type;
 	int vddio_gpio_ctrl;
+	unsigned short tp_func_flag;
 	int reset_gpio;
 	int algo_size;
 	int algo_id;

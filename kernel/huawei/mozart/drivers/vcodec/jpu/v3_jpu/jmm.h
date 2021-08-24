@@ -455,8 +455,6 @@ jmem_init(
 {
     int i;
 
-    if (NULL == mm)
-        return -1;
 
     mm->base_addr  = (addr+(JMEM_PAGE_SIZE-1))&~(JMEM_PAGE_SIZE-1);
     mm->mem_size   = size&~JMEM_PAGE_SIZE;

@@ -141,27 +141,6 @@ static void get_psensor_calibrate_data(void)
     }
 }
 
-#ifdef CONFIG_ADAPT_TP_TYPE
-extern int read_als_get_tp_type(void);
-static void get_als_tp_type_data(void)
-{
-	int ret = 0;
-	static int als_first_start_flag = 0;
-
-	hwlog_info("%s\n", __func__);
-
-	if (0 == als_first_start_flag)
-	{
-		ret = read_als_get_tp_type();
-		if (ret) {
-			hwlog_err("%s read als calibrate data and send to iom3 failed, ret=%d\n", __func__, ret);
-		} else {
-			hwlog_info("%s read als calibrate data and send to iom3 success\n", __func__);
-			als_first_start_flag = 1;
-		}
-	}
-}
-#endif
 
 /*******************************************************************************************
 Function:       shb_ioctl
@@ -185,12 +164,11 @@ static long shb_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
         get_mag_calibrate_data();
         get_cap_prox_calibrate_data();
         get_airpress_calibrate_data();
-        get_psensor_calibrate_data();
-#ifdef CONFIG_ADAPT_TP_TYPE
-        get_als_tp_type_data();
-#endif
+	 get_psensor_calibrate_data();
         break;
     case SHB_IOCTL_APP_DISABLE_SENSOR:
+        break;
+    case SHB_IOCTL_APP_DELAY_SENSOR:
         break;
     /*begin huangwen 20120706*/
     case SHB_IOCTL_APP_GET_SENSOR_MCU_MODE:
@@ -201,33 +179,6 @@ static long shb_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
         return 0;
         break;
     /*end huangwen 20120706*/
-    case SHB_IOCTL_APP_DELAY_ACCEL:
-    case SHB_IOCTL_APP_DELAY_LIGHT:
-    case SHB_IOCTL_APP_DELAY_PROXI:
-    case SHB_IOCTL_APP_DELAY_GYRO:
-    case SHB_IOCTL_APP_DELAY_GRAVITY:
-    case SHB_IOCTL_APP_DELAY_MAGNETIC:
-    case SHB_IOCTL_APP_DELAY_ROTATESCREEN:
-    case SHB_IOCTL_APP_DELAY_LINEARACCELERATE:
-    case SHB_IOCTL_APP_DELAY_ORIENTATION:
-    case SHB_IOCTL_APP_DELAY_ROTATEVECTOR:
-    case SHB_IOCTL_APP_DELAY_PRESSURE:
-    case SHB_IOCTL_APP_DELAY_TEMPERATURE:
-    case SHB_IOCTL_APP_DELAY_RELATIVE_HUMIDITY:
-    case SHB_IOCTL_APP_DELAY_AMBIENT_TEMPERATURE:
-    case SHB_IOCTL_APP_DELAY_MCU_LABC:
-    case SHB_IOCTL_APP_DELAY_HALL:
-    case SHB_IOCTL_APP_DELAY_MAGNETIC_FIELD_UNCALIBRATED:
-    case SHB_IOCTL_APP_DELAY_GAME_ROTATION_VECTOR:
-    case SHB_IOCTL_APP_DELAY_GYROSCOPE_UNCALIBRATED:
-    case SHB_IOCTL_APP_DELAY_SIGNIFICANT_MOTION:
-    case SHB_IOCTL_APP_DELAY_STEP_DETECTOR:
-    case SHB_IOCTL_APP_DELAY_STEP_COUNTER:
-    case SHB_IOCTL_APP_DELAY_GEOMAGNETIC_ROTATION_VECTOR:
-    case SHB_IOCTL_APP_DELAY_AIRPRESS:
-    case SHB_IOCTL_APP_DELAY_HANDPRESS:
-    case SHB_IOCTL_APP_DELAY_CAP_PROX:
-        break;
     default:
         hwlog_err("shb_ioctl unknown cmd : %d\n", cmd);
         return -ENOTTY;

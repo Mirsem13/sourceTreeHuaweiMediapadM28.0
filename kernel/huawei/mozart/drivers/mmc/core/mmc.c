@@ -178,6 +178,9 @@ static int mmc_decode_csd(struct mmc_card *card)
 	return 0;
 }
 
+/* Minimum partition switch timeout in milliseconds */
+#define MMC_MIN_PART_SWITCH_TIME	300
+
 /*
  * Read extended CSD.
  */
@@ -384,6 +387,10 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 
 		/* EXT_CSD value is in units of 10ms, but we store in ms */
 		card->ext_csd.part_time = 10 * ext_csd[EXT_CSD_PART_SWITCH_TIME];
+		/* Some eMMC set the value too low so set a minimum */
+		if (card->ext_csd.part_time &&
+		    card->ext_csd.part_time < MMC_MIN_PART_SWITCH_TIME)
+			card->ext_csd.part_time = MMC_MIN_PART_SWITCH_TIME;
 
 		/* Sleep / awake timeout in 100ns units */
 		if (sa_shift > 0 && sa_shift <= 0x17)
@@ -1434,7 +1441,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		if (card->ext_csd.rev >= 7) {
 			err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 					EXT_CSD_EXP_EVENTS_CTRL,
-					EXT_CSD_DYNCAP_EVENT_EN | EXT_CSD_SYSPOOL_EVENT_EN,
+					EXT_CSD_DYNCAP_EVENT_EN,
 					card->ext_csd.generic_cmd6_time);
 			if (err) {
 				pr_warn("%s: Enabling dyncap and syspool event failed\n",
@@ -1775,6 +1782,10 @@ static const struct mmc_bus_ops mmc_ops = {
 	.sleep = mmc_sleep,
 	.remove = mmc_remove,
 	.detect = mmc_detect,
+#ifdef CONFIG_MMC_PASSWORDS
+	.sysfs_add = NULL,
+	.sysfs_remove = NULL,
+#endif
 	.suspend = NULL,
 	.resume = NULL,
 	.power_restore = mmc_power_restore,

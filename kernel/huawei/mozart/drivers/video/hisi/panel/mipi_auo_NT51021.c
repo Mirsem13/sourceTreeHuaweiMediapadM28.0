@@ -768,8 +768,8 @@ static int mipi_auo_panel_remove(struct platform_device *pdev)
 
 #define STILL_DIMMING_SHORT      0x00
 #define STILL_DIMMING_LONG        0x60
-#define MOVING_DIMMING_SHORT  0x07
-#define MOVING_DIMMING_LONG    0x67
+#define MOVING_DIMMING_SHORT  0x18
+#define MOVING_DIMMING_LONG    0x78
 
 //300ms
 #define ESD_CHECK_TIME_PERIOD	(1000)
@@ -787,10 +787,6 @@ static enum hrtimer_restart hrtimer_set_dimming(struct hrtimer *timer)
 		{DTYPE_DCS_WRITE1, 0,10, WAIT_TYPE_US, sizeof(set_still_dimming), set_still_dimming},
 		{DTYPE_DCS_WRITE1, 0,10, WAIT_TYPE_US, sizeof(set_moving_dimming), set_moving_dimming},
 	};
-
-	if (!hisifd_test->panel_power_on) {
-		return HRTIMER_NORESTART;
-	}
 
 	timer_restart = 0;
 	set_still_dimming[1] = STILL_DIMMING_SHORT;
@@ -1328,8 +1324,6 @@ static int mipi_auo_probe(struct platform_device *pdev)
 		g_vddio_type = 0;
 	}
 	HISI_FB_INFO("get lcd_vddio_type: %d\n", g_vddio_type);
-
-	HISI_FB_INFO("set pwm fre:0x%x  --(0x07:freq = 1.8KHz)!\n", MOVING_DIMMING_SHORT);
 
 	pdev->id = 1;
 	/* init lcd panel info */

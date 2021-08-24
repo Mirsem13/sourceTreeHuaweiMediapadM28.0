@@ -243,22 +243,22 @@ s5k4e1ga_sunny_config(
 	int ret =0;
 	static bool s5ke1ga_power_on = false;
 	static bool csi_enable = false;
-    
-    data = (struct sensor_cfg_data *)argp;
+
+	data = (struct sensor_cfg_data *)argp;
 	cam_debug("s5k4e1ga_sunny cfgtype = %d",data->cfgtype);
 	switch(data->cfgtype){
 		case SEN_CONFIG_POWER_ON:
-            if(!s5ke1ga_power_on) {
-                ret = si->vtbl->power_up(si);
-                s5ke1ga_power_on = true;
-            }
+			if(!s5ke1ga_power_on) {
+				ret = si->vtbl->power_up(si);
+				s5ke1ga_power_on = true;
+			}
 			break;
-        case SEN_CONFIG_POWER_OFF:
-            if(s5ke1ga_power_on) {
-                ret = si->vtbl->power_down(si);
-                s5ke1ga_power_on = false;
-            }
-            break;
+		case SEN_CONFIG_POWER_OFF:
+			if(s5ke1ga_power_on) {
+				ret = si->vtbl->power_down(si);
+				s5ke1ga_power_on = false;
+			}
+			break;
 		case SEN_CONFIG_WRITE_REG:
 			break;
 		case SEN_CONFIG_READ_REG:
@@ -268,16 +268,16 @@ s5k4e1ga_sunny_config(
 		case SEN_CONFIG_READ_REG_SETTINGS:
 			break;
 		case SEN_CONFIG_ENABLE_CSI:
-            if(s5ke1ga_power_on && !csi_enable) {
-                ret = si->vtbl->csi_enable(si);
-                csi_enable = true;	
-            }
-            break;
+			if(s5ke1ga_power_on && !csi_enable) {
+				ret = si->vtbl->csi_enable(si);
+				csi_enable = true;
+			}
+			break;
 		case SEN_CONFIG_DISABLE_CSI:
-            if(s5ke1ga_power_on && csi_enable) {
-                ret = si->vtbl->csi_disable(si);
-                csi_enable = false;
-            }
+			if(s5ke1ga_power_on && csi_enable) {
+				ret = si->vtbl->csi_disable(si);
+				csi_enable = false;
+			}
 			break;
 		case SEN_CONFIG_MATCH_ID:
 			ret = si->vtbl->match_id(si,argp);

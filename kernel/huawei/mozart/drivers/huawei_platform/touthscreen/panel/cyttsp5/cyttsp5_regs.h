@@ -984,6 +984,7 @@ struct cyttsp5_core_data {
     u8 cmd_buf[CYTTSP5_PREALLOCATED_CMD_BUFFER];
     u8 input_buf[CY_MAX_INPUT];
     u8 response_buf[CY_MAX_INPUT];
+    bool config_crc_fail_flag;
 #ifdef CONFIG_HAS_EARLYSUSPEND
     struct early_suspend es;
 #elif defined(CONFIG_FB)
@@ -1001,6 +1002,7 @@ struct cyttsp5_core_data {
 #endif
     struct cyttsp5_power_control power_ctrl;
     int glove_mode_enabled;
+    int glove_set_fail;
     struct cyttsp5_window_info window_info;
     struct work_struct holster_work;
     struct timer_list holster_timer;

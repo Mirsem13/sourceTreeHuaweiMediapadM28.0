@@ -19,8 +19,6 @@
 #define GPIO_VSP	"gpio_lcd_vsp"
 #define GPIO_VSN	"gpio_lcd_vsn"
 
-#define MAX_BUF10         10
-
 static struct hisi_fb_panel_data mipi_fake_panel_data;
 
 static int hkadc_buf = 0;
@@ -253,7 +251,7 @@ static void hisi_vci_enable(bool en)
 static ssize_t mipi_fake_panel_lcd_voltage_enable_store(struct platform_device *pdev,
 	const char *buf, size_t count)
 {
-	char command[MAX_BUF10] = {0};
+	char command[10] = {0};
 	struct hisi_fb_data_type *hisifd = NULL;
 
 	BUG_ON(pdev == NULL);
@@ -261,11 +259,6 @@ static ssize_t mipi_fake_panel_lcd_voltage_enable_store(struct platform_device *
 	BUG_ON(hisifd == NULL);
 
 	HISI_FB_DEBUG("fb%d, +.\n", hisifd->index);
-
-	if (strlen(buf) >= MAX_BUF10){
-		HISI_FB_ERR("buf_overflow!\n");
-		return count;
-	}
 
 	if (!sscanf(buf, "%s", command)) {
 		HISI_FB_INFO("bad command(%s)\n", command);

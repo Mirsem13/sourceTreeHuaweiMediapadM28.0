@@ -34,21 +34,20 @@
 #include <asm/irq.h>
 
 #include <linux/hisi/util.h>
+#include <linux/dt2w.h>
 #ifdef CONFIG_HISI_HI6XXX_PMIC
 #include <soc_smart_interface.h>
 #endif
 extern void set_watchdog_resetflag(void);
-extern int deal_ps_light();
 #if defined(CONFIG_HISILICON_PLATFORM_MAINTAIN)
 #ifdef CONFIG_ARCH_HI6XXX
 #include <hisi/mntn/excDrv.h>
 #endif
 #endif
 #if defined (CONFIG_HUAWEI_DSM)
-#include <huawei_platform/dsm/dsm_pub.h>
+#include <dsm/dsm_pub.h>
 #endif
 #include <linux/hw_lcd_common.h>
-#include <huawei_platform/log/log_jank.h>
 
 #define TRUE				(1)
 #define FALSE				(0)
@@ -101,10 +100,6 @@ static void powerkey_timer_func(unsigned long data)
 }
 #endif
 struct lcd_pwr_status_t lcd_pwr_status;
-#ifdef CONFIG_AP_POWERKEY_SENDS_PROX_SENSOR_REPORT
-extern int powerkey_sends_prox_flag;
-extern int ap_powerkey_sends_prox_sensor_report(int value);
-#endif
 static irqreturn_t hisi_powerkey_handler(int irq, void *data)
 {
 	struct hisi_powerkey_info *info = (struct hisi_powerkey_info *)data;
@@ -112,8 +107,6 @@ static irqreturn_t hisi_powerkey_handler(int irq, void *data)
 	wake_lock_timeout(&info->pwr_wake_lock, HZ);
 
 	if (info->irq[0] == irq) {
-	        /*Jnak Log */
-	        LOG_JANK_D(JLID_POWERKEY_PRESS, "%s", "JL_POWERKEY_PRESS");
 			pr_info("[%s]response press interrupt!\n", __FUNCTION__);
 			power_key_ps=true;
 
@@ -133,15 +126,7 @@ static irqreturn_t hisi_powerkey_handler(int irq, void *data)
 			#endif
 			input_report_key(info->idev, KEY_POWER, POWER_KEY_PRESS);
 			input_sync(info->idev);
-			deal_ps_light();
-#ifdef CONFIG_AP_POWERKEY_SENDS_PROX_SENSOR_REPORT
-			if (powerkey_sends_prox_flag) {
-				ap_powerkey_sends_prox_sensor_report(1);
-			}
-#endif
 	} else if (info->irq[1] == irq) {
-	        /*Jnak Log */
-	        LOG_JANK_D(JLID_POWERKEY_RELEASE, "%s", "JL_POWERKEY_RELEASE");
 			pr_info("[%s]response release interrupt!\n", __FUNCTION__);
 			#if defined(CONFIG_HISILICON_PLATFORM_MAINTAIN)
                         #ifdef CONFIG_ARCH_HI6XXX
@@ -300,6 +285,7 @@ static int hisi_powerkey_probe(struct platform_device *pdev)
 		ret = -ENOENT;
 		goto input_err;
 	}
+	register_power_input(info->idev);
 
 	platform_set_drvdata(pdev, info);
 

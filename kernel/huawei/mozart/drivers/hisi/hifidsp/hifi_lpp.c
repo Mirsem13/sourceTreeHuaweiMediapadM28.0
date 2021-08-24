@@ -76,6 +76,7 @@ extern "C" {
 #define SEND_MSG_TO_HIFI DRV_MAILBOX_SENDMAIL
 #endif
 
+#define RETRY_COUNT (5)
 static DEFINE_SEMAPHORE(s_misc_sem);
 
 LIST_HEAD(recv_sync_work_queue_head);
@@ -128,7 +129,6 @@ void notify_hifi_misc_watchdog_coming(void)
 
 void sochifi_watchdog_send_event(void)
 {
-	g_om_data.dsp_error_type = DSP_RDR;
 	hifi_dump_panic_log();
 	logi("soc hifi watchdog coming, now reset mediaserver \n");
 	char *envp[2] = {"hifi_watchdog", NULL};
@@ -668,7 +668,7 @@ static int hifi_dsp_async_cmd(unsigned long arg)
 
 	IN_FUNCTION;
 
-	if (copy_from_user(&param,(void*) arg, sizeof(struct misc_io_async_param))) {
+	if (copy_from_user(&param, (void*)arg, sizeof(struct misc_io_async_param))) {
 		loge("copy_from_user fail.\n");
 		ret = ERROR;
 		goto END;
@@ -915,7 +915,7 @@ static int hifi_dsp_write_param(unsigned long arg)
 
 	ret = copy_from_user(hifi_param_vir_addr, (void __user *)para_addr_in, para.para_size_in);
 
-	if ( ret != 0) {
+	if (ret != 0) {
 		loge("copy data to hifi error! ret = %d.\n", ret);
 	}
 
@@ -1093,6 +1093,7 @@ static int hifi_misc_mmap(struct file *file, struct vm_area_struct *vma)
 static ssize_t hifi_misc_proc_read(struct file *file, char __user *buf,
 								   size_t count, loff_t *ppos)
 {
+	static int retry_cnt = 0;
 	int len = 0, ret = OK;
 	struct recv_request *recv = NULL;
 	struct misc_recmsg_param *recmsg = NULL;
@@ -1140,9 +1141,18 @@ static ssize_t hifi_misc_proc_read(struct file *file, char __user *buf,
 				len -= SIZE_CMD_ID;
 				ret = (int)copy_to_user(buf, recv->rev_msg.mail_buff, len);
 				if (ret > 0) {
-					loge("copy to user fail, ret: %d.\n", ret);
+					loge("copy to user fail, ret : %d, retry cnt: %d., buf addr: 0x%lx\n", ret, retry_cnt, (u64)buf);
+
+					if (retry_cnt < RETRY_COUNT) {
+						wake_up(&s_misc_data.proc_waitq);
+						s_misc_data.wait_flag++;
+						retry_cnt ++;
+						ret = len - ret;
+						goto exit;
+					}
 				}
 
+				retry_cnt = 0;
 				ret = len - ret;
 				logi("msgid: 0x%x, len: %d, %d, play status(0 - done normal, 1 - done complete, 2 -- done abnormal, 3 -- reset): %d.\n", recmsg->msgID, len, recv->rev_msg.mail_buff_len,recmsg->playStatus);
 			}
@@ -1158,6 +1168,7 @@ static ssize_t hifi_misc_proc_read(struct file *file, char __user *buf,
 		loge("queue is null.\n");
 	}
 
+exit:
 	spin_unlock_bh(&s_misc_data.recv_proc_lock);
 
 	OUT_FUNCTION;

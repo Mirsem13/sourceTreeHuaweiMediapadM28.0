@@ -79,10 +79,7 @@ static int send_to_user(struct ksmsg *msg)
 		pr_err("hw_kstate %s: msg is NULL!\n", __func__);
 		goto err;
 	}
-	if (kstate_user_pid <= 0) {
-		pr_err("hw_kstate %s: invalid pid:%d!\n", __func__, kstate_user_pid);
-		goto err;
-	}
+
 	len = sizeof(struct ksmsg) + msg->length;
 	skb = alloc_skb(NLMSG_SPACE(len), GFP_ATOMIC);
 	if (IS_ERR_OR_NULL(skb)) {
@@ -237,8 +234,7 @@ static void recv_from_user(struct sk_buff *skb)
 	tmp_skb = skb;
 	if (tmp_skb->len >= NLMSG_SPACE(0)) {
 		nlh = nlmsg_hdr(tmp_skb);
-		if (nlh->nlmsg_pid > 0)
-			kstate_user_pid = nlh->nlmsg_pid;
+		kstate_user_pid = nlh->nlmsg_pid;
 		len = NLMSG_PAYLOAD(nlh, 0);
 		data = (struct ksmsg*)NLMSG_DATA(nlh);
 

@@ -521,7 +521,7 @@ int mali_dfs_set_div(u32 target)
 
 void mali_dfs_target_profile(u32 target)
 {
-    if (1 == g_mali_dfs_var.dfs_DfsOn && get_gpu_power_status())
+    if (1 == g_mali_dfs_var.dfs_DfsOn)
     {
         if (0 != mali_dfs_set_pll(target))
         {

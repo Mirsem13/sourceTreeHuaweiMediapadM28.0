@@ -292,6 +292,11 @@ static int hi6402es_get_input_param(unsigned int usr_para_size,
 	IN_FUNCTION;
 
 	para_size_in = roundup(usr_para_size, 4);
+	if (para_size_in < usr_para_size) {
+		HI6402ES_DSP_ERROR("usr buffer overflow\n");
+		goto ERR;
+	}
+
 	para_in = kzalloc(para_size_in, GFP_KERNEL);
 	if (para_in == NULL) {
 		HI6402ES_DSP_ERROR("kzalloc fail\n");
@@ -1145,18 +1150,6 @@ static ssize_t hi6402es_hifi_misc_read(struct file *file, char __user *buf,
                                      size_t nbytes, loff_t *pos)
 {
 	struct reg_rw_struct kern_buf;
-
-	if (NULL == buf) {
-		HI6402ES_DSP_ERROR("input error: buf is NULL\n");
-		return -EFAULT;
-	}
-
-	if (nbytes != sizeof(kern_buf)) {
-		HI6402ES_DSP_ERROR("nbytes:%zu from user space not equal to" \
-			"sizeof(kern_buf):%zu\n", nbytes, sizeof(kern_buf));
-		return -EFAULT;
-	}
-
 	if (copy_from_user(&kern_buf, (void  __user *)buf, nbytes)) {
 		HI6402ES_DSP_ERROR("copy_from_user fail.\n");
 		return -EFAULT;
@@ -1176,18 +1169,6 @@ static ssize_t hi6402es_hifi_misc_write(struct file *file,
 				      size_t nbytes, loff_t *pos)
 {
 	struct reg_rw_struct kern_buf;
-
-	if (NULL == buf) {
-		HI6402ES_DSP_ERROR("input error: buf is NULL\n");
-		return -EFAULT;
-	}
-
-	if (nbytes != sizeof(kern_buf)) {
-		HI6402ES_DSP_ERROR("nbytes:%zu from user space not equal to" \
-			"sizeof(kern_buf):%zu\n", nbytes, sizeof(kern_buf));
-		return -EFAULT;
-	}
-
 	if (copy_from_user(&kern_buf, (void  __user *)buf, nbytes)) {
 		HI6402ES_DSP_ERROR("copy_from_user fail.\n");
 		return -EFAULT;

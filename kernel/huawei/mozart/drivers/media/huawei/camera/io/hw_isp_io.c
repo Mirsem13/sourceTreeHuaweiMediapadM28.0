@@ -21,16 +21,16 @@ unsigned int HW_CSI_GETREG32(unsigned int reg)
 {
 	//cam_info("%s enter reg=0x%x.\n", __func__, reg);
 	if(NULL == hw_isp_base)
-        return 0;
-    return ioread32((volatile unsigned int*)(hw_isp_base + reg));
+		return 0;
+	return ioread32((volatile unsigned int*)(hw_isp_base + reg));
 }
 
 void HW_CSI_SETREG32(unsigned int reg, unsigned int val)
 {
 	//cam_info("%s enter reg=0x%x,val=0x%x.\n", __func__, reg, val);
-    if(NULL == hw_isp_base)
-        return;
-    iowrite32(val, (volatile void*)(hw_isp_base + reg));
+	if(NULL == hw_isp_base)
+		return;
+	iowrite32(val, (volatile void*)(hw_isp_base + reg));
 }
 
 void hw_io_set_isp_base(unsigned char *isp_base_addr)

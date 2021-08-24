@@ -809,18 +809,14 @@ static int cyttsp5_setup_input_device(struct device *dev)
     __set_bit(EV_ABS, md->input->evbit);
     __set_bit(EV_REL, md->input->evbit);
     __set_bit(EV_KEY, md->input->evbit);
-    __set_bit(KEY_WAKEUP, md->input->keybit);
 #ifdef INPUT_PROP_DIRECT
     __set_bit(INPUT_PROP_DIRECT, md->input->propbit);
 #endif
-    //__set_bit(KEY_POWER, cd->md.input->keybit);
 
-    /*
     rc = init_easy_wakeup_key_value(dev); 
     if (rc) {
         TS_LOG_ERR("%s:init easy wakeup key value fail, rc = %d\n", __func__, rc);
     }
-    */
 
     /* If virtualkeys enabled, don't use all screen */
     if (md->pdata->flags & CY_MT_FLAG_VKEYS) {

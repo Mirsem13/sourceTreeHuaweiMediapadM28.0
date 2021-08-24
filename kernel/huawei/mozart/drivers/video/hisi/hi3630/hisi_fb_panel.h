@@ -86,6 +86,12 @@
 #define BL_SET_BY_BLPWM	BIT(2)
 #define BL_SET_BY_MIPI	BIT(3)
 
+/* supported display effect type */
+#define COMFORM_MODE                 BIT(0)
+#define ACM_COLOR_ENHANCE_MODE       BIT(1)
+#define IC_COLOR_ENHANCE_MODE        BIT(2)
+#define LED_RG_COLOR_TEMP_MODE       BIT(16)
+
 /* LCD init step */
 enum {
 	LCD_INIT_NONE = 0,
@@ -316,6 +322,7 @@ struct hisi_panel_info {
 	uint8_t acm_support;
 	u8 acm_color_enhancement_mode_support;
 	u8 lcd_ic_color_enhancement_mode_support;
+	u8 lcd_ipc_mode_support;
 	uint32_t acm_valid_num;
 	uint32_t r0_hh;
 	uint32_t r0_lh;

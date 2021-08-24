@@ -23,7 +23,7 @@
 #include "hw_isp_io.h"
 #include "isp_ops.h"
 #include "trace_ovisp23.h"
-#include <huawei_platform/dsm/dsm_pub.h>
+#include <dsm/dsm_pub.h>
 
 static struct pm_qos_request qos_request_ddr_up_record;
 static struct pm_qos_request qos_request_ddr_down_record;
@@ -71,7 +71,6 @@ typedef struct _tag_ovisp23
 
 #define I2OV(i) container_of(i, ovisp23_t, intf)
 #define I2STM(i) container_of(i, hwisp_stream_t, intf)
-
 
 static char const* ovisp23_get_name(hwisp_intf_t* i);
 static int ovisp23_power_on(hwisp_intf_t* i);
@@ -191,15 +190,24 @@ ovisp23_power_on(
 	 * (2) hold lock to make sure it never be invoked by more than one thread
 	 */
 	if (!ov->power_on_state) {
-		rc |= hw_isp_init(&ov->pdev->dev);
-		rc |= hw_isp_poweron();
+		rc = hw_isp_init(&ov->pdev->dev);
+        if (rc) {
+	        cam_err("%s() %d fail", __func__, __LINE__);
+            goto fail;
+        }
+		rc = hw_isp_poweron();
+        if (rc) {
+	        cam_err("%s() %d fail", __func__, __LINE__);
+            hw_isp_deinit(&ov->pdev->dev);
+            goto fail;
+        }
 		k3_isp_fix_ddrfreq(DDR_BLOCK_PROFILE);
 		ov->power_on_state = true;
 	} else {
 		cam_notice("%s no need to do this", __func__);
 	}
-
-	return 0;
+fail:
+	return rc;
 }
 
 static int
@@ -272,13 +280,6 @@ ovisp23_release_stream_resource(
 */
 static int ovisp23_read_reg(struct isp_cfg_reg *data)
 {
-	ovisp23_t *ov = &s_ovisp23;
-
-	if((false == ov->power_on_state) || (NULL == hw_isp_base)) {
-		cam_notice("%s enter,isp is poweroff , cannot read reg\n", __func__);
-		return -1;
-	}
-
 	if (!ovisp23_is_reg_valid(data->reg)) {
 		cam_err("%s: failed. reg(0x%x) is out of range.", __func__, data->reg);
 		return -1;
@@ -308,13 +309,6 @@ static int ovisp23_read_reg(struct isp_cfg_reg *data)
 
 static int ovisp23_write_reg(struct isp_cfg_reg *data)
 {
-	ovisp23_t *ov = &s_ovisp23;
-
-	if((false == ov->power_on_state) || (NULL == hw_isp_base)) {
-		cam_notice("%s enter,isp is poweroff , cannot write reg\n", __func__);
-		return -1;
-	}
-
 	if (!ovisp23_is_reg_valid(data->reg)) {
 		cam_err("%s: failed. reg(0x%x) is out of range.", __func__, data->reg);
 		return -1;
@@ -348,7 +342,6 @@ static int ovisp23_read_reg_setting(struct isp_cfg_reg_array *data)
 	uint32_t data_length = sizeof(struct isp_cfg_reg)*data->length;
 	uint32_t i;
 	struct isp_cfg_reg *settings = NULL;
-	ovisp23_t *ov = &s_ovisp23;
 
 	cam_debug("ovisp read reg array:%d", data->length);
 	if(0 == data_length ||
@@ -369,13 +362,6 @@ static int ovisp23_read_reg_setting(struct isp_cfg_reg_array *data)
 	if(copy_from_user((void *)settings, (void __user *) data->reg_array, data_length)){
 		cam_err("%s copy_from_user error.", __func__);
 		ret = -EFAULT;
-		goto out;
-	}
-
-
-	if((false == ov->power_on_state) || (NULL == hw_isp_base)) {
-		cam_notice("%s enter,isp is poweroff , cannot read reg setting\n", __func__);
-		ret = -1;
 		goto out;
 	}
 
@@ -418,10 +404,9 @@ static int ovisp23_write_reg_setting(struct isp_cfg_reg_array *data)
 {
 	int ret = 0;
 	uint32_t data_length = sizeof(struct isp_cfg_reg)*data->length;
-	uint32_t i;
-	uint32_t temp =0;
+       uint32_t i;
+	 uint32_t temp =0;
 	struct isp_cfg_reg *settings = NULL;
-	ovisp23_t *ov = &s_ovisp23;
 
 	cam_debug("ovisp write reg array:%d", data->length);
 	if(0 == data_length ||
@@ -445,16 +430,11 @@ static int ovisp23_write_reg_setting(struct isp_cfg_reg_array *data)
 		goto out;
 	}
 
-
-	if((false == ov->power_on_state) || (NULL == hw_isp_base)) {
-		cam_notice("%s enter,isp is poweroff , cannot write reg setting\n", __func__);
-		ret = -1;
-		goto out;
-	}
-
 	for(i=0;i<data->length;i++){
 		if (!ovisp23_is_reg_valid(settings[i].reg)) {
-			continue;
+			cam_err("%s: failed. reg(0x%x) is out of range.", __func__, settings[i].reg);
+			ret = -EFAULT;
+			goto out;
 		}
 
 		switch(settings[i].val_bits)
@@ -503,11 +483,11 @@ static int ovisp23_config(hwisp_intf_t* i,void* cfg)
 
 	pcfg = (struct isp_cfg_data *)cfg;
 	ov = I2OV(i);
-    if(!ov->power_on_state && (CONFIG_POWER_ON != pcfg->cfgtype))
-    {
-        cam_err("%s isp has not poewon ,not do anything other but power_on",__func__);
-        return ret;
-    }
+	if(!ov->power_on_state && (CONFIG_POWER_ON != pcfg->cfgtype))
+	{
+		cam_err("%s isp has not poewon ,not do anything other but power_on",__func__);
+		return ret;
+	}
 	switch(pcfg->cfgtype){
 		case CONFIG_POWER_ON:
 			ret = ovisp23_power_on(i);
@@ -528,9 +508,17 @@ static int ovisp23_config(hwisp_intf_t* i,void* cfg)
 			ret= ovisp23_write_reg_setting(&pcfg->reg_s.reg_settings);
 			break;
 		case CONFIG_BUFFER_TO_ISP:
+	        if (false == s_ovisp23.power_on_state){
+	            cam_err("invalid power state:%d", s_ovisp23.power_on_state);
+		        return -EPERM;
+            }
            	ret = isp_cmd_update_buffer_cmd(pcfg->data);
-		    	break;
+		    break;
 		case CONFIG_REPROCESS_CMD:
+	        if (false == s_ovisp23.power_on_state){
+	            cam_err("invalid power state:%d", s_ovisp23.power_on_state);
+		        return -EPERM;
+            }
 			ret = isp_reprocess_cmdset(&pcfg->reg_s.reprocess_params);
 			break;
 		default:
@@ -548,7 +536,7 @@ void ovisp23_notify_sof( uint32_t id)
     isp_ev.data.sof.pipeline = PIPELINE(id);
     hwisp_notify_intf_sof(s_ovisp23.notify,&isp_ev);
 
-    trace_hw_ovisp23_event_sof(id); 
+    trace_hw_ovisp23_event_sof(id);
 }
 
 void ovisp23_notify_eof(uint32_t id)
@@ -558,7 +546,7 @@ void ovisp23_notify_eof(uint32_t id)
     isp_ev.data.eof.pipeline = PIPELINE(id);
     hwisp_notify_intf_eof(s_ovisp23.notify,&isp_ev);
 
-    trace_hw_ovisp23_event_eof(id); 
+    trace_hw_ovisp23_event_eof(id);
 }
 
 void ovisp23_notify_cmd_ready(uint32_t cmd, uint32_t result)
@@ -570,7 +558,7 @@ void ovisp23_notify_cmd_ready(uint32_t cmd, uint32_t result)
     cam_debug("%s cmd = %d result = %d",__func__,cmd,result);
     hwisp_notify_intf_cmd_ready(s_ovisp23.notify,&isp_ev);
 
-    trace_hw_ovisp23_cmd_ready(cmd, result); 
+    trace_hw_ovisp23_cmd_ready(cmd, result);
 }
 
 static int
@@ -673,6 +661,7 @@ hwisp_buf_t* ovisp23_get_buf_from_readyq(isp_port_e port)
     struct list_head* pos = NULL;
     hwisp_stream_t* stm = NULL;
     hwisp_buf_t* buf = NULL;
+
     list_for_each(pos, &s_ovisp23.streams) {
         hwisp_stream_intf_t* intf = hwisp_stream_get_by_node(pos);
         if (!intf) {
@@ -680,10 +669,6 @@ hwisp_buf_t* ovisp23_get_buf_from_readyq(isp_port_e port)
         }
         stm = I2STM(intf);
 /*    stm can't be null */
-        if(!stm) {
-            cam_err("stm = NULL");
-            continue;
-        }
         if(stm->port.id != port){
             continue;
         }
@@ -716,7 +701,8 @@ hwisp_buf_t* ovisp23_get_buf_from_readyq(isp_port_e port)
 int ovisp23_put_buf_to_doneq(isp_port_e port,hwisp_buf_t* buf)
 {
     struct list_head* pos = NULL;
-    hwisp_stream_t* stm;
+    hwisp_stream_t* stm = NULL;
+
     list_for_each(pos, &s_ovisp23.streams) {
         hwisp_stream_intf_t* intf = hwisp_stream_get_by_node(pos);
         if (!intf) {
@@ -744,7 +730,13 @@ int ovisp23_put_buf_to_doneq(isp_port_e port,hwisp_buf_t* buf)
 int ovisp23_put_buf_to_idelq(isp_port_e port,hwisp_buf_t* buf)
 {
     struct list_head* pos = NULL;
-    hwisp_stream_t* stm;
+    hwisp_stream_t* stm = NULL;
+
+    if (NULL == buf) {
+        cam_err("%s() NULL buf", __func__);
+        return -1;
+    }
+
     list_for_each(pos, &s_ovisp23.streams) {
         hwisp_stream_intf_t* intf = hwisp_stream_get_by_node(pos);
         if (!intf) {
@@ -802,7 +794,6 @@ static int ovisp23_suspend(struct platform_device *pdev, pm_message_t state)
 	return rc;
 }
 
-
 static int ovisp23_resume(struct platform_device *pdev)
 {
 	int rc = 0;
@@ -818,6 +809,7 @@ static int ovisp23_resume(struct platform_device *pdev)
 	cam_notice("%s -",__func__);
 	return rc;
 }
+
 MODULE_DEVICE_TABLE(of, s_ovisp23_dt_match);
 
 static struct platform_driver
@@ -843,19 +835,27 @@ static DEVICE_ATTR(ovisp23_debug, 0644, ovisp23_debug_show, ovisp23_debug_store)
 static ssize_t ovisp23_debug_show(struct device *dev,
 				   struct device_attribute *attr, char *buf)
 {
+#ifndef DEBUG_HISI_CAMERA
+    return 0;
+#else
 	int ret;
 
 	cam_info("%s - enter", __func__);
 	ret = snprintf(buf, PAGE_SIZE, "isp_debug_flag=0x%x\n", isp_debug_flag);
 	return ret;
+#endif
 }
 
 static ssize_t ovisp23_debug_store(struct device *dev,
 				struct device_attribute *attr, const char *buf, size_t count)
 {
 	cam_info("%s - enter", __func__);
+#ifndef DEBUG_HISI_CAMERA
+    return count;
+#else
 	isp_debug_flag = simple_strtoul(buf, NULL, 0);
 	return count;
+#endif
 }
 
 

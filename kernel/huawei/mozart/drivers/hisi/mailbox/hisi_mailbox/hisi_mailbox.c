@@ -16,8 +16,8 @@
 #include <linux/init.h>
 #include <linux/delay.h>
 #include <linux/wakelock.h>
-#include <linux/sched/rt.h>
 #include <linux/kthread.h>
+#include <linux/sched/rt.h>
 #include <linux/hisi/hisi_mailbox.h>
 #include "hisi_mailbox_debugfs.h"
 
@@ -471,8 +471,8 @@ hisi_mbox_msg_send_async(struct hisi_mbox *mbox, struct hisi_mbox_task *tx_task)
 	/* enqueue */
 	spin_lock(&mdev->fifo_lock);
 	if (kfifo_avail(&mdev->fifo) < sizeof(struct hisi_mbox_task *)) {
-		spin_unlock_irqrestore(&mdev->fifo_lock, flags);
 		MBOX_PR_ERR("mdev %s fifo full\n", mdev->name);
+		spin_unlock_irqrestore(&mdev->fifo_lock, flags);
 		ret = -ENOMEM;
 		goto clearstatus;
 	}

@@ -662,7 +662,6 @@ void del_gendisk(struct gendisk *disk)
 
 	kobject_put(disk->part0.holder_dir);
 	kobject_put(disk->slave_dir);
-	disk->driverfs_dev = NULL;
 	if (!sysfs_deprecated)
 		sysfs_remove_link(block_depr, dev_name(disk_to_dev(disk)));
 	pm_runtime_set_memalloc_noio(disk_to_dev(disk), false);
@@ -1402,6 +1401,30 @@ int invalidate_partition(struct gendisk *disk, int partno)
 }
 
 EXPORT_SYMBOL(invalidate_partition);
+
+#ifdef CONFIG_HW_SD_HEALTH_DETECT
+/*===========================================================================
+ * FUNCTION: set_sd_disk_health_status
+   PARAMETER:
+ *    @disk:the disk which has been monitor
+      @status:the err code which will translate to real code
+ *
+ * Description: send uevent to vold
+ *
+ * Returns: NULL
+
+===========================================================================*/
+void set_sd_disk_health_status(struct gendisk *disk, char *status)
+{
+    char *event = status;
+    char *envp[] = { event, NULL };
+
+    event[11] = '\0';
+    kobject_uevent_env(&disk_to_dev(disk)->kobj, KOBJ_CHANGE, envp);
+    printk(KERN_ERR "mmc1:report sd abnormal to userspace,status = %s\n",status);
+}
+EXPORT_SYMBOL(set_sd_disk_health_status);
+#endif
 
 /*
  * Disk events - monitor disk events like media change and eject request.
