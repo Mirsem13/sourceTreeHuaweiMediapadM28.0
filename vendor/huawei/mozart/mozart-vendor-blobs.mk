@@ -526,3 +526,112 @@ PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/system/lib64/libviagpsrpc.so:system/lib64/libviagpsrpc.so \
 	$(LOCAL_PATH)/system/lib64/libvia-ril.so:system/lib64/libvia-ril.so \ 
 	$(LOCAL_PATH)/system/lib64/libvpp.so:system/lib64/libvpp.so \
+	$(LOCAL_PATH)/system/lib/libstagefrighthw.so:system/lib/libstagefrighthw.so \
+	$(LOCAL_PATH)/system/lib/libstagefright.huawei.so:system/lib/libstagefright.huawei.so \
+	$(LOCAL_PATH)/system/lib/libstagefright_soft_ffmpegaudiodec.so:system/lib/libstagefright_soft_ffmpegaudiodec.so \
+	$(LOCAL_PATH)/system/lib/libstagefright_soft_ffmpegvideodec.so:system/lib/libstagefright_soft_ffmpegvideodec.so \
+	$(LOCAL_PATH)/system/usr/idc/AVRCP.idc:system/usr/idc/AVRCP.idc \
+	$(LOCAL_PATH)/system/usr/idc/qwerty.idc:system/usr/idc/qwerty.idc \
+	$(LOCAL_PATH)/system/usr/idc/qwerty2.idc:system/usr/idc/qwerty2.idc \
+	$(LOCAL_PATH)/system/usr/keychars/Generic.kcm:system/usr/keychars/Generic.kcm \
+	$(LOCAL_PATH)/system/usr/keychars/qwerty.kcm:system/usr/keychars/qwerty.kcm \
+	$(LOCAL_PATH)/system/usr/keychars/qwerty2.kcm:system/usr/keychars/qwerty2.kcm \
+	$(LOCAL_PATH)/system/usr/keychars/Virtual.kcm:system/usr/keychars/Virtual.kcm \
+	$(LOCAL_PATH)/system/usr/keylayout/AVRCP.kl:system/usr/keylayout/AVRCP.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/qwerty.kl:system/usr/keylayout/qwerty.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Generic.kl:system/usr/keylayout/Generic.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/usbaudio.kl:system/usr/keylayout/usbaudio.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_0b05_Product_4500.kl:system/usr/keylayout/Vendor_0b05_Product_4500.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1bad_Product_f016.kl:system/usr/keylayout/Vendor_1bad_Product_f016.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1bad_Product_f023.kl:system/usr/keylayout/Vendor_1bad_Product_f023.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1bad_Product_f027.kl:system/usr/keylayout/Vendor_1bad_Product_f027.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1bad_Product_f036.kl:system/usr/keylayout/Vendor_1bad_Product_f036.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1d79_Product_0009.kl:system/usr/keylayout/Vendor_1d79_Product_0009.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_05ac_Product_0239.kl:system/usr/keylayout/Vendor_05ac_Product_0239.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_12bd_Product_d015.kl:system/usr/keylayout/Vendor_12bd_Product_d015.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_18d1_Product_2c40.kl:system/usr/keylayout/Vendor_18d1_Product_2c40.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_22b8_Product_093d.kl:system/usr/keylayout/Vendor_22b8_Product_093d.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_045e_Product_028e.kl:system/usr/keylayout/Vendor_045e_Product_028e.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_046d_Product_b501.kl:system/usr/keylayout/Vendor_046d_Product_b501.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_046d_Product_c21d.kl:system/usr/keylayout/Vendor_046d_Product_c21d.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_046d_Product_c21f.kl:system/usr/keylayout/Vendor_046d_Product_c21f.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_046d_Product_c216.kl:system/usr/keylayout/Vendor_046d_Product_c216.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_046d_Product_c219.kl:system/usr/keylayout/Vendor_046d_Product_c219.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_046d_Product_c294.kl:system/usr/keylayout/Vendor_046d_Product_c294.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_046d_Product_c299.kl:system/usr/keylayout/Vendor_046d_Product_c299.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_046d_Product_c532.kl:system/usr/keylayout/Vendor_046d_Product_c532.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_054c_Product_0268.kl:system/usr/keylayout/Vendor_054c_Product_0268.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_0079_Product_0011.kl:system/usr/keylayout/Vendor_0079_Product_0011.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_0583_Product_2060.kl:system/usr/keylayout/Vendor_0583_Product_2060.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1038_Product_1412.kl:system/usr/keylayout/Vendor_1038_Product_1412.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1532_Product_0900.kl:system/usr/keylayout/Vendor_1532_Product_0900.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1689_Product_fd00.kl:system/usr/keylayout/Vendor_1689_Product_fd00.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1689_Product_fd01.kl:system/usr/keylayout/Vendor_1689_Product_fd01.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1689_Product_fe00.kl:system/usr/keylayout/Vendor_1689_Product_fe00.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1852_Product_50d2.kl:system/usr/keylayout/Vendor_1852_Product_50d2.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_1949_Product_0401.kl:system/usr/keylayout/Vendor_1949_Product_0401.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_2378_Product_100a.kl:system/usr/keylayout/Vendor_2378_Product_100a.kl \
+    $(LOCAL_PATH)/system/usr/keylayout/Vendor_2378_Product_1008.kl:system/usr/keylayout/Vendor_2378_Product_1008.kl \
+	$(LOCAL_PATH)/system/vendor/firmware/BCM4334B0_002.001.013.1837.2355.hcd
+	$(LOCAL_PATH)/system/vendor/firmware/BCM4335C0_003.001.009.0105.0497_Mozart_ORC.hcd
+	$(LOCAL_PATH)/system/vendor/firmware/dhd_preinit_config.txt
+	$(LOCAL_PATH)/system/vendor/firmware/fw_bcm4339_apsta_hw.bin
+	$(LOCAL_PATH)/system/vendor/firmware/fw_bcm4339_hw.bin
+	$(LOCAL_PATH)/system/vendor/firmware/fw_bcm4339_test_hw_apsta.bin
+	$(LOCAL_PATH)/system/vendor/firmware/hifi_6402.img
+	$(LOCAL_PATH)/system/vendor/firmware/hifi_6402_4spk.img
+	$(LOCAL_PATH)/system/vendor/firmware/nvram4339_hw.txt
+	$(LOCAL_PATH)/system/vendor/firmware/nvram4339_hw_mozart_l.txt
+	$(LOCAL_PATH)/system/vendor/framework/com.huawei.audioalgo.jar:system/vendor/framework/com.huawei.audioalgo.jar \
+	$(LOCAL_PATH)/system/vendor/lib/drm/libdrmwvmplugin.so:system/vendor/lib/drm/libdrmwvmplugin.so \
+	$(LOCAL_PATH)/system/vendor/lib/egl/libGLES_mali.so:system/vendor/lib/egl/libGLES_mali.so \
+	$(LOCAL_PATH)/system/vendor/lib/mediadrm/libdrmclearkeyplugin.so:system/vendor/lib/mediadrm/libdrmclearkeyplugin.so \
+    $(LOCAL_PATH)/system/vendor/lib/mediadrm/libwvdrmengine.so:system/vendor/lib/mediadrm/libwvdrmengine.so \
+	$(LOCAL_PATH)/system/vendor/lib/libbt-vendor.so:system/vendor/lib/libbt-vendor.so \
+    $(LOCAL_PATH)/system/vendor/lib/libOpenCL.so:system/vendor/lib/libOpenCL.so \
+    $(LOCAL_PATH)/system/vendor/lib/libOpenCL.so.1:system/vendor/lib/libOpenCL.so.1 \
+    $(LOCAL_PATH)/system/vendor/lib/libOpenCL.so.1.1:system/vendor/lib/libOpenCL.so.1.1 \
+    $(LOCAL_PATH)/system/vendor/lib/libwvdrm_L3.so:system/vendor/lib/libwvdrm_L3.so \
+    $(LOCAL_PATH)/system/vendor/lib/libwvm.so:system/vendor/lib/libwvm.so \
+	$(LOCAL_PATH)/system/vendor/lib/libWVStreamControlAPI_L3.so:system/vendor/lib/libWVStreamControlAPI_L3.so \
+	$(LOCAL_PATH)/system/vendor/lib64/egl/libGLES_mali.so:system/vendor/lib64/egl/libGLES_mali.so \
+    $(LOCAL_PATH)/system/vendor/lib64/mediadrm/libdrmclearkeyplugin.so:system/vendor/lib64/mediadrm/libdrmclearkeyplugin.so \
+    $(LOCAL_PATH)/system/vendor/lib64/libOpenCL.so:system/vendor/lib64/libOpenCL.so \
+    $(LOCAL_PATH)/system/vendor/lib64/libOpenCL.so.1:system/vendor/lib64/libOpenCL.so.1 \
+    $(LOCAL_PATH)/system/vendor/lib64/libOpenCL.so.1.1:system/vendor/lib64/libOpenCL.so.1.1 \
+	$(LOCAL_PATH)/system/vendor/media/LMspeed_508.emd:system/vendor/media/LMspeed_508.emd \
+    $(LOCAL_PATH)/system/vendor/media/PFFprec_600.emd:system/vendor/media/PFFprec_600.emd \
+	$(LOCAL_PATH)/proprietary/system/lib/libomx_vxe.so:system/lib/libomx_vxe.so \
+	$(LOCAL_PATH)/proprietary/system/lib/libomx_vxd.so:system/lib/libomx_vxd.so \
+	$(LOCAL_PATH)/proprietary/system/lib/libomni_directional_algoclient_jni.so:system/lib/libomni_directional_algoclient_jni.so \
+	$(LOCAL_PATH)/proprietary/system/miniisp/chip_det.bin:system/miniisp/chip_det.bin \
+	$(LOCAL_PATH)/proprietary/system/miniisp/miniBoot.bin:system/miniisp/miniBoot.bin \
+	$(LOCAL_PATH)/proprietary/system/miniisp/miniBoot2.bin:system/miniisp/miniBoot2.bin \
+	$(LOCAL_PATH)/proprietary/system/miniisp/TBM_Latour.bin:system/miniisp/PLK/TBM_Latour.bin \
+	$(LOCAL_PATH)/proprietary/system/miniisp/TBM_Latour2.bin:system/miniisp/PLK/TBM_Latour2.bin \
+    $(LOCAL_PATH)/proprietary/system/lib/libkeymaster1.so:system/lib/libkeymaster1.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libkeymaster_messages.so:system/lib/libkeymaster_messages.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libkeystore_binder.so:system/lib/libkeystore_binder.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libsoftkeymaster.so:system/lib/libsoftkeymaster.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libsoftkeymasterdevice.so:system/lib/libsoftkeymasterdevice.so \
+    $(LOCAL_PATH)/proprietary/system/fonts/DroidSansFallback.ttf:system/fonts/DroidSansFallback.ttf \
+    $(LOCAL_PATH)/proprietary/system/fonts/MTLmr3m.ttf:system/fonts/MTLmr3m.ttf \
+    $(LOCAL_PATH)/proprietary/system/fonts/NanumGothic.ttf:system/fonts/NanumGothic.ttf \
+    $(LOCAL_PATH)/proprietary/system/media/audio/ui/VideoRecordEnd.ogg:system/media/audio/ui/VideoRecordEnd.ogg \
+    $(LOCAL_PATH)/proprietary/system/lib/libexif.so:system/lib/libexif.so \
+    $(LOCAL_PATH)/proprietary/system/lib/lib_fpc_tac_shared.so:system/lib/lib_fpc_tac_shared.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmusicsniffer.so:system/lib/libmusicsniffer.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libBootloaderOeminfo.so:system/lib/libBootloaderOeminfo.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libAntiTheftService.so:system/lib/libAntiTheftService.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmorpho_memory_allocator.so:system/lib/libmorpho_memory_allocator.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmorpho_panorama_gp.so:system/lib/libmorpho_panorama_gp.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmrc_cg_filters.so:system/lib/libmrc_cg_filters.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmrc_cg_ldc.so:system/lib/libmrc_cg_ldc.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmrc_cg_mfdenoise.so:system/lib/libmrc_cg_mfdenoise.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmrc_cg_mfdenoise_dualcam.so:system/lib/libmrc_cg_mfdenoise_dualcam.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmrc_cg_niceFood.so:system/lib/libmrc_cg_niceFood.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmrc_cg_postprocess.so:system/lib/libmrc_cg_postprocess.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmrc_cg_postprocess_cl.so:system/lib/libmrc_cg_postprocess_cl.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libmrc_cg_sz.so:system/lib/libmrc_cg_sz.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libfidoca.so:system/lib/libfidoca.so \
+    $(LOCAL_PATH)/proprietary/system/lib/libfido_hal.so:system/lib/libfido_hal.so 
