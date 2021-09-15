@@ -1,17 +1,22 @@
-LOCAL_PATH := device/huawei/mozart
+# Boot animation
+TARGET_SCREEN_HEIGHT := 1920
+TARGET_SCREEN_WIDTH := 1080
 
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+# Inherit device configuration
+$(call inherit-product, device/lge/hammerhead/full_mozart.mk)
 
 # Screen density
 PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
-# Boot animation
-TARGET_SCREEN_HEIGHT := 1920
-TARGET_SCREEN_WIDTH := 1080
-
-PRODUCT_NAME := lineage_mozart
 PRODUCT_DEVICE := mozart
+PRODUCT_NAME := lineage_mozart
+PRODUCT_BRAND := huawei
+PRODUCT_MODEL := Mediapda M2 8.0
 PRODUCT_MANUFACTURER := HUAWEI
-PRODUCT_MODEL := mozart
+
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    PRODUCT_NAME=mozart \
+    
+
+

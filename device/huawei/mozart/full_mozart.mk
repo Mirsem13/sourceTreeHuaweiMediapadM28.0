@@ -12,21 +12,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-LOCAL_PATH := device/huawei/mozart
-
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
-
-# Screen density
-PRODUCT_AAPT_CONFIG := normal
-PRODUCT_AAPT_PREF_CONFIG := xhdpi
-
-# Boot animation
-TARGET_SCREEN_HEIGHT := 1920
-TARGET_SCREEN_WIDTH := 1080
+$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
 
 PRODUCT_NAME := full_mozart
 PRODUCT_DEVICE := mozart
-PRODUCT_MANUFACTURER := HUAWEI
-PRODUCT_MODEL := mozart
+PRODUCT_BRAND := Android
+PRODUCT_MODEL := AOSP on Mozart
+PRODUCT_MANUFACTURER := huawei
+PRODUCT_RESTRICT_VENDOR_FILES := false
+
+$(call inherit-product, device/huawei/mozart/device.mk)
+$(call inherit-product-if-exists, vendor/huawei/mozart/mozart-vendor.mk)
+
+
+

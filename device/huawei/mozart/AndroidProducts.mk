@@ -14,10 +14,11 @@
 # limitations under the License.
 
 PRODUCT_MAKEFILES := \
-	$(LOCAL_DIR)/omni_mozart.mk \
-	$(LOCAL_DIR)/full_mozart.mk \
-	$(LOCAL_DIR)/lineage_mozart.mk
-	
+    $(LOCAL_DIR)/lineage_mozart.mk
+
 COMMON_LUNCH_CHOICES := \
-    lineage_mozart-userdebug
+    lineage_mozart-user \
+    lineage_mozart-userdebug \
+    lineage_mozart-eng
+
 	

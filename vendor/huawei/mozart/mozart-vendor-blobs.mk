@@ -1,116 +1,116 @@
 LOCAL_PATH := vendor/huawei/mozart
 
 PRODUCT_COPY_FILES += \
-	/system/bin/6c8cf255-ca98-439e-a98e-ade64022ecb6.sec:system/bin/6c8cf255-ca98-439e-a98e-ade64022ecb6.sec \
-	/system/bin/9b17660b-8968-4eed-917e-dd32379bd548.sec:system/bin/9b17660b-8968-4eed-917e-dd32379bd548.sec \
-	/system/bin/79b77788-9789-4a7a-a2be-b60155eef5f4.sec:system/bin/79b77788-9789-4a7a-a2be-b60155eef5f4.sec \
-	/system/bin/883890ba-3ef8-4f0b-9c02-f5874acbf2ff.sec:system/bin/883890ba-3ef8-4f0b-9c02-f5874acbf2ff.sec \
-	/system/bin/a32b3d00-cb57-11e3-9c1a-0800200c9a66.sec:system/bin/a32b3d00-cb57-11e3-9c1a-0800200c9a66.sec \
-    /system/bin/abe89147-cd61-f43f-71c4-1a317e405312.sec:system/bin/abe89147-cd61-f43f-71c4-1a317e405312.sec \
-	/system/bin/b4b71581-add2-e89f-d536-f35436dc7973.sec:system/bin/b4b71581-add2-e89f-d536-f35436dc7973.sec \
-	/system/bin/atcmdserver:system/bin/atcmdserver \
-	/system/bin/chargelogcat:system/bin/chargelogcat \
-	/system/bin/chargemonitor:system/bin/chargemonitor \
-	/system/bin/diagserver:system/bin/diagserver \
-	/system/bin/dumptool:system/bin/dumptool \
-	/system/bin/eventcat:system/bin/eventcat \
-	/system/bin/glgps4752:system/bin/glgps4752 \
-	/system/bin/glgps47531:system/bin/glgps47531 \
-	/system/bin/glgps47531cl:system/bin/glgps47531cl \
-	/system/bin/gps4752logd:system/bin/gps4752logd \
-	/system/bin/gpsdaemon:system/bin/gpsdaemon
-	/system/bin/gpslogd:system/bin/gpslogd \
-	/system/bin/hw_cdmamodem_service:system/bin/hw_cdmamodem_service \
-	/system/bin/HwCamCfgSvr:system/bin/HwCamCfgSvr \
-	/system/bin/hwnff:system/bin/hwnff \
-	/system/bin/hwnffserver:system/bin/hwnffserver \
-	/system/bin/hwpged:system/bin/hwpged \
-	/system/bin/keystore:system/bin/keystore \
-	/system/bin/knuckle_gestures:system/bin/knuckle_gestures \
-	/system/bin/logcat:system/bin/logcat \
-	/system/bin/logd:system/bin/logd \
-	/system/bin/logserver:system/bin/logserver \
-	/system/bin/mac_addr_normalization:system/bin/mac_addr_normalization \
-	/system/bin/mediaserver:system/bin/mediaserver \
-	/system/bin/modemlogcat_lte:system/bin/modemlogcat_lte \
-	/system/bin/modemlogcat_via:system/bin/modemlogcat_via \
-	/system/bin/powerlogd:system/bin/powerlogd \
-	/system/bin/pppd:system/bin/pppd \
-	/system/bin/pppoe:system/bin/pppoe \
-	/system/bin/rild:system/bin/rild \
-	/system/bin/secure_storage:system/bin/secure_storage \
-	/system/bin/thermal-daemon:system/bin/thermal-daemon \
-	/system/bin/wifiwakeupsrc:system/bin/wifiwakeupsrc \
-	/proprietary/system/fpgaice40/PLK-AL10-VA.bin:system/fpgaice40/PLK-AL10-VA.bin \
-	/proprietary/system/fpgaice40/PLK-AL10-VA.txt:system/fpgaice40/PLK-AL10-VA.txt \
-    /system/fpgaice40/PLK-CL00-VA.bin:system/fpgaice40/PLK-CL00-VA.bin \
-    /system/fpgaice40/PLK-CL00-VA.txt:system/fpgaice40/PLK-CL00-VA.txt \
-    /system/fpgaice40/PLK-L01-VA.bin:system/fpgaice40/PLK-L01-VA.bin \
-    /system/fpgaice40/PLK-L01-VA.txt:system/fpgaice40/PLK-L01-VA.txt \
-    /system/fpgaice40/PLK-L02-VA.bin:system/fpgaice40/PLK-L02-VA.bin \
-    /system/fpgaice40/PLK-L02-VA.txt:system/fpgaice40/PLK-L02-VA.txt \
-    /system/fpgaice40/PLK-TL00-VA.bin:system/fpgaice40/PLK-TL00-VA.bin \
-    /system/fpgaice40/PLK-TL00-VA.txt:system/fpgaice40/PLK-TL00-VA.txt \
-    /system/fpgaice40/PLK-TL01H-VA.bin:system/fpgaice40/PLK-TL01H-VA.bin \
-    /system/fpgaice40/PLK-TL01H-VA.txt:system/fpgaice40/PLK-TL01H-VA.txt \
-    /system/fpgaice40/PLK-UL00-VA.bin:system/fpgaice40/PLK-UL00-VA.bin \
-    /system/fpgaice40/PLK-UL00-VA.txt:system/fpgaice40/PLK-UL00-VA.txt \
-    /system/etc/audio/algorithm/algorithm_hi3635_normal.xml:system/etc/audio/algorithm/algorithm_hi3635_normal.xml \
-    /system/etc/audio/algorithm/algorithm_hi3635cs_normal.xml:system/etc/audio/algorithm/algorithm_hi3635cs_normal.xml \
-    /system/etc/audio/algorithm/algorithm_PLK_AL_normal.xml:system/etc/audio/algorithm/algorithm_PLK_AL_normal.xml \
-    /system/etc/audio/algorithm/algorithm_PLK_CL_normal.xml:system/etc/audio/algorithm/algorithm_PLK_CL_normal.xml \
-    /system/etc/audio/algorithm/algorithm_PLK_L01_normal.xml:system/etc/audio/algorithm/algorithm_PLK_L01_normal.xml \
-    /system/etc/audio/algorithm/ascend_algorithm_default.xml:system/etc/audio/algorithm/ascend_algorithm_default.xml \
-    /system/etc/audio/dts/dts_default.xml:system/etc/audio/dts/dts_default.xml \
-    /system/etc/audio/dts/dts_hi3635_normal.xml:system/etc/audio/dts/dts_hi3635_normal.xml \
-    /system/etc/audio/dts/dts_hi3635cs_normal.xml:system/etc/audio/dts/dts_hi3635cs_normal.xml \
-    /system/etc/audio/dts/dts_PLK_AL_normal.xml:system/etc/audio/dts/dts_PLK_AL_normal.xml \
-    /system/etc/audio/dts/dts_PLK_CL_normal.xml:system/etc/audio/dts/dts_PLK_CL_normal.xml \
-    /system/etc/audio/dts/dts_default.xml:system/etc/audio/dts/dts_default.xml \
-    /system/etc/audio/maxim/maxim_hi3635_normal.xml:system/etc/audio/maxim/maxim_hi3635_normal.xml \
-    /system/etc/audio/maxim/maxim_hi3635cs_normal.xml:system/etc/audio/maxim/maxim_hi3635cs_normal.xml \
-    /system/etc/audio/maxim/maxim_PLK_AL_normal.xml:system/etc/audio/maxim/maxim_PLK_AL_normal.xml \
-    /system/etc/audio/maxim/maxim_PLK_CL_normal.xml:system/etc/audio/maxim/maxim_PLK_CL_normal.xml \
-    /system/etc/audio/maxim/maxim_PLK_L01_normal.xml:system/etc/audio/maxim/maxim_PLK_L01_normal.xml \
-    /system/etc/audio/maxim/maxim_PLK_L02_normal.xml:system/etc/audio/maxim/maxim_PLK_L02_normal.xml \
-    /system/etc/audio/maxim/maxim_PLK_TL_normal.xml:system/etc/audio/maxim/maxim_PLK_TL_normal.xml \
-    /system/etc/audio/maxim/maxim_PLK_UL_normal.xml:system/etc/audio/maxim/maxim_PLK_UL_normal.xml \
-    /system/etc/audio/mbdrc/mbdrc_hi3635_normal.xml:system/etc/audio/mbdrc/mbdrc_hi3635_normal.xml \
-    /system/etc/audio/mbdrc/mbdrc_hi3635cs_normal.xml:system/etc/audio/mbdrc/mbdrc_hi3635cs_normal.xml \
-    /system/etc/audio/mbdrc/mbdrc_PLK_AL_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_AL_normal.xml \
-    /system/etc/audio/mbdrc/mbdrc_PLK_CL_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_CL_normal.xml \
-    /system/etc/audio/mbdrc/mbdrc_PLK_L01_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_L01_normal.xml \
-    /system/etc/audio/mbdrc/mbdrc_PLK_L02_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_L02_normal.xml \
-    /system/etc/audio/mbdrc/mbdrc_PLK_TL_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_TL_normal.xml \
-    /system/etc/audio/mbdrc/mbdrc_PLK_UL_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_UL_normal.xml \
-    /system/etc/audio/nxp/Tfa9895_default.cnt:system/etc/audio/nxp/Tfa9895_default.cnt \
-    /system/etc/audio/nxp/Tfa9895_MOZART.cnt:system/etc/audio/nxp/Tfa9895_MOZART.cnt \
-    /system/etc/audio/nxp/Tfa9895_MOZART_coefficient.config:system/etc/audio/nxp/Tfa9895_MOZART_coefficient.config \
-    /system/etc/audio/nxp/Tfa9895_MOZART_sec.cnt:system/etc/audio/nxp/Tfa9895_MOZART_sec.cnt \
-    /system/etc/audio/sws/sws_default.xml:system/etc/audio/sws/sws_default.xml \
-    /system/etc/audio/sws/sws_LISZT_normal.xml:system/etc/audio/sws/sws_LISZT_normal.xml \
-    /system/etc/audio/sws/sws_MOZART_normal.xml:system/etc/audio/sws/sws_MOZART_normal.xml \
-    /system/etc/audio/hi6402/mixer_paths_default.xml:system/etc/audio/hi6402/mixer_paths_default.xml \
-    /system/etc/audio/hi6402/mixer_paths_hi3635.xml:system/etc/audio/hi6402/mixer_paths_hi3635.xml \
-    /system/etc/audio/hi6402/mixer_paths_hi3635cs.xml:system/etc/audio/hi6402/mixer_paths_hi3635cs.xml \
-    /system/etc/audio/hi6402/mixer_paths_hi3635fpga.xml:system/etc/audio/hi6402/mixer_paths_hi3635fpga.xml \
-    /system/etc/audio/hi6402/mixer_paths_PLK.xml:system/etc/audio/hi6402/mixer_paths_PLK.xml \
-    /system/etc/audio/hi6402/mixer_volumes_default.xml:system/etc/audio/hi6402/mixer_volumes_default.xml \
-    /system/etc/audio/hi6402/mixer_volumes_hi3635_normal.xml:system/etc/audio/hi6402/mixer_volumes_hi3635_normal.xml \
-    /system/etc/audio/hi6402/mixer_volumes_hi3635cs_normal.xml:system/etc/audio/hi6402/mixer_volumes_hi3635cs_normal.xml \
-    /system/etc/audio/hi6402/mixer_volumes_hi3635fpga_normal.xml:system/etc/audio/hi6402/mixer_volumes_hi3635fpga_normal.xml \
-    /system/etc/audio/hi6402/mixer_volumes_PLK_AL_ce.xml:system/etc/audio/hi6402/mixer_volumes_PLK_AL_ce.xml \
-    /system/etc/audio/hi6402/mixer_volumes_PLK_AL_normal.xml:system/etc/audio/hi6402/mixer_volumes_PLK_AL_normal.xml \
-    /system/etc/audio/hi6402/mixer_volumes_PLK_CL_ce.xml:system/etc/audio/hi6402/mixer_volumes_PLK_CL_ce.xml \
-    /system/etc/audio/hi6402/mixer_volumes_PLK_CL_normal.xml:system/etc/audio/hi6402/mixer_volumes_PLK_CL_normal.xml \
-    /system/etc/audio/hi6402/mixer_volumes_PLK_cmcciot.xml:system/etc/audio/hi6402/mixer_volumes_PLK_cmcciot.xml \
-    /system/etc/audio/hi6402/mixer_volumes_PLK_L01_ce.xml:system/etc/audio/hi6402/mixer_volumes_PLK_L01_ce.xml \
-    /system/etc/audio/hi6402/mixer_volumes_PLK_L01_normal.xml:system/etc/audio/hi6402/mixer_volumes_PLK_L01_normal.xml \
-    /system/etc/audio/hi6402/pop_seq_default.xml:system/etc/audio/hi6402/pop_seq_default.xml \
-    /system/etc/audio/hi6402/pop_seq_hi3635.xml:system/etc/audio/hi6402/pop_seq_hi3635.xml \
-    /system/etc/audio/hi6402/pop_seq_hi3635cs.xml:system/etc/audio/hi6402/pop_seq_hi3635cs.xml \
-    /system/etc/audio/hi6402/pop_seq_hi3635fpga.xml:system/etc/audio/hi6402/pop_seq_hi3635fpga.xml \
-    /system/etc/audio/hi6402/pop_seq_PLK.xml:system/etc/audio/hi6402/pop_seq_PLK.xml \
+vendor/huawei/mozart/proprietary/system/bin/6c8cf255-ca98-439e-a98e-ade64022ecb6.sec:system/bin/6c8cf255-ca98-439e-a98e-ade64022ecb6.sec \
+vendor/huawei/mozart/proprietary/system/bin/9b17660b-8968-4eed-917e-dd32379bd548.sec:system/bin/9b17660b-8968-4eed-917e-dd32379bd548.sec \
+vendor/huawei/mozart/proprietary/system/bin/79b77788-9789-4a7a-a2be-b60155eef5f4.sec:system/bin/79b77788-9789-4a7a-a2be-b60155eef5f4.sec \
+vendor/huawei/mozart/proprietary/system/bin/883890ba-3ef8-4f0b-9c02-f5874acbf2ff.sec:system/bin/883890ba-3ef8-4f0b-9c02-f5874acbf2ff.sec \
+vendor/huawei/mozart/proprietary/system/bin/a32b3d00-cb57-11e3-9c1a-0800200c9a66.sec:system/bin/a32b3d00-cb57-11e3-9c1a-0800200c9a66.sec \
+vendor/huawei/mozart/proprietary/system/bin/abe89147-cd61-f43f-71c4-1a317e405312.sec:system/bin/abe89147-cd61-f43f-71c4-1a317e405312.sec \
+vendor/huawei/mozart/proprietary/system/bin/b4b71581-add2-e89f-d536-f35436dc7973.sec:system/bin/b4b71581-add2-e89f-d536-f35436dc7973.sec \
+vendor/huawei/mozart/proprietary/system/bin/atcmdserver:system/bin/atcmdserver \
+vendor/huawei/mozart/proprietary/system/bin/chargelogcat:system/bin/chargelogcat \
+vendor/huawei/mozart/proprietary/system/bin/chargemonitor:system/bin/chargemonitor \
+vendor/huawei/mozart/proprietary/system/bin/diagserver:system/bin/diagserver \
+vendor/huawei/mozart/proprietary/system/bin/dumptool:system/bin/dumptool \
+vendor/huawei/mozart/proprietary/system/bin/eventcat:system/bin/eventcat \
+vendor/huawei/mozart/proprietary/system/bin/glgps4752:system/bin/glgps4752 \
+vendor/huawei/mozart/proprietary/system/bin/glgps47531:system/bin/glgps47531 \
+vendor/huawei/mozart/proprietary/system/bin/glgps47531cl:system/bin/glgps47531cl \
+vendor/huawei/mozart/proprietary/system/bin/gps4752logd:system/bin/gps4752logd \
+vendor/huawei/mozart/proprietary/system/bin/gpsdaemon:system/bin/gpsdaemon
+vendor/huawei/mozart/proprietary/system/bin/gpslogd:system/bin/gpslogd \
+vendor/huawei/mozart/proprietary/system/bin/hw_cdmamodem_service:system/bin/hw_cdmamodem_service \
+vendor/huawei/mozart/proprietary/system/bin/HwCamCfgSvr:system/bin/HwCamCfgSvr \
+vendor/huawei/mozart/proprietary/system/bin/hwnff:system/bin/hwnff \
+vendor/huawei/mozart/proprietary/system/bin/hwnffserver:system/bin/hwnffserver \
+vendor/huawei/mozart/proprietary/system/bin/hwpged:system/bin/hwpged \
+vendor/huawei/mozart/proprietary/system/bin/keystore:system/bin/keystore \
+vendor/huawei/mozart/proprietary/system/bin/knuckle_gestures:system/bin/knuckle_gestures \
+vendor/huawei/mozart/proprietary/system/bin/logcat:system/bin/logcat \
+vendor/huawei/mozart/proprietary/system/bin/logd:system/bin/logd \
+vendor/huawei/mozart/proprietary/system/bin/logserver:system/bin/logserver \
+vendor/huawei/mozart/proprietary/system/bin/mac_addr_normalization:system/bin/mac_addr_normalization \
+vendor/huawei/mozart/proprietary/system/bin/mediaserver:system/bin/mediaserver \
+vendor/huawei/mozart/proprietary/system/bin/modemlogcat_lte:system/bin/modemlogcat_lte \
+vendor/huawei/mozart/proprietary/system/bin/modemlogcat_via:system/bin/modemlogcat_via \
+vendor/huawei/mozart/proprietary/system/bin/powerlogd:system/bin/powerlogd \
+vendor/huawei/mozart/system/bin/pppd:system/bin/pppd \
+vendor/huawei/mozart/system/bin/pppoe:system/bin/pppoe \
+vendor/huawei/mozart/system/bin/rild:system/bin/rild \
+vendor/huawei/mozart/system/bin/secure_storage:system/bin/secure_storage \
+vendor/huawei/mozart/system/bin/thermal-daemon:system/bin/thermal-daemon \
+vendor/huawei/mozart/system/bin/wifiwakeupsrc:system/bin/wifiwakeupsrc \
+vendor/huawei/mozart/system/fpgaice40/PLK-AL10-VA.bin:system/fpgaice40/PLK-AL10-VA.bin \
+vendor/huawei/mozart/system/fpgaice40/PLK-AL10-VA.txt:system/fpgaice40/PLK-AL10-VA.txt \
+vendor/huawei/mozart/system/fpgaice40/PLK-CL00-VA.bin:system/fpgaice40/PLK-CL00-VA.bin \
+vendor/huawei/mozart/system/fpgaice40/PLK-CL00-VA.txt:system/fpgaice40/PLK-CL00-VA.txt \
+vendor/huawei/mozart/system/fpgaice40/PLK-L01-VA.bin:system/fpgaice40/PLK-L01-VA.bin \
+vendor/huawei/mozart/system/fpgaice40/PLK-L01-VA.txt:system/fpgaice40/PLK-L01-VA.txt \
+vendor/huawei/mozart/system/fpgaice40/PLK-L02-VA.bin:system/fpgaice40/PLK-L02-VA.bin \
+vendor/huawei/mozart/system/fpgaice40/PLK-L02-VA.txt:system/fpgaice40/PLK-L02-VA.txt \
+vendor/huawei/mozart/system/fpgaice40/PLK-TL00-VA.bin:system/fpgaice40/PLK-TL00-VA.bin \
+vendor/huawei/mozart/system/fpgaice40/PLK-TL00-VA.txt:system/fpgaice40/PLK-TL00-VA.txt \
+vendor/huawei/mozart/system/fpgaice40/PLK-TL01H-VA.bin:system/fpgaice40/PLK-TL01H-VA.bin \
+vendor/huawei/mozart/system/fpgaice40/PLK-TL01H-VA.txt:system/fpgaice40/PLK-TL01H-VA.txt \
+vendor/huawei/mozart/system/fpgaice40/PLK-UL00-VA.bin:system/fpgaice40/PLK-UL00-VA.bin \
+vendor/huawei/mozart/system/fpgaice40/PLK-UL00-VA.txt:system/fpgaice40/PLK-UL00-VA.txt \
+vendor/huawei/mozart/system/etc/audio/algorithm/algorithm_hi3635_normal.xml:system/etc/audio/algorithm/algorithm_hi3635_normal.xml \
+vendor/huawei/mozart/system/etc/audio/algorithm/algorithm_hi3635cs_normal.xml:system/etc/audio/algorithm/algorithm_hi3635cs_normal.xml \
+vendor/huawei/mozart/system/etc/audio/algorithm/algorithm_PLK_AL_normal.xml:system/etc/audio/algorithm/algorithm_PLK_AL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/algorithm/algorithm_PLK_CL_normal.xml:system/etc/audio/algorithm/algorithm_PLK_CL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/algorithm/algorithm_PLK_L01_normal.xml:system/etc/audio/algorithm/algorithm_PLK_L01_normal.xml \
+vendor/huawei/mozart/system/etc/audio/algorithm/ascend_algorithm_default.xml:system/etc/audio/algorithm/ascend_algorithm_default.xml \
+vendor/huawei/mozart/system/etc/audio/dts/dts_default.xml:system/etc/audio/dts/dts_default.xml \
+vendor/huawei/mozart/system/etc/audio/dts/dts_hi3635_normal.xml:system/etc/audio/dts/dts_hi3635_normal.xml \
+vendor/huawei/mozart/system/etc/audio/dts/dts_hi3635cs_normal.xml:system/etc/audio/dts/dts_hi3635cs_normal.xml \
+vendor/huawei/mozart/system/etc/audio/dts/dts_PLK_AL_normal.xml:system/etc/audio/dts/dts_PLK_AL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/dts/dts_PLK_CL_normal.xml:system/etc/audio/dts/dts_PLK_CL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/dts/dts_default.xml:system/etc/audio/dts/dts_default.xml \
+vendor/huawei/mozart/system/etc/audio/maxim/maxim_hi3635_normal.xml:system/etc/audio/maxim/maxim_hi3635_normal.xml \
+vendor/huawei/mozart/system/etc/audio/maxim/maxim_hi3635cs_normal.xml:system/etc/audio/maxim/maxim_hi3635cs_normal.xml \
+vendor/huawei/mozart/system/etc/audio/maxim/maxim_PLK_AL_normal.xml:system/etc/audio/maxim/maxim_PLK_AL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/maxim/maxim_PLK_CL_normal.xml:system/etc/audio/maxim/maxim_PLK_CL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/maxim/maxim_PLK_L01_normal.xml:system/etc/audio/maxim/maxim_PLK_L01_normal.xml \
+vendor/huawei/mozart/system/etc/audio/maxim/maxim_PLK_L02_normal.xml:system/etc/audio/maxim/maxim_PLK_L02_normal.xml \
+vendor/huawei/mozart/system/etc/audio/maxim/maxim_PLK_TL_normal.xml:system/etc/audio/maxim/maxim_PLK_TL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/maxim/maxim_PLK_UL_normal.xml:system/etc/audio/maxim/maxim_PLK_UL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/mbdrc/mbdrc_hi3635_normal.xml:system/etc/audio/mbdrc/mbdrc_hi3635_normal.xml \
+vendor/huawei/mozart/system/etc/audio/mbdrc/mbdrc_hi3635cs_normal.xml:system/etc/audio/mbdrc/mbdrc_hi3635cs_normal.xml \
+vendor/huawei/mozart/system/etc/audio/mbdrc/mbdrc_PLK_AL_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_AL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/mbdrc/mbdrc_PLK_CL_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_CL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/mbdrc/mbdrc_PLK_L01_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_L01_normal.xml \
+vendor/huawei/mozart/system/etc/audio/mbdrc/mbdrc_PLK_L02_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_L02_normal.xml \
+vendor/huawei/mozart/system/etc/audio/mbdrc/mbdrc_PLK_TL_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_TL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/mbdrc/mbdrc_PLK_UL_normal.xml:system/etc/audio/mbdrc/mbdrc_PLK_UL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/nxp/Tfa9895_default.cnt:system/etc/audio/nxp/Tfa9895_default.cnt \
+vendor/huawei/mozart/system/etc/audio/nxp/Tfa9895_MOZART.cnt:system/etc/audio/nxp/Tfa9895_MOZART.cnt \
+vendor/huawei/mozart/system/etc/audio/nxp/Tfa9895_MOZART_coefficient.config:system/etc/audio/nxp/Tfa9895_MOZART_coefficient.config \
+vendor/huawei/mozart/system/etc/audio/nxp/Tfa9895_MOZART_sec.cnt:system/etc/audio/nxp/Tfa9895_MOZART_sec.cnt \
+vendor/huawei/mozart/system/etc/audio/sws/sws_default.xml:system/etc/audio/sws/sws_default.xml \
+vendor/huawei/mozart/system/etc/audio/sws/sws_LISZT_normal.xml:system/etc/audio/sws/sws_LISZT_normal.xml \
+vendor/huawei/mozart/system/etc/audio/sws/sws_MOZART_normal.xml:system/etc/audio/sws/sws_MOZART_normal.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_paths_default.xml:system/etc/audio/hi6402/mixer_paths_default.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_paths_hi3635.xml:system/etc/audio/hi6402/mixer_paths_hi3635.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_paths_hi3635cs.xml:system/etc/audio/hi6402/mixer_paths_hi3635cs.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_paths_hi3635fpga.xml:system/etc/audio/hi6402/mixer_paths_hi3635fpga.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_paths_PLK.xml:system/etc/audio/hi6402/mixer_paths_PLK.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_default.xml:system/etc/audio/hi6402/mixer_volumes_default.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_hi3635_normal.xml:system/etc/audio/hi6402/mixer_volumes_hi3635_normal.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_hi3635cs_normal.xml:system/etc/audio/hi6402/mixer_volumes_hi3635cs_normal.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_hi3635fpga_normal.xml:system/etc/audio/hi6402/mixer_volumes_hi3635fpga_normal.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_PLK_AL_ce.xml:system/etc/audio/hi6402/mixer_volumes_PLK_AL_ce.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_PLK_AL_normal.xml:system/etc/audio/hi6402/mixer_volumes_PLK_AL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_PLK_CL_ce.xml:system/etc/audio/hi6402/mixer_volumes_PLK_CL_ce.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_PLK_CL_normal.xml:system/etc/audio/hi6402/mixer_volumes_PLK_CL_normal.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_PLK_cmcciot.xml:system/etc/audio/hi6402/mixer_volumes_PLK_cmcciot.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_PLK_L01_ce.xml:system/etc/audio/hi6402/mixer_volumes_PLK_L01_ce.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/mixer_volumes_PLK_L01_normal.xml:system/etc/audio/hi6402/mixer_volumes_PLK_L01_normal.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/pop_seq_default.xml:system/etc/audio/hi6402/pop_seq_default.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/pop_seq_hi3635.xml:system/etc/audio/hi6402/pop_seq_hi3635.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/pop_seq_hi3635cs.xml:system/etc/audio/hi6402/pop_seq_hi3635cs.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/pop_seq_hi3635fpga.xml:system/etc/audio/hi6402/pop_seq_hi3635fpga.xml \
+vendor/huawei/mozart/system/etc/audio/hi6402/pop_seq_PLK.xml:system/etc/audio/hi6402/pop_seq_PLK.xml \
     /system/etc/audio/modem/modem_default.xml:system/etc/audio/modem/modem_default.xml \
     /system/etc/audio/modem/modem_hi3635_normal.xml:system/etc/audio/modem/modem_hi3635_normal.xml \
     /system/etc/audio/modem/modem_hi3635cs_normal.xml:system/etc/audio/modem/modem_hi3635cs_normal.xml \
